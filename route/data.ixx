@@ -11,6 +11,9 @@ import std;
 
 NAMESPACE_ROUTE_BEGIN
 
+// City number
+
+
 // Define the attribute of the object
 export enum class Attribute : int {
 	Empty = 1,
@@ -26,107 +29,67 @@ public:
 	// base information
     std::string Name{};
 	Attribute Attr{ Attribute::Empty };
+	T Link{};
 	T X{};
 	T Y{};
 };
 
 export using Object = BaseObject<int>;
 
-struct Ege
-{
-	std::string Source{};
-	std::string Target{};
-	int Weight{};
-
-    Ege(const std::string_view tar, const int weight)
-		: Target(tar), Weight(weight) {}
-	Ege(const std::string_view src, const std::string_view tar, const int weight)
-		: Source(src), Target(tar), Weight(weight) {}
+// 定义图的边结构
+struct Edge {
+    int To;      // 边的目标顶点
+    int Weight;  // 边的权重
+    Edge(int t, int w) : To(t), Weight(w) {}
 };
 
-class Graph
-{
+// 定义图类
+export class Graph {
 private:
-	std::unordered_map<std::string, std::vector<Ege>> AdjList{};
+    int n; // 顶点数量
+    std::vector<std::vector<Edge>> adj; // 邻接表表示图
+
 public:
-    void add_edge(const std::string& source, const std::string& target, int weight) {
-        AdjList[source].emplace_back(target, weight);
-        AdjList.try_emplace(target);
+    // 构造函数
+    Graph(int vertices) : n(vertices), adj(vertices) {}
+
+    // 添加边
+    void addEdge(int from, int to, int weight) {
+        adj[from].emplace_back(to, weight);
     }
 
-    class DijkstraResult {
-        std::unordered_map<std::string, int> distances;
-        std::unordered_map<std::string, std::string> predecessors;
+    // Dijkstra算法
+    std::vector<int> Dijkstra(int start) const {
+        std::vector<int> dist(n, std::numeric_limits<int>::max()); // 距离数组，初始化为无穷大
+        std::priority_queue<std::pair<int, int>, std::vector<std::pair<int, int>>, std::greater<>> pq; // 优先队列，按距离从小到大排序
 
-    public:
-        DijkstraResult(auto&& d, auto&& p)
-            : distances(std::forward<decltype(d)>(d)),
-              predecessors(std::forward<decltype(p)>(p)) {}
-
-        bool has_path_to(const std::string& node) const {
-            return distances.contains(node) && 
-                   distances.at(node) != std::numeric_limits<int>::max();
-        }
-
-        int distance_to(const std::string& node) const {
-            return distances.at(node);
-        }
-
-        std::vector<std::string> path_to(const std::string& node) const {
-            std::vector<std::string> path;
-            if (!has_path_to(node)) return path;
-
-            for (std::string current = node; !current.empty();
-                 current = predecessors.at(current)) {
-                path.push_back(current);
-            }
-
-            std::reverse(path.begin(), path.end());
-            return path;
-        }
-    };
-
-    DijkstraResult dijkstra(const std::string& start) const {
-        if (!AdjList.contains(start)) {
-            throw std::invalid_argument("Start node not found");
-        }
-
-        std::unordered_map<std::string, int> distances;
-        std::unordered_map<std::string, std::string> predecessors;
-
-        for (const auto& [node, _] : AdjList) {
-            distances[node] = std::numeric_limits<int>::max();
-        }
-        distances[start] = 0;
-
-        using QueueElement = std::pair<int, std::string>;
-        std::priority_queue<QueueElement,
-                          std::vector<QueueElement>,
-                          std::greater<>> pq;
-        pq.emplace(0, start);
+        dist[start] = 0; // 起始点到自身的距离为0
+        pq.push({0, start}); // 将起始点加入优先队列
 
         while (!pq.empty()) {
-            auto [current_dist, u] = pq.top();
+            const int u = pq.top().second; // 当前顶点
+            const int currentDist = pq.top().first; // 当前顶点的距离
             pq.pop();
 
-            if (current_dist > distances[u]) continue;
+            // 如果当前从队列中取出的距离大于已知最短距离，则跳过
+            if (currentDist > dist[u]) continue;
 
-            for (const auto& edge : AdjList.at(u)) {
-                const int new_dist = current_dist + edge.Weight;
-                if (new_dist < distances[edge.Target]) {
-                    distances[edge.target] = new_dist;
-                    predecessors[edge.target] = u;
-                    pq.emplace(new_dist, edge.target);
+            // 遍历当前顶点的所有邻接边
+            for (const Edge& edge : adj[u]) {
+                int v = edge.To; // 邻接顶点
+                const int weight = edge.Weight; // 边的权重
+
+                // 计算从起始点经过当前顶点到邻接顶点的距离
+                if (dist[u] + weight < dist[v]) {
+                    dist[v] = dist[u] + weight; // 更新最短距离
+                    pq.push({dist[v], v}); // 将邻接顶点加入优先队列
                 }
             }
         }
 
-        return {std::move(distances), std::move(predecessors)};
+        return dist; // 返回最短路径距离数组
     }
-
 };
-
-
 
 
 NAMESPACE_ROUTE_END

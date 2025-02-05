@@ -1,33 +1,37 @@
 ﻿import std;
 import data;
 
+using namespace std;
 using namespace route;
 
 int main() {
-    Graph g;
-    g.add_edge("A", "B", 6);
-    g.add_edge("A", "C", 2);
-    g.add_edge("B", "D", 1);
-    g.add_edge("C", "B", 3);
-    g.add_edge("C", "D", 5);
-    g.add_edge("D", "E", 2);
-    g.add_edge("E", "B", 4);
+    int n, m;
+    cout << "请输入顶点数和边数：";
+    cin >> n >> m;
     
-    try {
-        auto result = g.dijkstra("A");
-        
-        for (const auto& node : {"A", "B", "C", "D", "E"}) {
-            if (result.has_path_to(node)) {
-                std::print("Distance to {}: {}\nPath: ", node, result.distance_to(node));
-                for (const auto& n : result.path_to(node)) {
-                    std::print("{} ", n);
-                }
-				std::print("\n\n");
-            } else {
-				std::print("{} is unreachable\n\n", node);
-            }
-        }
-    } catch (const std::exception& e) {
-        std::cerr << "Error: " << e.what() << std::endl;
+    Graph g(n);
+    
+    cout << "请输入边的起点、终点和权重（共" << m << "条边）：" << endl;
+    for (int i = 0; i < m; ++i) {
+        int u, v, w;
+        cin >> u >> v >> w;
+        g.addEdge(u, v, w); // 添加边
     }
+    
+    int start;
+    cout << "请输入起始顶点：";
+    cin >> start;
+    
+    vector<int> shortestDistances = g.Dijkstra(start);
+    
+    cout << "从顶点" << start << "到其他所有顶点的最短距离：" << endl;
+    for (int i = 0; i < n; ++i) {
+        if (shortestDistances[i] == numeric_limits<int>::max()) {
+            cout << "顶点" << i << "：无法到达" << endl;
+        } else {
+            cout << "顶点" << i << "：距离 = " << shortestDistances[i] << endl;
+        }
+    }
+    
+    return 0;
 }
