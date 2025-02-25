@@ -13,7 +13,6 @@ NAMESPACE_ROUTE_BEGIN
 
 // City number
 
-
 // Define the attribute of the object
 export enum class Attribute : int {
 	Empty = 1,
@@ -22,16 +21,18 @@ export enum class Attribute : int {
 	Result = 4
 };
 
+/**
+ * @brief 基本物体  1: 名称 2: 位置 3: 属性
+ * @tparam T 
+ */
 template <typename T>
 class BaseObject
 {
 public:
 	// base information
     std::string Name{};
+    std::pair<T, T> Location{};
 	Attribute Attr{ Attribute::Empty };
-	T Link{};
-	T X{};
-	T Y{};
 };
 
 export using Object = BaseObject<int>;
