@@ -1,24 +1,24 @@
-ï»¿//module;
-//
-//#include <ctime>
-//
-//export module file_io;
-//
-//import std;
-//
-//using namespace std;
-//
-//
-//
+#pragma once
+
+#define NAMESPACE_ROUTE_BEGIN namespace route {
+#define NAMESPACE_ROUTE_END }
+
+#include <string>
+#include <vector>
+#include <memory>
+#include <iostream>
+#include <utility>
+#include <algorithm>
+
 //export class MapMessage
 //{
-//	int Vertices{}, Edges{}; // é¡¶ç‚¹æ•°å’Œè¾¹æ•°
+//	int Vertices{}, Edges{}; // ¶¥µãÊıºÍ±ßÊı
 //
 //    
 //};
 //
 //
-//// åƒè±†äººè®°å½•æ ¼å¼
+//// ³Ô¶¹ÈË¼ÇÂ¼¸ñÊ½
 //export struct PacRecord
 //{
 //    std::string m_time_s{ 0 };
@@ -27,12 +27,12 @@
 //
 //export
 //{
-//	optional<int> fileRead(PacConfigure &configure); // æ–‡ä»¶è¯»å…¥
-//    optional<int> fileWrite(const PacRecord& record); // æ–‡ä»¶å†™å…¥
+//	optional<int> fileRead(PacConfigure &configure); // ÎÄ¼ş¶ÁÈë
+//    optional<int> fileWrite(const PacRecord& record); // ÎÄ¼şĞ´Èë
 //}
 //
 ///**
-// * @brief å°†é…ç½®æ–‡ä»¶ä» configure.ini ä¸­è¯»å‡º
+// * @brief ½«ÅäÖÃÎÄ¼ş´Ó configure.ini ÖĞ¶Á³ö
 // * @param record 
 // * @return normal 1 error 0
 // */
@@ -49,13 +49,13 @@
 //
 //    fin.close();
 //
-//    //cout << "ReadFile Successfullyï¼\n";
+//    //cout << "ReadFile Successfully£¡\n";
 //    
 //    return optional<int>{1};
 //}
 //
 ///**
-// * @brief å°†è®°å½•å†™å…¥ data.txt
+// * @brief ½«¼ÇÂ¼Ğ´Èë data.txt
 // * @param record 
 // * @return normal 1 error 0
 // */
@@ -77,9 +77,9 @@
 //        return optional<int>{0};
 //    }
 //
-//    // æ‰“å°ä¿¡æ¯
+//    // ´òÓ¡ĞÅÏ¢
 //    {
-//        // ç¬¬ä¸€æ¬¡è¿è¡Œ
+//        // µÚÒ»´ÎÔËĞĞ
 //		static int lineNumber = 1;
 //	    if (lineNumber == 1) {
 //	        fout << "\nGame Start Time(Local): " << std::put_time(&nowTm, "%Y-%m-%d %H:%M:%S") << '\n';
@@ -90,7 +90,7 @@
 //	    fout << format("{: >4} : ", lineNumber) << std::put_time(&nowTm, "%Y-%m-%d %H:%M:%S")
 //    		<< format(" : Time cost: {}s, Score: {}\n", time_cost, player_score);
 //
-//        // æ›´æ–°è¡Œæ•°
+//        // ¸üĞÂĞĞÊı
 //		++lineNumber;
 //    }
 //
@@ -98,7 +98,7 @@
 //
 //    //std::cout << "FileIO over!\n";
 //
-//    /* æ—§å®ç°
+//    /* ¾ÉÊµÏÖ
 //     * ios_base::fmtflags old = fout.setf(ios::left, ios::adjustfield);
 //     * fout.setf(old, ios::adjustfield);
 //     */

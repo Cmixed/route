@@ -1,13 +1,17 @@
-ï»¿// Purpose: Define the data module for the route project.
+// Purpose: Define the data module for the route project.
 // Author:  Cmixed
-module;
+#pragma once
 
 #define NAMESPACE_ROUTE_BEGIN namespace route {
 #define NAMESPACE_ROUTE_END }
 
-export module data;
+#include <string>
+#include <vector>
+#include <memory>
+#include <iostream>
+#include <utility>
+#include <algorithm>
 
-import std;
 using namespace std;
 
 NAMESPACE_ROUTE_BEGIN
@@ -15,7 +19,7 @@ NAMESPACE_ROUTE_BEGIN
 // City number
 
 // Define the attribute of the object
-export enum class Attribute : int {
+enum class Attribute : std::uint8_t {
 	Empty = 0,
 	Place,
 	Supply,
@@ -23,7 +27,7 @@ export enum class Attribute : int {
 };
 
 /**
- * @brief åŸºæœ¬ç‰©ä½“  1: åç§° 2: ä½ç½® 3: å±æ€§
+ * @brief »ù±¾ÎïÌå  1: Ãû³Æ 2: Î»ÖÃ 3: ÊôĞÔ
  * @tparam T 
  */
 template <typename T>
@@ -36,50 +40,50 @@ public:
 	Attribute m_attr{ Attribute::Empty };
 };
 
-export using Object = BaseObject<int>;
+using Object = BaseObject<int>;
 
-// å®šä¹‰å›¾çš„è¾¹ç»“æ„
-export struct Edge {
-    int m_to;      // è¾¹çš„ç›®æ ‡é¡¶ç‚¹
-    int m_weight;  // è¾¹çš„æƒé‡
+// ¶¨ÒåÍ¼µÄ±ß½á¹¹
+struct Edge {
+    int m_to;      // ±ßµÄÄ¿±ê¶¥µã
+    int m_weight;  // ±ßµÄÈ¨ÖØ
     Edge(const int to,const int weight) : m_to(to), m_weight(weight) {}
 };
 
-// å®šä¹‰å›¾ç±»
-export class WeightedAdjMatrixGraph {
+// ¶¨ÒåÍ¼Àà
+class WeightedAdjMatrixGraph {
 private:
-    int m_vertices; // é¡¶ç‚¹æ•°
-    int m_edges;    // è¾¹æ•°
-    vector<shared_ptr<Object>> m_vertexList; // é¡¶ç‚¹åˆ—è¡¨ï¼Œå­˜å‚¨æ™ºèƒ½æŒ‡é’ˆ
-    vector<vector<int>> m_adjMatrix; // é‚»æ¥çŸ©é˜µï¼Œå­˜å‚¨æƒé‡
+    int m_vertices; // ¶¥µãÊı
+    int m_edges;    // ±ßÊı
+    vector<shared_ptr<Object>> m_vertexList; // ¶¥µãÁĞ±í£¬´æ´¢ÖÇÄÜÖ¸Õë
+    vector<vector<int>> m_adjMatrix; // ÁÚ½Ó¾ØÕó£¬´æ´¢È¨ÖØ
 public:
-    // æ„é€ å‡½æ•°
+    // ¹¹Ôìº¯Êı
     WeightedAdjMatrixGraph(int v) : m_vertices(v), m_edges(0) {
-        // åˆå§‹åŒ–é‚»æ¥çŸ©é˜µï¼Œåˆå§‹å€¼ä¸º-1è¡¨ç¤ºæ— è¾¹
+        // ³õÊ¼»¯ÁÚ½Ó¾ØÕó£¬³õÊ¼ÖµÎª-1±íÊ¾ÎŞ±ß
         m_adjMatrix.resize(v, vector<int>(v, -1));
     }
 
-    // æ·»åŠ é¡¶ç‚¹
+    // Ìí¼Ó¶¥µã
     void addVertex(const shared_ptr<Object>& vertex) {
         m_vertexList.push_back(vertex);
     }
 
-    // æ·»åŠ å¸¦æƒé‡çš„è¾¹
+    // Ìí¼Ó´øÈ¨ÖØµÄ±ß
     void addEdge(const int src,const int dest,const int weight) {
         if (src >= 0 && src < m_vertices && dest >= 0 && dest < m_vertices && weight > 0) {
             m_adjMatrix[src][dest] = weight;
-            m_adjMatrix[dest][src] = weight; // å¦‚æœæ˜¯æ— å‘å›¾
+            m_adjMatrix[dest][src] = weight; // Èç¹ûÊÇÎŞÏòÍ¼
             m_edges++;
         }
     }
 
-    // æ‰“å°å›¾çš„ç»“æ„
+    // ´òÓ¡Í¼µÄ½á¹¹
     void printGraph() const {
-        cout << "å¸¦æƒé‡çš„å›¾çš„é‚»æ¥çŸ©é˜µè¡¨ç¤ºï¼š" << endl;
+        cout << "´øÈ¨ÖØµÄÍ¼µÄÁÚ½Ó¾ØÕó±íÊ¾£º" << endl;
         for (int i = 0; i < m_vertices; i++) {
             for (int j = 0; j < m_vertices; j++) {
                 if (m_adjMatrix[i][j] == -1) {
-                    cout << "âˆ "; // æ— è¾¹æ—¶æ˜¾ç¤ºæ— ç©·å¤§
+                    cout << "¡Ş "; // ÎŞ±ßÊ±ÏÔÊ¾ÎŞÇî´ó
                 } else {
                     cout << m_adjMatrix[i][j] << " ";
                 }
@@ -88,20 +92,20 @@ public:
         }
     }
 
-    // è·å–æƒé‡
+    // »ñÈ¡È¨ÖØ
     int getWeight(const int src,const int dest) const {
         if (src >= 0 && src < m_vertices && dest >= 0 && dest < m_vertices) {
             return m_adjMatrix[src][dest];
         }
-        return -1; // æ— æ•ˆç´¢å¼•
+        return -1; // ÎŞĞ§Ë÷Òı
     }
 
-    // è·å–é¡¶ç‚¹ä¿¡æ¯
+    // »ñÈ¡¶¥µãĞÅÏ¢
     shared_ptr<Object> getVertex(const int index) {
         if (index >= 0 && index < m_vertices) {
             return m_vertexList[index];
         }
-        return nullptr; // æ— æ•ˆç´¢å¼•
+        return nullptr; // ÎŞĞ§Ë÷Òı
     }
 };
 

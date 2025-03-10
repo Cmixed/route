@@ -1,9 +1,7 @@
-﻿import std;
-import data;
+﻿#include "data.h"
 
 using namespace std;
 using namespace route;
-
 
 int main() {
     // 创建图，4个顶点
