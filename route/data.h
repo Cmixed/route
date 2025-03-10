@@ -1,4 +1,4 @@
-// Purpose: Define the data module for the route project.
+ï»¿// Purpose: Define the data module for the route project.
 // Author:  Cmixed
 #pragma once
 
@@ -15,11 +15,11 @@
 using namespace std;
 
 NAMESPACE_ROUTE_BEGIN
-
 // City number
 
 // Define the attribute of the object
-enum class Attribute : std::uint8_t {
+enum class Attribute : std::uint8_t
+{
 	Empty = 0,
 	Place,
 	Supply,
@@ -27,7 +27,7 @@ enum class Attribute : std::uint8_t {
 };
 
 /**
- * @brief »ù±¾ÎïÌå  1: Ãû³Æ 2: Î»ÖÃ 3: ÊôĞÔ
+ * @brief åŸºæœ¬ç‰©ä½“  1: åç§° 2: ä½ç½® 3: å±æ€§
  * @tparam T 
  */
 template <typename T>
@@ -35,78 +35,89 @@ class BaseObject
 {
 public:
 	// base information
-    std::string m_name{};
-    std::pair<T, T> m_location{};
-	Attribute m_attr{ Attribute::Empty };
+	std::string m_name{};
+	std::pair<T, T> m_location{};
+	Attribute m_attr{Attribute::Empty};
 };
 
 using Object = BaseObject<int>;
 
-// ¶¨ÒåÍ¼µÄ±ß½á¹¹
-struct Edge {
-    int m_to;      // ±ßµÄÄ¿±ê¶¥µã
-    int m_weight;  // ±ßµÄÈ¨ÖØ
-    Edge(const int to,const int weight) : m_to(to), m_weight(weight) {}
+// å®šä¹‰å›¾çš„è¾¹ç»“æ„
+struct Edge
+{
+	int m_to; // è¾¹çš„ç›®æ ‡é¡¶ç‚¹
+	int m_weight; // è¾¹çš„æƒé‡
+	Edge(const int to, const int weight) : m_to(to), m_weight(weight)
+	{
+	}
 };
 
-// ¶¨ÒåÍ¼Àà
-class WeightedAdjMatrixGraph {
+// å®šä¹‰å›¾ç±»
+class WeightedAdjMatrixGraph
+{
 private:
-    int m_vertices; // ¶¥µãÊı
-    int m_edges;    // ±ßÊı
-    vector<shared_ptr<Object>> m_vertexList; // ¶¥µãÁĞ±í£¬´æ´¢ÖÇÄÜÖ¸Õë
-    vector<vector<int>> m_adjMatrix; // ÁÚ½Ó¾ØÕó£¬´æ´¢È¨ÖØ
+	int m_vertices; // é¡¶ç‚¹æ•°
+	int m_edges; // è¾¹æ•°
+	vector<shared_ptr<Object>> m_vertexList; // é¡¶ç‚¹åˆ—è¡¨ï¼Œå­˜å‚¨æ™ºèƒ½æŒ‡é’ˆ
+	vector<vector<int>> m_adjMatrix; // é‚»æ¥çŸ©é˜µï¼Œå­˜å‚¨æƒé‡
 public:
-    // ¹¹Ôìº¯Êı
-    WeightedAdjMatrixGraph(int v) : m_vertices(v), m_edges(0) {
-        // ³õÊ¼»¯ÁÚ½Ó¾ØÕó£¬³õÊ¼ÖµÎª-1±íÊ¾ÎŞ±ß
-        m_adjMatrix.resize(v, vector<int>(v, -1));
-    }
+	// æ„é€ å‡½æ•°
+	explicit WeightedAdjMatrixGraph(int v) : m_vertices(v), m_edges(0)
+	{
+		// åˆå§‹åŒ–é‚»æ¥çŸ©é˜µï¼Œåˆå§‹å€¼ä¸º-1è¡¨ç¤ºæ— è¾¹
+		m_adjMatrix.resize(v, vector<int>(v, -1));
+	}
 
-    // Ìí¼Ó¶¥µã
-    void addVertex(const shared_ptr<Object>& vertex) {
-        m_vertexList.push_back(vertex);
-    }
+	// æ·»åŠ é¡¶ç‚¹
+	void addVertex(const shared_ptr<Object>& vertex)
+	{
+		m_vertexList.push_back(vertex);
+	}
 
-    // Ìí¼Ó´øÈ¨ÖØµÄ±ß
-    void addEdge(const int src,const int dest,const int weight) {
-        if (src >= 0 && src < m_vertices && dest >= 0 && dest < m_vertices && weight > 0) {
-            m_adjMatrix[src][dest] = weight;
-            m_adjMatrix[dest][src] = weight; // Èç¹ûÊÇÎŞÏòÍ¼
-            m_edges++;
-        }
-    }
+	// æ·»åŠ å¸¦æƒé‡çš„è¾¹
+	void addEdge(const int src, const int dest, const int weight)
+	{
+		if (src >= 0 && src < m_vertices && dest >= 0 && dest < m_vertices && weight > 0) {
+			m_adjMatrix[src][dest] = weight;
+			m_adjMatrix[dest][src] = weight; // å¦‚æœæ˜¯æ— å‘å›¾
+			m_edges++;
+		}
+	}
 
-    // ´òÓ¡Í¼µÄ½á¹¹
-    void printGraph() const {
-        cout << "´øÈ¨ÖØµÄÍ¼µÄÁÚ½Ó¾ØÕó±íÊ¾£º" << endl;
-        for (int i = 0; i < m_vertices; i++) {
-            for (int j = 0; j < m_vertices; j++) {
-                if (m_adjMatrix[i][j] == -1) {
-                    cout << "¡Ş "; // ÎŞ±ßÊ±ÏÔÊ¾ÎŞÇî´ó
-                } else {
-                    cout << m_adjMatrix[i][j] << " ";
-                }
-            }
-            cout << endl;
-        }
-    }
+	// æ‰“å°å›¾çš„ç»“æ„
+	void printGraph() const
+	{
+		cout << "å¸¦æƒé‡çš„å›¾çš„é‚»æ¥çŸ©é˜µè¡¨ç¤ºï¼š" << endl;
+		for (int i = 0; i < m_vertices; i++) {
+			for (int j = 0; j < m_vertices; j++) {
+				if (m_adjMatrix[i][j] == -1) {
+					cout << "âˆ "; // æ— è¾¹æ—¶æ˜¾ç¤ºæ— ç©·å¤§
+				}
+				else {
+					cout << m_adjMatrix[i][j] << " ";
+				}
+			}
+			cout << '\n';
+		}
+	}
 
-    // »ñÈ¡È¨ÖØ
-    int getWeight(const int src,const int dest) const {
-        if (src >= 0 && src < m_vertices && dest >= 0 && dest < m_vertices) {
-            return m_adjMatrix[src][dest];
-        }
-        return -1; // ÎŞĞ§Ë÷Òı
-    }
+	// è·å–æƒé‡
+	int getWeight(const int src, const int dest) const
+	{
+		if (src >= 0 && src < m_vertices && dest >= 0 && dest < m_vertices) {
+			return m_adjMatrix[src][dest];
+		}
+		return -1; // æ— æ•ˆç´¢å¼•
+	}
 
-    // »ñÈ¡¶¥µãĞÅÏ¢
-    shared_ptr<Object> getVertex(const int index) {
-        if (index >= 0 && index < m_vertices) {
-            return m_vertexList[index];
-        }
-        return nullptr; // ÎŞĞ§Ë÷Òı
-    }
+	// è·å–é¡¶ç‚¹ä¿¡æ¯
+	shared_ptr<Object> getVertex(const int index)
+	{
+		if (index >= 0 && index < m_vertices) {
+			return m_vertexList[index];
+		}
+		return nullptr; // æ— æ•ˆç´¢å¼•
+	}
 };
 
 NAMESPACE_ROUTE_END

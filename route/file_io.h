@@ -1,4 +1,4 @@
-#pragma once
+ï»¿#pragma once
 
 #define NAMESPACE_ROUTE_BEGIN namespace route {
 #define NAMESPACE_ROUTE_END }
@@ -12,13 +12,13 @@
 
 //export class MapMessage
 //{
-//	int Vertices{}, Edges{}; // ¶¥µãÊıºÍ±ßÊı
+//	int Vertices{}, Edges{}; // é¡¶ç‚¹æ•°å’Œè¾¹æ•°
 //
 //    
 //};
 //
 //
-//// ³Ô¶¹ÈË¼ÇÂ¼¸ñÊ½
+//// åƒè±†äººè®°å½•æ ¼å¼
 //export struct PacRecord
 //{
 //    std::string m_time_s{ 0 };
@@ -27,12 +27,12 @@
 //
 //export
 //{
-//	optional<int> fileRead(PacConfigure &configure); // ÎÄ¼ş¶ÁÈë
-//    optional<int> fileWrite(const PacRecord& record); // ÎÄ¼şĞ´Èë
+//	optional<int> fileRead(PacConfigure &configure); // æ–‡ä»¶è¯»å…¥
+//    optional<int> fileWrite(const PacRecord& record); // æ–‡ä»¶å†™å…¥
 //}
 //
 ///**
-// * @brief ½«ÅäÖÃÎÄ¼ş´Ó configure.ini ÖĞ¶Á³ö
+// * @brief å°†é…ç½®æ–‡ä»¶ä» configure.ini ä¸­è¯»å‡º
 // * @param record 
 // * @return normal 1 error 0
 // */
@@ -49,13 +49,13 @@
 //
 //    fin.close();
 //
-//    //cout << "ReadFile Successfully£¡\n";
+//    //cout << "ReadFile Successfullyï¼\n";
 //    
 //    return optional<int>{1};
 //}
 //
 ///**
-// * @brief ½«¼ÇÂ¼Ğ´Èë data.txt
+// * @brief å°†è®°å½•å†™å…¥ data.txt
 // * @param record 
 // * @return normal 1 error 0
 // */
@@ -77,9 +77,9 @@
 //        return optional<int>{0};
 //    }
 //
-//    // ´òÓ¡ĞÅÏ¢
+//    // æ‰“å°ä¿¡æ¯
 //    {
-//        // µÚÒ»´ÎÔËĞĞ
+//        // ç¬¬ä¸€æ¬¡è¿è¡Œ
 //		static int lineNumber = 1;
 //	    if (lineNumber == 1) {
 //	        fout << "\nGame Start Time(Local): " << std::put_time(&nowTm, "%Y-%m-%d %H:%M:%S") << '\n';
@@ -90,7 +90,7 @@
 //	    fout << format("{: >4} : ", lineNumber) << std::put_time(&nowTm, "%Y-%m-%d %H:%M:%S")
 //    		<< format(" : Time cost: {}s, Score: {}\n", time_cost, player_score);
 //
-//        // ¸üĞÂĞĞÊı
+//        // æ›´æ–°è¡Œæ•°
 //		++lineNumber;
 //    }
 //
@@ -98,7 +98,7 @@
 //
 //    //std::cout << "FileIO over!\n";
 //
-//    /* ¾ÉÊµÏÖ
+//    /* æ—§å®ç°
 //     * ios_base::fmtflags old = fout.setf(ios::left, ios::adjustfield);
 //     * fout.setf(old, ios::adjustfield);
 //     */
