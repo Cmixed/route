@@ -1,71 +1,38 @@
-﻿#include "data.h"
+﻿#include <iostream>
+#include <memory>
+#include "data.h"
 
 using namespace std;
 using namespace route;
 
 int main()
 {
-	// 创建图，4个顶点
-	WeightedAdjMatrixGraph graph(4);
+    WeightedAdjMatrixGraph graph(5);
 
-	// 创建顶点
-	auto vertexA = make_shared<Object>();
-	vertexA->m_name = "A";
-	vertexA->m_location = {0, 0};
-	vertexA->m_attr = Attribute::Empty;
+    // 添加顶点
+    graph.addVertex(std::make_shared<Object>(Object{"A", {0, 0}, Attribute::Place}));
+    graph.addVertex(std::make_shared<Object>(Object{"B", {1, 0}, Attribute::Place}));
+    graph.addVertex(std::make_shared<Object>(Object{"C", {2, 0}, Attribute::Place}));
+    graph.addVertex(std::make_shared<Object>(Object{"D", {3, 0}, Attribute::Place}));
+    graph.addVertex(std::make_shared<Object>(Object{"E", {4, 0}, Attribute::Place}));
 
-	auto vertexB = make_shared<Object>();
-	vertexB->m_name = "B";
-	vertexB->m_location = {1, 1};
-	vertexB->m_attr = Attribute::Occupied;
+    // 添加边
+    graph.addEdge(0, 1, 4);
+    graph.addEdge(0, 2, 2);
+    graph.addEdge(1, 3, 5);
+    graph.addEdge(2, 3, 8);
+    graph.addEdge(3, 4, 1);
 
-	auto vertexC = make_shared<Object>();
-	vertexC->m_name = "C";
-	vertexC->m_location = {2, 2};
-	vertexC->m_attr = Attribute::Place;
+    // 打印图的结构
+    graph.printGraph();
 
-	auto vertexD = make_shared<Object>();
-	vertexD->m_name = "D";
-	vertexD->m_location = {3, 3};
-	vertexD->m_attr = Attribute::Supply;
+    // 计算从顶点0到顶点4的最短路径
+    auto result = graph.dijkstra(0, 4);
+    std::vector<int> path = result.first;
+    int distance = result.second;
 
-	// 添加顶点到图中
-	graph.addVertex(vertexA);
-	graph.addVertex(vertexB);
-	graph.addVertex(vertexC);
-	graph.addVertex(vertexD);
+    // 打印路径和距离
+    graph.printPath(path, distance);
 
-	// 添加带权重的边
-	graph.addEdge(0, 1, 5); // A-B，权重5
-	graph.addEdge(0, 2, 3); // A-C，权重3
-	graph.addEdge(1, 3, 2); // B-D，权重2
-
-	// 打印图的结构
-	graph.printGraph();
-
-	// 测试获取权重
-	cout << "边A-B的权重: " << graph.getWeight(0, 1) << endl;
-	cout << "边A-C的权重: " << graph.getWeight(0, 2) << endl;
-	cout << "边B-D的权重: " << graph.getWeight(1, 3) << endl;
-
-	// 测试获取顶点信息
-	auto vertex = graph.getVertex(0);
-	if (vertex) {
-		cout << "顶点 " << vertex->m_name << " 的位置是 ("
-			<< vertex->m_location.first << ", "
-			<< vertex->m_location.second << "), 属性是 ";
-		switch (vertex->m_attr) {
-		case Attribute::Empty:
-			cout << "Empty" << endl;
-			break;
-		case Attribute::Occupied:
-			cout << "Occupied" << endl;
-			break;
-		case Attribute::Place:
-			cout << "Place" << endl;
-			break;
-		}
-	}
-
-	return 0;
+    return 0;
 }
