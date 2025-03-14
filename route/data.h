@@ -47,26 +47,33 @@ public:
     Attribute m_attr{Attribute::Empty};
 
     /**
+     * @brief 构造函数，初始化物体的名称、位置和属性。
+     * @param name 物体的名称。
+     * @param location 物体的位置。
+     * @param attr 物体的属性。
+     */
+    explicit BaseObject(std::string name, std::pair<T, T> location, Attribute attr) 
+        : m_name(std::move(name)), m_location(std::move(location)), m_attr(attr) {}
+
+    /**
+     * @brief 构造函数，初始化物体的名称和位置，属性使用默认值。
+     * @param name 物体的名称。
+     * @param location 物体的位置。
+     */
+    explicit BaseObject(std::string name, std::pair<T, T> location)
+        : m_name(std::move(name)), m_location(std::move(location)) {}
+
+    /**
      * @brief 静态工厂函数，创建一个 BaseObject 对象并返回智能指针。
      * @param name 物体的名称。
      * @param location 物体的位置。
      * @param attr 物体的属性。
      * @return 创建的 BaseObject 对象的智能指针。
      */
-    static std::shared_ptr<BaseObject<T>> create(const std::string& name, const std::pair<T, T>& location, Attribute attr)
+    static std::shared_ptr<BaseObject<T>> create(std::string name, std::pair<T, T> location, Attribute attr = Attribute::Empty)
     {
-        return std::make_shared<BaseObject<T>>(name, location, attr);
+        return std::make_shared<BaseObject<T>>(std::move(name), std::move(location), attr);
     }
-
-private:
-    /**
-     * @brief 构造函数，仅供工厂函数使用。
-     * @param name 物体的名称。
-     * @param location 物体的位置。
-     * @param attr 物体的属性。
-     */
-    explicit BaseObject(const std::string& name, const std::pair<T, T>& location, Attribute attr) :
-        m_name(name), m_location(location), m_attr(attr) {}
 };
 
 using Object = BaseObject<int>;
