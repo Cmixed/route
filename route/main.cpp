@@ -9,12 +9,14 @@ int main()
 {
     WeightedAdjMatrixGraph graph(5);
 
-    // 添加顶点
-    graph.addVertex(std::make_shared<Object>(Object{"A", {0, 0}, Attribute::Place}));
-    graph.addVertex(std::make_shared<Object>(Object{"B", {1, 0}, Attribute::Place}));
-    graph.addVertex(std::make_shared<Object>(Object{"C", {2, 0}, Attribute::Place}));
-    graph.addVertex(std::make_shared<Object>(Object{"D", {3, 0}, Attribute::Place}));
-    graph.addVertex(std::make_shared<Object>(Object{"E", {4, 0}, Attribute::Place}));
+    // 批量添加顶点，使用 Object::create 工厂函数
+    graph.addVertices(
+        Object::create("A", {0, 0}, Attribute::Place),
+        Object::create("B", {1, 0}, Attribute::Place),
+        Object::create("C", {2, 0}, Attribute::Place),
+        Object::create("D", {3, 0}, Attribute::Place),
+        Object::create("E", {4, 0}, Attribute::Place)
+    );
 
     // 添加边
     graph.addEdge(0, 1, 4);

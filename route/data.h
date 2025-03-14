@@ -42,13 +42,33 @@ template <typename T>
 class BaseObject
 {
 public:
-    // 基本信息
-    std::string m_name{}; ///< 物体的名称。
-    std::pair<T, T> m_location{}; ///< 物体的位置坐标。
-    Attribute m_attr{Attribute::Empty}; ///< 物体的属性。
+    std::string m_name{};
+    std::pair<T, T> m_location{};
+    Attribute m_attr{Attribute::Empty};
+
+    /**
+     * @brief 静态工厂函数，创建一个 BaseObject 对象并返回智能指针。
+     * @param name 物体的名称。
+     * @param location 物体的位置。
+     * @param attr 物体的属性。
+     * @return 创建的 BaseObject 对象的智能指针。
+     */
+    static std::shared_ptr<BaseObject<T>> create(const std::string& name, const std::pair<T, T>& location, Attribute attr)
+    {
+        return std::make_shared<BaseObject<T>>(name, location, attr);
+    }
+
+private:
+    /**
+     * @brief 构造函数，仅供工厂函数使用。
+     * @param name 物体的名称。
+     * @param location 物体的位置。
+     * @param attr 物体的属性。
+     */
+    explicit BaseObject(const std::string& name, const std::pair<T, T>& location, Attribute attr) :
+        m_name(name), m_location(location), m_attr(attr) {}
 };
 
-/// 类型别名，表示位置坐标为整数类型的 BaseObject。
 using Object = BaseObject<int>;
 
 /**
@@ -56,13 +76,8 @@ using Object = BaseObject<int>;
  */
 struct Edge
 {
-    int m_to; ///< 边的目标顶点。
-    int m_weight; ///< 边的权重。
-    /**
-     * @brief 构造一个新的 Edge 对象。
-     * @param to 目标顶点。
-     * @param weight 边的权重。
-     */
+    int m_to;
+    int m_weight;
     Edge(const int to, const int weight) : m_to(to), m_weight(weight) {}
 };
 
@@ -72,10 +87,10 @@ struct Edge
 class WeightedAdjMatrixGraph
 {
 private:
-    int m_vertices; ///< 图中的顶点数。
-    int m_edges; ///< 图中的边数。
-    std::vector<std::shared_ptr<Object>> m_vertexList; ///< 顶点列表，存储智能指针。
-    std::vector<std::vector<int>> m_adjMatrix; ///< 邻接矩阵，存储边的权重。
+    int m_vertices;
+    int m_edges;
+    std::vector<std::shared_ptr<Object>> m_vertexList;
+    std::vector<std::vector<int>> m_adjMatrix;
 
 public:
     /**
@@ -84,8 +99,17 @@ public:
      */
     explicit WeightedAdjMatrixGraph(int const v) : m_vertices(v), m_edges(0)
     {
-        // 初始化邻接矩阵，初始值为-1表示无边
         m_adjMatrix.resize(v, std::vector<int>(v, -1));
+    }
+
+    /**
+     * @brief 批量添加顶点到图中。
+     * @param vertices 可变参数模板，用于传递多个顶点。
+     */
+    template <typename... Args>
+    void addVertices(Args&&... vertices)
+    {
+        (addVertex(vertices), ...);
     }
 
     /**
@@ -111,7 +135,7 @@ public:
         if (src >= 0 && src < m_vertices && dest >= 0 && dest < m_vertices && weight > 0)
         {
             m_adjMatrix[src][dest] = weight;
-            m_adjMatrix[dest][src] = weight; // 对于无向图
+            m_adjMatrix[dest][src] = weight;
             m_edges++;
         }
     }
@@ -151,7 +175,7 @@ public:
         {
             return m_adjMatrix[src][dest];
         }
-        return -1; // 无效的顶点索引
+        return -1;
     }
 
     /**
@@ -165,100 +189,94 @@ public:
         {
             return m_vertexList[index];
         }
-        return nullptr; // 无效的索引
+        return nullptr;
     }
 
+    /**
+     * @brief 使用 Dijkstra 算法计算两个顶点之间的最短路径。
+     * @param start 起始顶点。
+     * @param end 结束顶点。
+     * @return 一个包含最短路径和总距离的元组。如果找不到路径，距离为-1。
+     */
+    [[nodiscard]] std::pair<std::vector<int>, int> dijkstra(int const start, int const end) const
+    {
+        if (start < 0 || start >= m_vertices || end < 0 || end >= m_vertices)
+        {
+            return {{}, -1};
+        }
 
-	    /**
-	 * @brief 使用 Dijkstra 算法计算两个顶点之间的最短路径。
-	 * @param start 起始顶点。
-	 * @param end 结束顶点。
-	 * @return 一个包含最短路径和总距离的元组。如果找不到路径，距离为-1。
-	 */
-	[[nodiscard]] std::pair<std::vector<int>, int> dijkstra(int const start, int const end) const
-	{
-	    if (start < 0 || start >= m_vertices || end < 0 || end >= m_vertices)
-	    {
-	        return {{}, -1}; // 无效的起始或结束点
-	    }
+        std::priority_queue<std::pair<int, int>, std::vector<std::pair<int, int>>, std::greater<std::pair<int, int>>> pq;
+        std::vector<int> dist(m_vertices, std::numeric_limits<int>::max());
+        std::vector<int> prev(m_vertices, -1);
 
-	    // 使用优先队列（最小堆）来存储当前最短距离的节点
-	    std::priority_queue<std::pair<int, int>, std::vector<std::pair<int, int>>, std::greater<std::pair<int, int>>> pq;
-	    // 距离数组，初始化为无穷大
-	    std::vector<int> dist(m_vertices, std::numeric_limits<int>::max());
-	    // 前驱节点数组，用于记录路径
-	    std::vector<int> prev(m_vertices, -1);
+        dist[start] = 0;
+        pq.emplace(0, start);
 
-	    dist[start] = 0;
-	    pq.emplace(0, start);
+        while (!pq.empty())
+        {
+            int const u = pq.top().second;
+            pq.pop();
 
-	    while (!pq.empty())
-	    {
-	        int const u = pq.top().second;
-	        pq.pop();
+            if (u == end)
+            {
+                break;
+            }
 
-	        if (u == end)
-	        {
-	            break; // 已经找到终点，可以提前退出
-	        }
+            for (int v = 0; v < m_vertices; ++v)
+            {
+                if (int const weight = m_adjMatrix[u][v];
+                    weight != -1)
+                {
+                    if (dist[v] > dist[u] + weight)
+                    {
+                        dist[v] = dist[u] + weight;
+                        prev[v] = u;
+                        pq.emplace(dist[v], v);
+                    }
+                }
+            }
+        }
 
-	        for (int v = 0; v < m_vertices; ++v)
-	        {
-	            if (int const weight = m_adjMatrix[u][v];
-	                weight != -1) // 如果有边
-	            {
-	                if (dist[v] > dist[u] + weight)
-	                {
-	                    dist[v] = dist[u] + weight;
-	                    prev[v] = u;
-	                    pq.emplace(dist[v], v);
-	                }
-	            }
-	        }
-	    }
+        if (dist[end] == std::numeric_limits<int>::max())
+        {
+            return {{}, -1};
+        }
 
-	    // 如果距离仍然为无穷大，说明无法到达
-	    if (dist[end] == std::numeric_limits<int>::max())
-	    {
-	        return {{}, -1};
-	    }
+        std::vector<int> path;
+        for (int at = end; at != -1; at = prev[at])
+        {
+            path.push_back(at);
+        }
+        std::ranges::reverse(path);
 
-	    // 重建路径
-	    std::vector<int> path;
-	    for (int at = end; at != -1; at = prev[at])
-	    {
-	        path.push_back(at);
-	    }
-	    std::ranges::reverse(path);
+        return {path, dist[end]};
+    }
 
-	    return {path, dist[end]};
-	}
+    /**
+     * @brief 打印最短路径及其总距离。
+     * @param path 最短路径。
+     * @param distance 总距离。
+     */
+    static void printPath(const std::vector<int>& path, int const distance)
+    {
+        if (path.empty())
+        {
+            std::cout << "No path found.\n";
+            return;
+        }
 
-	/**
-	 * @brief 打印最短路径及其总距离。
-	 * @param path 最短路径。
-	 * @param distance 总距离。
-	 */
-	static void printPath(const std::vector<int>& path, int distance)
-	{
-	    if (path.empty())
-	    {
-	        std::cout << "No path found.\n";
-	        return;
-	    }
-
-	    std::cout << "Shortest path: ";
-	    for (size_t i = 0; i < path.size(); ++i)
-	    {
-	        std::cout << path[i];
-	        if (i != path.size() - 1)
-	        {
-	            std::cout << " -> ";
-	        }
-	    }
-	    std::cout << '\n';
-	    std::cout << "Total distance: " << distance << '\n';
-	}
-
+        std::cout << "Shortest path: ";
+        for (size_t i = 0; i < path.size(); ++i)
+        {
+            std::cout << path[i];
+            if (i != path.size() - 1)
+            {
+                std::cout << " -> ";
+            }
+        }
+        std::cout << '\n';
+        std::cout << "Total distance: " << distance << '\n';
+    }
 };
+
 NAMESPACE_ROUTE_END
