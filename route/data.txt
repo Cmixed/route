@@ -1,0 +1,424 @@
+﻿// Purpose: Define the data module for the route project.
+// Author:  Cmixed
+#pragma once
+
+#include "pch.hpp"
+
+namespace route {
+
+	/**
+	 * @brief 前向声明加权邻接矩阵图的类
+	 * @brief 使用别名定义加权邻接矩阵图的类型
+	 * 
+	 * 该类用于表示图的加权邻接矩阵结构
+	 * 通过别名WGraph，可以更方便地引用WeightedAdjMatrixGraph类
+	 */
+	using WGraph = class WeightedAdjMatrixGraph;
+
+	/**
+	 * @brief 前向声明一个模板类，作为对象的基类
+	 *@brief 使用别名定义一个基于std::int_fast64_t类型的对象类
+	 * 
+	 * 该模板类接受一个类型参数T，用于定义对象的数据类型
+	 * 通过别名Object，可以更方便地引用BaseObject<std::int_fast64_t>类型
+	 * 
+	 * @tparam T 模板参数，表示对象的数据类型
+	 */
+	template <typename T> class BaseObject;
+    using Object = BaseObject<std::int_fast64_t>;
+
+
+	/**
+     * @brief 结构体，表示图中的边，包含目标顶点和权重。
+     */
+    struct Edge
+    {
+        int m_to;
+        int m_weight;
+        Edge(const int to, const int weight) : m_to(to), m_weight(weight) {}
+    };
+
+
+    /**
+     * @brief 枚举类，表示物体的属性。
+     */
+    enum class Attribute : std::uint8_t
+    {
+        Empty = 0, ///< 无特定属性。
+        Place, ///< 表示一个位置。
+        Supply, ///< 表示一个供给点。
+        Occupied, ///< 表示被占用状态, 如被一个目标访问。
+    };
+
+    /**
+     * @brief 模板类，表示一个基本物体，包含名称、位置和属性。
+     * @tparam T 位置坐标的类型。
+     */
+    template <typename T>
+    class BaseObject
+    {
+    public:
+        std::string m_name{};
+        std::pair<T, T> m_location{};
+        Attribute m_attr{ Attribute::Empty };
+
+        /**
+         * @brief 构造函数，初始化物体的名称、位置和属性。
+         * @param name 物体的名称。
+         * @param location 物体的位置。
+         * @param attr 物体的属性。
+         */
+        explicit BaseObject(std::string name, std::pair<T, T> location, Attribute attr)
+            : m_name(std::move(name)), m_location(std::move(location)), m_attr(attr) {
+        }
+
+        /**
+         * @brief 构造函数，初始化物体的名称和位置，属性使用默认值。
+         * @param name 物体的名称。
+         * @param location 物体的位置。
+         */
+        explicit BaseObject(std::string name, std::pair<T, T> location)
+            : m_name(std::move(name)), m_location(std::move(location)) {
+        }
+
+        /**
+         * @brief 静态工厂函数，创建一个 BaseObject 对象并返回智能指针。
+         * @param name 物体的名称。
+         * @param location 物体的位置。
+         * @param attr 物体的属性。
+         * @return 创建的 BaseObject 对象的智能指针。
+         */
+        static std::shared_ptr<BaseObject<T>> create(std::string name, std::pair<T, T> location, Attribute attr = Attribute::Empty)
+        {
+            return std::make_shared<BaseObject<T>>(std::move(name), std::move(location), attr);
+        }
+    };
+
+	// 遗传算法参数
+	const int POPULATION_SIZE = 100;    // 种群大小
+	const int MAX_GENERATIONS = 500;     // 最大代数
+	const float CROSSOVER_RATE = 0.8;    // 交叉率
+	const float MUTATION_RATE = 0.1;     // 变异率
+
+	// 路径表示：从起点到终点的节点序列
+	using Path = std::vector<int>;
+
+	// 计算路径的总距离
+	int calculatePathDistance(const Path& path, const std::vector<std::vector<int>>& adjMatrix) {
+	    int distance = 0;
+	    for (size_t i = 0; i < path.size() - 1; ++i) {
+	        int u = path[i];
+	        int v = path[i + 1];
+	        distance += adjMatrix[u][v];
+	    }
+	    return distance;
+	}
+
+	// 检查路径是否合法（即相邻节点之间有边）
+	bool isValidPath(const Path& path, const std::vector<std::vector<int>>& adjMatrix) {
+	    for (size_t i = 0; i < path.size() - 1; ++i) {
+	        int u = path[i];
+	        int v = path[i + 1];
+	        if (adjMatrix[u][v] == -1) {
+	            return false;
+	        }
+	    }
+	    return true;
+	}
+
+	// 初始化种群：生成随机路径
+	std::vector<Path> initializePopulation(int start, int end, int numVertices, int populationSize) {
+	    std::vector<Path> population;
+	    std::vector<int> nodes;
+	    for (int i = 0; i < numVertices; ++i) {
+	        if (i != start && i != end) {
+	            nodes.push_back(i);
+	        }
+	    }
+
+	    for (int i = 0; i < populationSize; ++i) {
+	        std::shuffle(nodes.begin(), nodes.end(), std::mt19937(std::random_device{}()));
+	        Path path = {start};
+	        path.insert(path.end(), nodes.begin(), nodes.end());
+	        path.push_back(end);
+	        population.push_back(path);
+	    }
+
+	    return population;
+	}
+
+	// 选择操作：轮盘赌选择
+	Path select(const std::vector<Path>& population, const std::vector<std::vector<int>>& adjMatrix) {
+	    std::vector<float> fitnessScores;
+	    float totalFitness = 0.0f;
+
+	    // 计算适应度分数（路径越短，适应度越高）
+	    for (const auto& path : population) {
+	        if (!isValidPath(path, adjMatrix)) {
+	            fitnessScores.push_back(0.0f);
+	        } else {
+	            int distance = calculatePathDistance(path, adjMatrix);
+	            fitnessScores.push_back(1.0f / (distance + 1));
+	            totalFitness += 1.0f / (distance + 1);
+	        }
+	    }
+
+	    // 轮盘赌选择
+	    float target = std::rand() / (float)RAND_MAX * totalFitness;
+	    float cumulative = 0.0f;
+	    for (size_t i = 0; i < population.size(); ++i) {
+	        cumulative += fitnessScores[i];
+	        if (cumulative >= target) {
+	            return population[i];
+	        }
+	    }
+
+	    return population.back();
+	}
+
+	// 交叉操作：部分映射交叉（PMX）
+	Path crossover(const Path& parent1, const Path& parent2) {
+	    Path child(parent1.size(), -1);
+	    int start = std::rand() % (parent1.size() - 1) + 1;
+	    int end = std::rand() % (parent1.size() - start) + start;
+
+	    // 复制父代1的子段
+	    for (int i = start; i <= end; ++i) {
+	        child[i] = parent1[i];
+	    }
+
+	    // 填充父代2的剩余部分
+	    for (int i = 0; i < parent2.size(); ++i) {
+	        if (std::find(child.begin(), child.end(), parent2[i]) == child.end()) {
+	            for (int j = 0; j < child.size(); ++j) {
+	                if (child[j] == -1) {
+	                    child[j] = parent2[i];
+	                    break;
+	                }
+	            }
+	        }
+	    }
+
+	    return child;
+	}
+
+	// 变异操作：交换两个节点的位置
+	void mutate(Path& path) {
+	    if (path.size() < 3) return;
+
+	    int i = std::rand() % (path.size() - 1) + 1;
+	    int j = std::rand() % (path.size() - 1) + 1;
+	    if (i != j) {
+	        std::swap(path[i], path[j]);
+	    }
+	}
+
+	class WeightedAdjMatrixGraph
+	{
+	private:
+	    int m_vertices;
+	    int m_edges;
+	    std::vector<std::shared_ptr<Object>> m_vertexList;
+	    std::vector<std::vector<int>> m_adjMatrix;
+
+	public:
+	    explicit WeightedAdjMatrixGraph(int const v) : m_vertices(v), m_edges(0)
+	    {
+	        m_adjMatrix.resize(v, std::vector<int>(v, -1));
+	    }
+
+	    template <typename... Args>
+	    void addVertices(Args&&... vertices)
+	    {
+	        (addVertex(std::forward<Args>(vertices)), ...);
+	    }
+
+	    void addVertex(const std::shared_ptr<Object>& vertex)
+	    {
+	        if (vertex != nullptr)
+	        {
+	            m_vertexList.push_back(vertex);
+	        }
+	    }
+
+	    void addEdge(int const src, int const dest, int const weight)
+	    {
+	        if (src >= 0 && src < m_vertices && dest >= 0 && dest < m_vertices && weight > 0)
+	        {
+	            m_adjMatrix[src][dest] = weight;
+	            m_adjMatrix[dest][src] = weight;
+	            m_edges++;
+	        }
+	    }
+
+	    void printGraph() const
+	    {
+	        std::cout << "带权重的图的邻接矩阵表示：\n";
+	        for (int i = 0; i < m_vertices; ++i)
+	        {
+	            for (int j = 0; j < m_vertices; ++j)
+	            {
+	                if (m_adjMatrix[i][j] == -1)
+	                {
+	                    std::cout << "∞ ";
+	                }
+	                else
+	                {
+	                    std::cout << m_adjMatrix[i][j] << " ";
+	                }
+	            }
+	            std::cout << std::endl;
+	        }
+	    }
+
+	    [[nodiscard]] int getWeight(int const src, int const dest) const
+	    {
+	        if (src >= 0 && src < m_vertices && dest >= 0 && dest < m_vertices)
+	        {
+	            return m_adjMatrix[src][dest];
+	        }
+	        return -1;
+	    }
+
+	    [[nodiscard]] std::shared_ptr<Object> getVertex(int const index) const
+	    {
+	        if (index >= 0 && index < m_vertices)
+	        {
+	            return m_vertexList[index];
+	        }
+	        return nullptr;
+	    }
+
+	    [[nodiscard]] std::pair<std::vector<int>, int> dijkstra(int const start, int const end) const
+	    {
+	        if (start < 0 || start >= m_vertices || end < 0 || end >= m_vertices)
+	        {
+	            return { {}, -1 };
+	        }
+
+	        std::priority_queue<std::pair<int, int>, std::vector<std::pair<int, int>>, std::greater<std::pair<int, int>>> pq;
+	        std::vector<int> dist(m_vertices, std::numeric_limits<int>::max());
+	        std::vector<int> prev(m_vertices, -1);
+
+	        dist[start] = 0;
+	        pq.emplace(0, start);
+
+	        while (!pq.empty())
+	        {
+	            int const u = pq.top().second;
+	            pq.pop();
+
+	            if (u == end)
+	            {
+	                break;
+	            }
+
+	            for (int v = 0; v < m_vertices; ++v)
+	            {
+	                if (int const weight = m_adjMatrix[u][v];
+	                    weight != -1)
+	                {
+	                    if (dist[v] > dist[u] + weight)
+	                    {
+	                        dist[v] = dist[u] + weight;
+	                        prev[v] = u;
+	                        pq.emplace(dist[v], v);
+	                    }
+	                }
+	            }
+	        }
+
+	        if (dist[end] == std::numeric_limits<int>::max())
+	        {
+	            return { {}, -1 };
+	        }
+
+	        std::vector<int> path;
+	        for (int at = end; at != -1; at = prev[at])
+	        {
+	            path.push_back(at);
+	        }
+	        std::ranges::reverse(path);
+
+	        return { path, dist[end] };
+	    }
+
+	    [[nodiscard]] std::pair<std::vector<int>, int> geneticAlgorithm(int start, int end) const
+	    {
+	        if (start < 0 || start >= m_vertices || end < 0 || end >= m_vertices)
+	        {
+	            return { {}, -1 };
+	        }
+
+	        // 初始化种群
+	        std::vector<Path> population = initializePopulation(start, end, m_vertices, POPULATION_SIZE);
+
+	        for (int generation = 0; generation < MAX_GENERATIONS; ++generation) {
+	            std::vector<Path> newPopulation;
+
+	            // 选择、交叉和变异生成新一代种群
+	            for (int i = 0; i < POPULATION_SIZE; ++i) {
+	                Path parent1 = select(population, m_adjMatrix);
+	                Path parent2 = select(population, m_adjMatrix);
+
+	                // 交叉
+	                if (std::rand() / (float)RAND_MAX < CROSSOVER_RATE) {
+	                    Path child = crossover(parent1, parent2);
+	                    newPopulation.push_back(child);
+	                } else {
+	                    newPopulation.push_back(parent1);
+	                }
+
+	                // 变异
+	                if (std::rand() / (float)RAND_MAX < MUTATION_RATE) {
+	                    mutate(newPopulation.back());
+	                }
+	            }
+
+	            population = newPopulation;
+	        }
+
+	        // 找到最优路径
+	        Path bestPath;
+	        int bestDistance = std::numeric_limits<int>::max();
+
+	        for (const auto& path : population) {
+	            if (isValidPath(path, m_adjMatrix)) {
+	                int distance = calculatePathDistance(path, m_adjMatrix);
+	                if (distance < bestDistance) {
+	                    bestDistance = distance;
+	                    bestPath = path;
+	                }
+	            }
+	        }
+
+	        if (bestDistance == std::numeric_limits<int>::max()) {
+	            return {{}, -1};
+	        }
+
+	        return {bestPath, bestDistance};
+	    }
+
+	    static void printPath(const std::vector<int>& path, int const distance)
+	    {
+	        if (path.empty())
+	        {
+	            std::println("No path found.");
+	            return;
+	        }
+
+	        std::print("Shortest path: ");
+	        for (size_t i = 0; i < path.size(); ++i)
+	        {
+	            std::cout << path[i];
+	            if (i != path.size() - 1)
+	            {
+	                std::print(" -> ");
+	            }
+	        }
+	        std::println();
+	        std::println("Total distance: {}", distance);
+	    }
+	};
+
+}
