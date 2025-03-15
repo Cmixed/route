@@ -1,0 +1,10 @@
+﻿Vertex A 1 0 0 Empty
+Vertex B 2 1 1 Place
+Vertex C 3 2 2 Supply
+Vertex D 4 3 3 Occupied
+
+Edge A B 5
+Edge A C 3
+Edge B C 2
+Edge B D 1
+Edge C D 4

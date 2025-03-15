@@ -9,11 +9,11 @@ int main() {
     route::WeightedAdjMatrixGraph graph(5);
 
     // 添加顶点
-    graph.addVertex(route::Object::create("A", {0, 0}));
-    graph.addVertex(route::Object::create("B", {1, 1}));
-    graph.addVertex(route::Object::create("C", {2, 2}));
-    graph.addVertex(route::Object::create("D", {3, 3}));
-    graph.addVertex(route::Object::create("E", {4, 4}));
+    graph.addVertex(route::Object::create("A", 0, {0, 0}));
+    graph.addVertex(route::Object::create("B", 1, {1, 1}));
+    graph.addVertex(route::Object::create("C", 2, {2, 2}));
+    graph.addVertex(route::Object::create("D", 3, {3, 3}));
+    graph.addVertex(route::Object::create("E", 4, {4, 4}));
 
     // 添加边
     graph.addEdge(0, 1, 10);
@@ -29,9 +29,9 @@ int main() {
     graph.printGraph();
 
     // 使用遗传算法计算最短路径
-    auto result = graph.geneticAlgorithm(0, 4);
+    auto result = graph.dijkstra(0, 4);
     if (!result.first.empty()) {
-        route::WeightedAdjMatrixGraph::printPath(result.first, result.second);
+       graph.printPath(result.first, result.second);
     } else {
         std::cout << "No path found.\n";
     }
