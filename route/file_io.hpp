@@ -1,10 +1,16 @@
 ﻿#pragma once
 
-#include "pch.h"
+#include "data.hpp"
+#include "pch.hpp"
+
 
 namespace route {
 
-//export class MapMessage
+	inline std::map<std::string, Object> c_vertices;
+
+
+
+//class MapMessage
 //{
 //	int Vertices{}, Edges{}; // 顶点数和边数
 //

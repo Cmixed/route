@@ -2,42 +2,30 @@
 // Author:  Cmixed
 #pragma once
 
-#include "pch.h"
-
-using namespace std;
+#include "pch.hpp"
 
 namespace route {
 
 	/**
-	 * @brief 定义加权邻接矩阵图的类
-	 * 
-	 * 该类用于表示图的加权邻接矩阵结构
-	 */
-	class WeightedAdjMatrixGraph;
-
-	/**
+	 * @brief 前向声明加权邻接矩阵图的类
 	 * @brief 使用别名定义加权邻接矩阵图的类型
 	 * 
+	 * 该类用于表示图的加权邻接矩阵结构
 	 * 通过别名WGraph，可以更方便地引用WeightedAdjMatrixGraph类
 	 */
-	using WGraph = WeightedAdjMatrixGraph;
+	using WGraph = class WeightedAdjMatrixGraph;
 
 	/**
-	 * @brief 定义一个模板类，作为对象的基类
+	 * @brief 前向声明一个模板类，作为对象的基类
+	 *@brief 使用别名定义一个基于std::int_fast64_t类型的对象类
 	 * 
 	 * 该模板类接受一个类型参数T，用于定义对象的数据类型
+	 * 通过别名Object，可以更方便地引用BaseObject<std::int_fast64_t>类型
 	 * 
 	 * @tparam T 模板参数，表示对象的数据类型
 	 */
-	template <typename T>
-	class BaseObject;
-
-	/**
-	 * @brief 使用别名定义一个基于std::int_fast64_t类型的对象类
-	 * 
-	 * 通过别名Object，可以更方便地引用BaseObject<std::int_fast64_t>类型
-	 */
-	using Object = BaseObject<std::int_fast64_t>;
+	template <typename T> class BaseObject;
+    using Object = BaseObject<std::int_fast64_t>;
 
 
 
