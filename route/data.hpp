@@ -6,28 +6,24 @@
 
 namespace route {
 
-	/**
-	 * @brief 前向声明加权邻接矩阵图的类
-	 * @brief 使用别名定义加权邻接矩阵图的类型
-	 * 
-	 * 该类用于表示图的加权邻接矩阵结构
-	 * 通过别名WGraph，可以更方便地引用WeightedAdjMatrixGraph类
-	 */
-	using WGraph = class WeightedAdjMatrixGraph;
+	using VertexId = std::int_fast32_t;
+    using Weight = std::int_fast32_t;
+    using Path = std::vector<VertexId>;
+    using AdjMatrix = std::vector<std::vector<Weight>>;
+    using WGraph = class WeightedAdjMatrixGraph;
 
-	/**
-	 * @brief 前向声明一个模板类，作为对象的基类
-	 *@brief 使用别名定义一个基于std::int_fast64_t类型的对象类
-	 * 
-	 * 该模板类接受一个类型参数T，用于定义对象的数据类型
-	 * 通过别名Object，可以更方便地引用BaseObject<std::int_fast64_t>类型
-	 * 
-	 * @tparam T 模板参数，表示对象的数据类型
-	 */
-	template <typename T> class BaseObject;
+    template <typename T> class BaseObject;
     using Object = BaseObject<std::int_fast64_t>;
 
-
+    /**
+     * @brief 结构体，表示图中的边，包含目标顶点和权重。
+     */
+    struct Edge
+    {
+        int m_to;
+        int m_weight;
+        Edge(const int to, const int weight) : m_to(to), m_weight(weight) {}
+    };
 
     /**
      * @brief 枚举类，表示物体的属性。
@@ -85,14 +81,151 @@ namespace route {
     };
 
     /**
-     * @brief 结构体，表示图中的边，包含目标顶点和权重。
+     * @brief 计算路径总距离
+     * @param path 路径
+     * @param adj_matrix 邻接矩阵
+     * @return 路径总距离
      */
-    struct Edge
-    {
-        int m_to;
-        int m_weight;
-        Edge(const int to, const int weight) : m_to(to), m_weight(weight) {}
-    };
+    inline int calculate_path_distance(const Path& path, const AdjMatrix& adj_matrix) {
+        int distance = 0;
+        for (size_t i = 0; i < path.size() - 1; ++i) {
+            distance += adj_matrix[path[i]][path[i + 1]];
+        }
+        return distance;
+    }
+
+    /**
+     * @brief 检查路径是否合法
+     * @param path 路径
+     * @param adj_matrix 邻接矩阵
+     * @return 是否合法
+     */
+    inline bool is_valid_path(const Path& path, const AdjMatrix& adj_matrix) {
+        for (size_t i = 0; i < path.size() - 1; ++i) {
+            if (adj_matrix[path[i]][path[i + 1]] == -1) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    /**
+     * @brief 初始化种群
+     * @param start 起点
+     * @param end 终点
+     * @param num_vertices 顶点数
+     * @param population_size 种群大小
+     * @return 初始化的种群
+     */
+    inline std::vector<Path> initialize_population(VertexId start, VertexId end, VertexId num_vertices, int population_size) {
+        std::vector<Path> population;
+        std::vector<VertexId> nodes;
+        for (VertexId i = 0; i < num_vertices; ++i) {
+            if (i != start && i != end) {
+                nodes.push_back(i);
+            }
+        }
+
+        std::random_device rd;
+        std::mt19937 rng(rd());
+        std::uniform_int_distribution<> dist(0, nodes.size() - 1);
+
+        for (int i = 0; i < population_size; ++i) {
+            std::shuffle(nodes.begin(), nodes.end(), rng);
+            Path path = {start};
+            path.insert(path.end(), nodes.begin(), nodes.end());
+            path.push_back(end);
+            population.push_back(path);
+        }
+
+        return population;
+    }
+
+    /**
+     * @brief 轮盘赌选择
+     * @param population 种群
+     * @param adj_matrix 邻接矩阵
+     * @return 选择的路径
+     */
+    inline Path select(const std::vector<Path>& population, const AdjMatrix& adj_matrix) {
+        std::vector<float> fitnessScores;
+        float totalFitness = 0.0f;
+
+        for (const auto& path : population) {
+            if (!is_valid_path(path, adj_matrix)) {
+                fitnessScores.push_back(0.0f);
+            } else {
+                int distance = calculate_path_distance(path, adj_matrix);
+                fitnessScores.push_back(1.0f / (distance + 1));
+                totalFitness += 1.0f / (distance + 1);
+            }
+        }
+
+        float target = std::rand() / static_cast<float>(RAND_MAX) * totalFitness;
+        float cumulative = 0.0f;
+        for (size_t i = 0; i < population.size(); ++i) {
+            cumulative += fitnessScores[i];
+            if (cumulative >= target) {
+                return population[i];
+            }
+        }
+
+        return population.back();
+    }
+
+    /**
+     * @brief 部分映射交叉（PMX）
+     * @param parent1 父代1
+     * @param parent2 父代2
+     * @param rng 随机数生成器
+     * @return 交叉后的子代
+     */
+    inline Path crossover(const Path& parent1, const Path& parent2, std::mt19937& rng) {
+        Path child(parent1.size(), -1);
+        std::uniform_int_distribution<> dist(0, static_cast<int>(parent1.size()) - 1);
+
+        // 生成 start 和 end
+        int start = dist(rng);
+        int end = dist(rng);
+        if (start > end) {
+            std::swap(start, end);
+        }
+
+        // 复制父代1的子段
+        for (int i = start; i <= end; ++i) {
+            child[i] = parent1[i];
+        }
+
+        // 填充父代2的剩余部分
+        for (size_t i = 0; i < parent2.size(); ++i) {
+            if (std::find(child.begin(), child.end(), parent2[i]) == child.end()) {
+                for (size_t j = 0; j < child.size(); ++j) {
+                    if (child[j] == -1) {
+                        child[j] = parent2[i];
+                        break;
+                    }
+                }
+            }
+        }
+
+        return child;
+    }
+
+    /**
+     * @brief 变异操作
+     * @param path 路径
+     * @param rng 随机数生成器
+     */
+    inline void mutate(Path& path, std::mt19937& rng) {
+        if (path.size() < 3) return;
+
+        std::uniform_int_distribution<> dist(1, static_cast<int>(path.size()) - 2);
+        int i = dist(rng);
+        int j = dist(rng);
+        if (i != j) {
+            std::swap(path[i], path[j]);
+        }
+    }
 
     /**
      * @brief 类，表示一个带权邻接矩阵图。
@@ -264,6 +397,122 @@ namespace route {
 
             return { path, dist[end] };
         }
+
+        /**
+		 * @brief 使用遗传算法计算最短路径（改进版）
+		 * @param start 起点
+		 * @param end 终点
+		 * @return 最短路径和距离
+		 */
+		[[nodiscard]] std::pair<std::vector<int>, int> geneticAlgorithm(int start, int end) const {
+		    if (start < 0 || start >= m_vertices || end < 0 || end >= m_vertices) {
+		        return { {}, -1 };
+		    }
+
+		    // 初始化随机数生成器
+		    std::random_device rd;
+		    std::mt19937 rng(rd());
+
+		    // 增大种群规模
+		    constexpr  int POPULATION_SIZE = 1000;    ///< 种群大小
+		    constexpr  int MAX_GENERATIONS = 1000;    ///< 最大代数
+		    constexpr  double CROSSOVER_RATE = 0.85;   ///< 交叉率
+		    constexpr  double MUTATION_RATE = 0.2;    ///< 变异率
+
+		    // 精英保留数量
+		    constexpr  int ELITE_SIZE = 0;
+
+		    // 初始化种群
+		    std::vector<Path> population = initialize_population(start, end, m_vertices, POPULATION_SIZE);
+
+		    for (int generation = 0; generation < MAX_GENERATIONS; ++generation) {
+		        std::vector<Path> newPopulation;
+
+		        // 计算当前种群的适应度和最佳路径
+		        std::vector<double> fitnessScores;
+		        double totalFitness = 0.0f;
+		        int bestDistanceInGeneration = std::numeric_limits<int>::max();
+
+		        for (const auto& path : population) {
+				    if (!is_valid_path(path, m_adjMatrix)) {
+				        fitnessScores.push_back(0.0f);
+				        continue;
+				    }
+
+				    int const distance = calculate_path_distance(path, m_adjMatrix);
+				    fitnessScores.push_back(1.0 / (distance + 1));
+				    totalFitness += 1.0 / (distance + 1);
+
+				    if (distance < bestDistanceInGeneration) {
+				        bestDistanceInGeneration = distance;
+				        Path bestPathInGeneration{ path };
+				    }
+				}
+
+		        // 输出当前代数的反馈信息
+                std::print("\rGeneration: {} / {}, Best Distance: {}", 
+                    generation + 1, MAX_GENERATIONS, bestDistanceInGeneration);
+
+		        // 精英保留：将当前代中最好的 ELITE_SIZE 个个体直接加入新一代
+				std::vector<std::pair<float, const Path*>> fitnessPathPairs;
+				fitnessPathPairs.reserve(population.size()); // 预分配内存
+
+				for (size_t i = 0; i < population.size(); ++i) {
+				    fitnessPathPairs.emplace_back(fitnessScores[i], &population[i]);
+				}
+
+                std::ranges::sort(fitnessPathPairs, 
+                    [](const auto& a, const auto& b) { return a.first > b.first; });
+
+				for (int i = 0; i < ELITE_SIZE && i < static_cast<int>(fitnessPathPairs.size()); ++i) {
+				    newPopulation.push_back(*fitnessPathPairs[i].second);
+				}
+
+		        // 选择、交叉和变异生成新一代种群（除去精英部分）
+		        while (newPopulation.size() < POPULATION_SIZE) {
+		            Path parent1 = select(population, m_adjMatrix);
+		            Path parent2 = select(population, m_adjMatrix);
+
+		            // 交叉
+		            std::uniform_real_distribution<> cross_dist(0.0, 1.0);
+		            if (cross_dist(rng) < CROSSOVER_RATE) {
+		                Path child = crossover(parent1, parent2, rng);
+		                newPopulation.push_back(child);
+		            } else {
+		                newPopulation.push_back(parent1);
+		            }
+
+		            // 变异
+		            std::uniform_real_distribution<> mutate_dist(0.0, 1.0);
+		            if (mutate_dist(rng) < MUTATION_RATE) {
+		                mutate(newPopulation.back(), rng);
+		            }
+		        }
+
+		        population = newPopulation;
+		    }
+
+		    // 找到最优路径
+		    Path bestPath;
+		    int bestDistance = std::numeric_limits<int>::max();
+
+		    for (const auto& path : population) {
+		        if (is_valid_path(path, m_adjMatrix)) {
+		            int distance = calculate_path_distance(path, m_adjMatrix);
+		            if (distance < bestDistance) {
+		                bestDistance = distance;
+		                bestPath = path;
+		            }
+		        }
+		    }
+
+		    if (bestDistance == std::numeric_limits<int>::max()) {
+		        return { {}, -1 };
+		    }
+
+		    return { bestPath, bestDistance };
+		}
+
 
         /**
          * @brief 打印最短路径及其总距离。
