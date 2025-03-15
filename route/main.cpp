@@ -28,13 +28,11 @@ int main()
     graph.printGraph();
 
     // 计算从顶点0到顶点4的最短路径
-    auto const result = graph.dijkstra(0, 4);
-    std::vector<int> path = result.first;
-    int const distance = result.second;
+	auto [path, distance] = graph.dijkstra(0, 4);
 
     // 打印路径和距离
 	WGraph::printPath(path, distance);
-    //graph.printPath(path, distance);
+
 
     return 0;
 }
