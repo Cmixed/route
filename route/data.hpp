@@ -20,12 +20,12 @@ namespace route
 	/**
 	 * @brief 结构体，表示图中的边，包含目标顶点和权重。
 	 */
-	struct Edge
+	struct BaseEdge
 	{
 		int m_to;
 		int m_weight;
 
-		Edge(const int to, const int weight) : m_to(to), m_weight(weight)
+		BaseEdge(const int to, const int weight) : m_to(to), m_weight(weight)
 		{
 		}
 	};
@@ -89,7 +89,6 @@ namespace route
 	};
 
 
-
 	/**
 	 * @brief 类，表示一个带权邻接矩阵图。
 	 */
@@ -98,8 +97,8 @@ namespace route
 	private:
 		IntType m_vertices;
 		IntType m_edges;
-		std::map<int, std::shared_ptr<Object>> m_vertexMap; // 使用 map 存储顶点，键为顶点的 id
-		std::vector<std::vector<int>> m_adjMatrix;
+		std::map<IntType, std::shared_ptr<Object>> m_vertexMap; // 使用 map 存储顶点，键为顶点的 id
+		std::vector<std::vector<IntType>> m_adjMatrix;
 
 	public:
 		/**
@@ -355,26 +354,23 @@ namespace route
          * @param path 最短路径。
          * @param distance 总距离。
          */
-        static void printPurePath(const std::vector<int>& path, int const distance)
-        {
-            if (path.empty())
-            {
-                std::println("No path found.");
-                return;
-            }
+		static void printPurePath(const std::vector<int>& path, int const distance)
+		{
+			if (path.empty()) {
+				std::println("No path found.");
+				return;
+			}
 
-            std::print("Shortest path: ");
-            for (size_t i = 0; i < path.size(); ++i)
-            {
-                std::cout << path[i];
-                if (i != path.size() - 1)
-                {
-                    std::print(" -> ");
-                }
-            }
-            std::println();
-            std::println("Total distance: {}", distance);
-        }
+			std::print("Shortest path: ");
+			for (size_t i = 0; i < path.size(); ++i) {
+				std::cout << path[i];
+				if (i != path.size() - 1) {
+					std::print(" -> ");
+				}
+			}
+			std::println();
+			std::println("Total distance: {}", distance);
+		}
 
 
 		/**
@@ -383,100 +379,87 @@ namespace route
 		 * @param distance 总距离。
 		 */
 		void printPath(const std::vector<int>& path, int const distance)
-	    {
-	        if (path.empty())
-	        {
-	            std::cout << "No path found." << std::endl;
-	            return;
-	        }
+		{
+			if (path.empty()) {
+				std::cout << "No path found." << std::endl;
+				return;
+			}
 
-	        std::cout << "Shortest path: ";
-	        for (size_t i = 0; i < path.size(); ++i)
-	        {
-	            auto it = m_vertexMap.find(path[i]);
-	            if (it != m_vertexMap.end())
-	            {
-	                std::cout << it->second->m_name;
-	            }
-	            else
-	            {
-	                std::cout << path[i];
-	            }
-	            if (i != path.size() - 1)
-	            {
-	                std::cout << " -> ";
-	            }
-	        }
-	        std::cout << std::endl;
-	        std::cout << "Total distance: " << distance << std::endl;
-	    }
+			std::cout << "Shortest path: ";
+			for (size_t i = 0; i < path.size(); ++i) {
+				auto it = m_vertexMap.find(path[i]);
+				if (it != m_vertexMap.end()) {
+					std::cout << it->second->m_name;
+				}
+				else {
+					std::cout << path[i];
+				}
+				if (i != path.size() - 1) {
+					std::cout << " -> ";
+				}
+			}
+			std::cout << std::endl;
+			std::cout << "Total distance: " << distance << std::endl;
+		}
 
 
 		// 新增文件读取函数
 		bool readFromFile(const std::string& filename)
-    {
-        std::ifstream file(filename);
-        if (!file.is_open())
-        {
-            std::cerr << "无法打开文件: " << filename << std::endl;
-            return false;
-        }
+		{
+		    std::ifstream file(filename);
+		    if (!file.is_open()) {
+		        std::cerr << "无法打开文件: " << filename << std::endl;
+		        return false;
+		    }
 
-        std::string line;
-        while (std::getline(file, line))
-        {
-            std::istringstream iss(line);
-            std::vector<std::string> tokens;
-            std::string token;
-            while (iss >> token)
-            {
-                tokens.push_back(token);
-            }
+		    std::string line;
+		    while (std::getline(file, line)) {
+		        std::istringstream iss(line);
+		        std::vector<std::string> tokens;
+		        std::string token;
+		        while (iss >> token) {
+		            tokens.push_back(token);
+		        }
 
-            if (tokens.empty())
-            {
-                continue;
-            }
+		        if (tokens.empty()) {
+		            continue;
+		        }
 
-            if (tokens[0] == "Vertex")
-            {
-                if (tokens.size() < 5)
-                {
-                    std::cerr << "顶点格式错误: " << line << std::endl;
-                    continue;
-                }
+		        if (tokens[0] == "Vertex") {
+		            if (tokens.size() < 5) {
+		                std::cerr << "顶点格式错误: " << line << std::endl;
+		                continue;
+		            }
 
-                std::string name = tokens[1];
-                int id = std::stoi(tokens[2]);
-                int locationA = std::stoi(tokens[3]);
-                int locationB = std::stoi(tokens[4]);
-                Attribute attr = Attribute::Empty;
-                if (tokens.size() >= 6)
-                {
-                    attr = static_cast<Attribute>(std::stoi(tokens[5]));
-                }
+		            std::string name = tokens[1];
+		            IntType id = std::stoi(tokens[2]);
+		            int locationA = std::stoi(tokens[3]);
+		            int locationB = std::stoi(tokens[4]);
+		            Attribute attr = Attribute::Empty;
+		            if (tokens.size() >= 6) {
+		                int attrValue = std::stoi(tokens[5]);
+		                attr = static_cast<Attribute>(attrValue);
+		            }
 
-                auto vertex = Object::create(name, id, {locationA, locationB}, attr);
-                addVertex(vertex);
-            }
-            else if (tokens[0] == "Edge")
-            {
-                if (tokens.size() < 4)
-                {
-                    std::cerr << "边格式错误: " << line << std::endl;
-                    continue;
-                }
+		            auto vertex = Object::create(name, id, {locationA, locationB}, attr);
+		            addVertex(vertex);
+		        }
+		        else if (tokens[0] == "Edge") {
+		            if (tokens.size() < 4) {
+		                std::cerr << "边格式错误: " << line << std::endl;
+		                continue;
+		            }
 
-                int src = std::stoi(tokens[1]);
-                int dest = std::stoi(tokens[2]);
-                int weight = std::stoi(tokens[3]);
-                addEdge(src, dest, weight);
-            }
-        }
+		            int src = std::stoi(tokens[1]);
+		            int dest = std::stoi(tokens[2]);
+		            int weight = std::stoi(tokens[3]);
+		            addEdge(src, dest, weight);
+		        }
+		    }
 
-        file.close();
-        return true;
-    }
+		    file.close();
+		    return true;
+		}
 
 		// 新增文件写入函数
 		bool writeToFile(const std::string& filename) const
@@ -626,12 +609,6 @@ namespace route
 				std::swap(path[i], path[j]);
 			}
 		}
-
-
-		
-
-
-
 
 
 	};
