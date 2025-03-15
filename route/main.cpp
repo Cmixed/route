@@ -1,5 +1,4 @@
-﻿#include <iostream>
-#include <memory>
+﻿#include "pch.h"
 #include "data.h"
 
 using namespace std;
@@ -29,12 +28,13 @@ int main()
     graph.printGraph();
 
     // 计算从顶点0到顶点4的最短路径
-    auto result = graph.dijkstra(0, 4);
+    auto const result = graph.dijkstra(0, 4);
     std::vector<int> path = result.first;
-    int distance = result.second;
+    int const distance = result.second;
 
     // 打印路径和距离
-    graph.printPath(path, distance);
+	WGraph::printPath(path, distance);
+    //graph.printPath(path, distance);
 
     return 0;
 }

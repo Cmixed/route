@@ -1,14 +1,8 @@
 ﻿#pragma once
 
-#define NAMESPACE_ROUTE_BEGIN namespace route {
-#define NAMESPACE_ROUTE_END }
+#include "pch.h"
 
-#include <string>
-#include <vector>
-#include <memory>
-#include <iostream>
-#include <utility>
-#include <algorithm>
+namespace route {
 
 //export class MapMessage
 //{
@@ -105,3 +99,6 @@
 //
 //    return optional<int>{1};
 //}
+
+
+}
