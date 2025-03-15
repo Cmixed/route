@@ -88,165 +88,6 @@ namespace route
 		}
 	};
 
-	///**
-	// * @brief 计算路径总距离
-	// * @param path 路径
-	// * @param adj_matrix 邻接矩阵
-	// * @return 路径总距离
-	// */
-	//inline int calculate_path_distance(const Path& path, const AdjMatrix& adj_matrix)
-	//{
-	//	int distance = 0;
-	//	for (size_t i = 0; i < path.size() - 1; ++i) {
-	//		distance += adj_matrix[path[i]][path[i + 1]];
-	//	}
-	//	return distance;
-	//}
-
-	///**
-	// * @brief 检查路径是否合法
-	// * @param path 路径
-	// * @param adj_matrix 邻接矩阵
-	// * @return 是否合法
-	// */
-	//inline bool is_valid_path(const Path& path, const AdjMatrix& adj_matrix)
-	//{
-	//	for (size_t i = 0; i < path.size() - 1; ++i) {
-	//		if (adj_matrix[path[i]][path[i + 1]] == -1) {
-	//			return false;
-	//		}
-	//	}
-	//	return true;
-	//}
-
-	///**
-	// * @brief 初始化种群
-	// * @param start 起点
-	// * @param end 终点
-	// * @param num_vertices 顶点数
-	// * @param population_size 种群大小
-	// * @return 初始化的种群
-	// */
-	//inline std::vector<Path> initialize_population(VertexId start, VertexId end, VertexId num_vertices,
-	//                                               int population_size)
-	//{
-	//	std::vector<Path> population;
-	//	std::vector<VertexId> nodes;
-	//	for (VertexId i = 0; i < num_vertices; ++i) {
-	//		if (i != start && i != end) {
-	//			nodes.push_back(i);
-	//		}
-	//	}
-
-	//	std::random_device rd;
-	//	std::mt19937 rng(rd());
-	//	std::uniform_int_distribution<> dist(0, nodes.size() - 1);
-
-	//	for (int i = 0; i < population_size; ++i) {
-	//		std::shuffle(nodes.begin(), nodes.end(), rng);
-	//		Path path = {start};
-	//		path.insert(path.end(), nodes.begin(), nodes.end());
-	//		path.push_back(end);
-	//		population.push_back(path);
-	//	}
-
-	//	return population;
-	//}
-
-	///**
-	// * @brief 轮盘赌选择
-	// * @param population 种群
-	// * @param adj_matrix 邻接矩阵
-	// * @param rng 随机数生成器
-	// * @return 选择的路径
-	// */
-	//inline Path select(const std::vector<Path>& population, const AdjMatrix& adj_matrix, std::mt19937& rng)
-	//{
-	//	std::vector<double> fitnessScores;
-	//	double totalFitness = 0.0;
-
-	//	for (const auto& path : population) {
-	//		if (!is_valid_path(path, adj_matrix)) {
-	//			fitnessScores.push_back(0.0);
-	//		}
-	//		else {
-	//			int const distance = calculate_path_distance(path, adj_matrix);
-	//			fitnessScores.push_back(1.0 / (distance + 1));
-	//			totalFitness += 1.0 / (distance + 1);
-	//		}
-	//	}
-
-	//	double const target = std::uniform_real_distribution<double>(0.0, totalFitness)(rng);
-	//	double cumulative = 0.0;
-	//	for (size_t i = 0; i < population.size(); ++i) {
-	//		cumulative += fitnessScores[i];
-	//		if (cumulative >= target) {
-	//			return population[i];
-	//		}
-	//	}
-
-	//	return population.back();
-	//}
-
-	///**
-	// * @brief 部分映射交叉（PMX）
-	// * @param parent1 父代1
-	// * @param parent2 父代2
-	// * @param rng 随机数生成器
-	// * @return 交叉后的子代
-	// */
-	//inline Path crossover(const Path& parent1, const Path& parent2, std::mt19937& rng)
-	//{
-	//	Path child(parent1.size(), -1);
-	//	std::uniform_int_distribution<> dist(0, static_cast<int>(parent1.size()) - 1);
-
-	//	// 生成 start 和 end
-	//	int start = dist(rng);
-	//	int end = dist(rng);
-	//	if (start > end) {
-	//		std::swap(start, end);
-	//	}
-
-	//	// 复制父代1的子段
-	//	for (int i = start; i <= end; ++i) {
-	//		child[i] = parent1[i];
-	//	}
-
-	//	// 填充父代2的剩余部分
-	//	size_t insertPos{0}; // 记录插入位置
-	//	for (const auto& elem : parent2) {
-	//		// 检查 elem 是否已经在 child 中
-	//		if (std::ranges::find(child, elem) == child.end()) {
-	//			// 找到 child 中第一个值为 -1 的位置
-	//			while (insertPos < child.size() && child[insertPos] != -1) {
-	//				++insertPos;
-	//			}
-	//			// 如果找到有效位置，插入 elem
-	//			if (insertPos < child.size()) {
-	//				child[insertPos] = elem;
-	//			}
-	//		}
-	//	}
-
-	//	return child;
-	//}
-
-	///**
-	// * @brief 变异操作
-	// * @param path 路径
-	// * @param rng 随机数生成器
-	// */
-	//inline void mutate(Path& path, std::mt19937& rng)
-	//{
-	//	if (path.size() < 3) return;
-
-	//	std::uniform_int_distribution<> dist(1, static_cast<int>(path.size()) - 2);
-	//	int i = dist(rng);
-	//	int j = dist(rng);
-	//	if (i != j) {
-	//		std::swap(path[i], path[j]);
-	//	}
-	//}
 
 
 	/**
@@ -510,91 +351,132 @@ namespace route
 		}
 
 		/**
+         * @brief 打印最短路径及其总距离。
+         * @param path 最短路径。
+         * @param distance 总距离。
+         */
+        static void printPurePath(const std::vector<int>& path, int const distance)
+        {
+            if (path.empty())
+            {
+                std::println("No path found.");
+                return;
+            }
+
+            std::print("Shortest path: ");
+            for (size_t i = 0; i < path.size(); ++i)
+            {
+                std::cout << path[i];
+                if (i != path.size() - 1)
+                {
+                    std::print(" -> ");
+                }
+            }
+            std::println();
+            std::println("Total distance: {}", distance);
+        }
+
+
+		/**
 		 * @brief 打印最短路径及其总距离。
 		 * @param path 最短路径。
 		 * @param distance 总距离。
 		 */
 		void printPath(const std::vector<int>& path, int const distance)
-		{
-			if (path.empty()) {
-				std::cout << "No path found." << std::endl;
-				return;
-			}
+	    {
+	        if (path.empty())
+	        {
+	            std::cout << "No path found." << std::endl;
+	            return;
+	        }
 
-			std::cout << "Shortest path: ";
-			for (size_t i = 0; i < path.size(); ++i) {
-				auto it = m_vertexMap.find(path[i]);
-				if (it != m_vertexMap.end()) {
-					std::cout << it->second->m_name;
-				}
-				else {
-					std::cout << path[i];
-				}
-				if (i != path.size() - 1) {
-					std::cout << " -> ";
-				}
-			}
-			std::cout << std::endl;
-			std::cout << "Total distance: " << distance << std::endl;
-		}
+	        std::cout << "Shortest path: ";
+	        for (size_t i = 0; i < path.size(); ++i)
+	        {
+	            auto it = m_vertexMap.find(path[i]);
+	            if (it != m_vertexMap.end())
+	            {
+	                std::cout << it->second->m_name;
+	            }
+	            else
+	            {
+	                std::cout << path[i];
+	            }
+	            if (i != path.size() - 1)
+	            {
+	                std::cout << " -> ";
+	            }
+	        }
+	        std::cout << std::endl;
+	        std::cout << "Total distance: " << distance << std::endl;
+	    }
 
 
 		// 新增文件读取函数
 		bool readFromFile(const std::string& filename)
-		{
-			std::ifstream file(filename);
-			if (!file.is_open()) {
-				std::cerr << "无法打开文件: " << filename << std::endl;
-				return false;
-			}
+    {
+        std::ifstream file(filename);
+        if (!file.is_open())
+        {
+            std::cerr << "无法打开文件: " << filename << std::endl;
+            return false;
+        }
 
-			std::string line;
-			while (std::getline(file, line)) {
-				std::istringstream iss(line);
-				std::vector<std::string> tokens;
-				std::string token;
-				while (iss >> token) {
-					tokens.push_back(token);
-				}
+        std::string line;
+        while (std::getline(file, line))
+        {
+            std::istringstream iss(line);
+            std::vector<std::string> tokens;
+            std::string token;
+            while (iss >> token)
+            {
+                tokens.push_back(token);
+            }
 
-				if (tokens.empty()) {
-					continue;
-				}
+            if (tokens.empty())
+            {
+                continue;
+            }
 
-				if (tokens[0] == "Vertex") {
-					if (tokens.size() < 5) {
-						std::cerr << "顶点格式错误: " << line << std::endl;
-						continue;
-					}
+            if (tokens[0] == "Vertex")
+            {
+                if (tokens.size() < 5)
+                {
+                    std::cerr << "顶点格式错误: " << line << std::endl;
+                    continue;
+                }
 
-					std::string name = tokens[1];
-					int id = std::stoi(tokens[2]);
-					int locationA = std::stoi(tokens[3]);
-					int locationB = std::stoi(tokens[4]);
-					Attribute attr = Attribute::Empty;
-					if (tokens.size() >= 6) {
-						attr = static_cast<Attribute>(std::stoi(tokens[5]));
-					}
+                std::string name = tokens[1];
+                int id = std::stoi(tokens[2]);
+                int locationA = std::stoi(tokens[3]);
+                int locationB = std::stoi(tokens[4]);
+                Attribute attr = Attribute::Empty;
+                if (tokens.size() >= 6)
+                {
+                    attr = static_cast<Attribute>(std::stoi(tokens[5]));
+                }
 
-					auto vertex = Object::create(name, id, {locationA, locationB}, attr);
-					addVertex(vertex);
-				}
-				else if (tokens[0] == "Edge") {
-					if (tokens.size() < 4) {
-						std::cerr << "边格式错误: " << line << std::endl;
-						continue;
-					}
+                auto vertex = Object::create(name, id, {locationA, locationB}, attr);
+                addVertex(vertex);
+            }
+            else if (tokens[0] == "Edge")
+            {
+                if (tokens.size() < 4)
+                {
+                    std::cerr << "边格式错误: " << line << std::endl;
+                    continue;
+                }
 
-					int src = std::stoi(tokens[1]);
-					int dest = std::stoi(tokens[2]);
-					int weight = std::stoi(tokens[3]);
-					addEdge(src, dest, weight);
-				}
-			}
+                int src = std::stoi(tokens[1]);
+                int dest = std::stoi(tokens[2]);
+                int weight = std::stoi(tokens[3]);
+                addEdge(src, dest, weight);
+            }
+        }
 
-			file.close();
-			return true;
-		}
+        file.close();
+        return true;
+    }
 
 		// 新增文件写入函数
 		bool writeToFile(const std::string& filename) const
@@ -744,5 +626,13 @@ namespace route
 				std::swap(path[i], path[j]);
 			}
 		}
+
+
+		
+
+
+
+
+
 	};
 };
