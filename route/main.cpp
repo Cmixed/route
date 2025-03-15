@@ -23,13 +23,6 @@ int main() {
 
         graph.printPath(result.first, result.second);
 
-        //// 打印结果
-        //std::cout << "最短路径: ";
-        //for (int vertexIndex : result.first) {
-        //    std::cout << graph.getVertex(vertexIndex)->m_name << " ";
-        //}
-        //std::cout << "\n总距离: " << result.second << std::endl;
-
 	// 将图数据写入文件
 	    if (graph.writeToFile("graph_output.txt"))
 	    {
@@ -40,7 +33,6 @@ int main() {
 	        std::cerr << "图数据保存失败!" << std::endl;
 	        return 1;
 	    }
-
 
         return 0;
     }

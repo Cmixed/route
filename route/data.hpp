@@ -406,59 +406,59 @@ namespace route
 		// 新增文件读取函数
 		bool readFromFile(const std::string& filename)
 		{
-		    std::ifstream file(filename);
-		    if (!file.is_open()) {
-		        std::cerr << "无法打开文件: " << filename << std::endl;
-		        return false;
-		    }
+			std::ifstream file(filename);
+			if (!file.is_open()) {
+				std::cerr << "无法打开文件: " << filename << std::endl;
+				return false;
+			}
 
-		    std::string line;
-		    while (std::getline(file, line)) {
-		        std::istringstream iss(line);
-		        std::vector<std::string> tokens;
-		        std::string token;
-		        while (iss >> token) {
-		            tokens.push_back(token);
-		        }
+			std::string line;
+			while (std::getline(file, line)) {
+				std::istringstream iss(line);
+				std::vector<std::string> tokens;
+				std::string token;
+				while (iss >> token) {
+					tokens.push_back(token);
+				}
 
-		        if (tokens.empty()) {
-		            continue;
-		        }
+				if (tokens.empty()) {
+					continue;
+				}
 
-		        if (tokens[0] == "Vertex") {
-		            if (tokens.size() < 5) {
-		                std::cerr << "顶点格式错误: " << line << std::endl;
-		                continue;
-		            }
+				if (tokens[0] == "Vertex") {
+					if (tokens.size() < 5) {
+						std::cerr << "顶点格式错误: " << line << std::endl;
+						continue;
+					}
 
-		            std::string name = tokens[1];
-		            IntType id = std::stoi(tokens[2]);
-		            int locationA = std::stoi(tokens[3]);
-		            int locationB = std::stoi(tokens[4]);
-		            Attribute attr = Attribute::Empty;
-		            if (tokens.size() >= 6) {
-		                int attrValue = std::stoi(tokens[5]);
-		                attr = static_cast<Attribute>(attrValue);
-		            }
+					std::string name = tokens[1];
+					IntType id = std::stoi(tokens[2]);
+					int locationA = std::stoi(tokens[3]);
+					int locationB = std::stoi(tokens[4]);
+					Attribute attr = Attribute::Empty;
+					if (tokens.size() >= 6) {
+						int attrValue = std::stoi(tokens[5]);
+						attr = static_cast<Attribute>(attrValue);
+					}
 
-		            auto vertex = Object::create(name, id, {locationA, locationB}, attr);
-		            addVertex(vertex);
-		        }
-		        else if (tokens[0] == "Edge") {
-		            if (tokens.size() < 4) {
-		                std::cerr << "边格式错误: " << line << std::endl;
-		                continue;
-		            }
+					auto vertex = Object::create(name, id, {locationA, locationB}, attr);
+					addVertex(vertex);
+				}
+				else if (tokens[0] == "Edge") {
+					if (tokens.size() < 4) {
+						std::cerr << "边格式错误: " << line << std::endl;
+						continue;
+					}
 
-		            int src = std::stoi(tokens[1]);
-		            int dest = std::stoi(tokens[2]);
-		            int weight = std::stoi(tokens[3]);
-		            addEdge(src, dest, weight);
-		        }
-		    }
+					int src = std::stoi(tokens[1]);
+					int dest = std::stoi(tokens[2]);
+					int weight = std::stoi(tokens[3]);
+					addEdge(src, dest, weight);
+				}
+			}
 
-		    file.close();
-		    return true;
+			file.close();
+			return true;
 		}
 
 		// 新增文件写入函数
@@ -609,7 +609,5 @@ namespace route
 				std::swap(path[i], path[j]);
 			}
 		}
-
-
 	};
 };
