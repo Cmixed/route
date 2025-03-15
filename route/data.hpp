@@ -145,24 +145,25 @@ namespace route {
      * @brief 轮盘赌选择
      * @param population 种群
      * @param adj_matrix 邻接矩阵
+     * @param rng 随机数生成器
      * @return 选择的路径
      */
-    inline Path select(const std::vector<Path>& population, const AdjMatrix& adj_matrix) {
-        std::vector<float> fitnessScores;
-        float totalFitness = 0.0f;
+    inline Path select(const std::vector<Path>& population, const AdjMatrix& adj_matrix, std::mt19937& rng) {
+        std::vector<double> fitnessScores;
+        double totalFitness = 0.0;
 
         for (const auto& path : population) {
             if (!is_valid_path(path, adj_matrix)) {
-                fitnessScores.push_back(0.0f);
+                fitnessScores.push_back(0.0);
             } else {
-                int distance = calculate_path_distance(path, adj_matrix);
-                fitnessScores.push_back(1.0f / (distance + 1));
-                totalFitness += 1.0f / (distance + 1);
+                int const distance = calculate_path_distance(path, adj_matrix);
+                fitnessScores.push_back(1.0 / (distance + 1));
+                totalFitness += 1.0 / (distance + 1);
             }
         }
 
-        float target = std::rand() / static_cast<float>(RAND_MAX) * totalFitness;
-        float cumulative = 0.0f;
+        double const target = std::uniform_real_distribution<double>(0.0, totalFitness)(rng);
+        double cumulative = 0.0;
         for (size_t i = 0; i < population.size(); ++i) {
             cumulative += fitnessScores[i];
             if (cumulative >= target) {
@@ -197,16 +198,20 @@ namespace route {
         }
 
         // 填充父代2的剩余部分
-        for (size_t i = 0; i < parent2.size(); ++i) {
-            if (std::find(child.begin(), child.end(), parent2[i]) == child.end()) {
-                for (size_t j = 0; j < child.size(); ++j) {
-                    if (child[j] == -1) {
-                        child[j] = parent2[i];
-                        break;
-                    }
-                }
-            }
-        }
+        size_t insertPos{ 0 }; // 记录插入位置
+		for (const auto& elem : parent2) {
+		    // 检查 elem 是否已经在 child 中
+		    if (std::ranges::find(child, elem) == child.end()) {
+		        // 找到 child 中第一个值为 -1 的位置
+		        while (insertPos < child.size() && child[insertPos] != -1) {
+		            ++insertPos;
+		        }
+		        // 如果找到有效位置，插入 elem
+		        if (insertPos < child.size()) {
+		            child[insertPos] = elem;
+		        }
+		    }
+		}
 
         return child;
     }
@@ -404,92 +409,76 @@ namespace route {
 		 * @param end 终点
 		 * @return 最短路径和距离
 		 */
-		[[nodiscard]] std::pair<std::vector<int>, int> geneticAlgorithm(int start, int end) const {
+		[[nodiscard]] std::pair<std::vector<int>, int> geneticAlgorithm(int const start, int const end) const {
 		    if (start < 0 || start >= m_vertices || end < 0 || end >= m_vertices) {
 		        return { {}, -1 };
 		    }
 
-		    // 初始化随机数生成器
 		    std::random_device rd;
 		    std::mt19937 rng(rd());
 
-		    // 增大种群规模
-		    constexpr  int POPULATION_SIZE = 1000;    ///< 种群大小
-		    constexpr  int MAX_GENERATIONS = 1000;    ///< 最大代数
-		    constexpr  double CROSSOVER_RATE = 0.85;   ///< 交叉率
-		    constexpr  double MUTATION_RATE = 0.2;    ///< 变异率
+		    constexpr int POPULATION_SIZE = 500;
+		    constexpr int MAX_GENERATIONS = 500;
+		    constexpr double CROSSOVER_RATE = 0.85;
+		    constexpr double MUTATION_RATE = 0.2;
+		    constexpr int ELITE_SIZE = 0;
 
-		    // 精英保留数量
-		    constexpr  int ELITE_SIZE = 0;
-
-		    // 初始化种群
 		    std::vector<Path> population = initialize_population(start, end, m_vertices, POPULATION_SIZE);
 
 		    for (int generation = 0; generation < MAX_GENERATIONS; ++generation) {
 		        std::vector<Path> newPopulation;
+		        std::vector<int> distances(population.size());
 
-		        // 计算当前种群的适应度和最佳路径
-		        std::vector<double> fitnessScores;
-		        double totalFitness = 0.0f;
 		        int bestDistanceInGeneration = std::numeric_limits<int>::max();
 
-		        for (const auto& path : population) {
-				    if (!is_valid_path(path, m_adjMatrix)) {
-				        fitnessScores.push_back(0.0f);
-				        continue;
-				    }
+		        // 计算适应度和最佳路径
+		        for (size_t i = 0; i < population.size(); ++i) {
+		            const Path& path = population[i];
+		            if (!is_valid_path(path, m_adjMatrix)) {
+		                distances[i] = -1;
+		                continue;
+		            }
 
-				    int const distance = calculate_path_distance(path, m_adjMatrix);
-				    fitnessScores.push_back(1.0 / (distance + 1));
-				    totalFitness += 1.0 / (distance + 1);
+		            distances[i] = calculate_path_distance(path, m_adjMatrix);
+		            bestDistanceInGeneration = std::min(bestDistanceInGeneration, distances[i]);
+		        }
 
-				    if (distance < bestDistanceInGeneration) {
-				        bestDistanceInGeneration = distance;
-				        Path bestPathInGeneration{ path };
-				    }
-				}
 
-		        // 输出当前代数的反馈信息
-                std::print("\rGeneration: {} / {}, Best Distance: {}", 
-                    generation + 1, MAX_GENERATIONS, bestDistanceInGeneration);
+		        std::print("\rGeneration: {} / {}, Best Distance: {}", 
+		            generation + 1, MAX_GENERATIONS, bestDistanceInGeneration);
 
-		        // 精英保留：将当前代中最好的 ELITE_SIZE 个个体直接加入新一代
-				std::vector<std::pair<float, const Path*>> fitnessPathPairs;
-				fitnessPathPairs.reserve(population.size()); // 预分配内存
+		        // 精英保留
+		        std::vector<std::pair<int, const Path*>> elitePaths;
+		        for (size_t i = 0; i < population.size(); ++i) {
+		            if (distances[i] != -1) {
+		                elitePaths.emplace_back(distances[i], &population[i]);
+		            }
+		        }
 
-				for (size_t i = 0; i < population.size(); ++i) {
-				    fitnessPathPairs.emplace_back(fitnessScores[i], &population[i]);
-				}
+		        std::ranges::sort(elitePaths, [](const auto& a, const auto& b) { return a.first < b.first; });
 
-                std::ranges::sort(fitnessPathPairs, 
-                    [](const auto& a, const auto& b) { return a.first > b.first; });
+		        for (int i = 0; i < ELITE_SIZE && i < static_cast<int>(elitePaths.size()); ++i) {
+		            newPopulation.push_back(*elitePaths[i].second);
+		        }
 
-				for (int i = 0; i < ELITE_SIZE && i < static_cast<int>(fitnessPathPairs.size()); ++i) {
-				    newPopulation.push_back(*fitnessPathPairs[i].second);
-				}
-
-		        // 选择、交叉和变异生成新一代种群（除去精英部分）
+		        // 选择、交叉和变异
 		        while (newPopulation.size() < POPULATION_SIZE) {
-		            Path parent1 = select(population, m_adjMatrix);
-		            Path parent2 = select(population, m_adjMatrix);
+		            Path parent1 = select(population, m_adjMatrix, rng);
+		            Path parent2 = select(population, m_adjMatrix, rng);
 
-		            // 交叉
-		            std::uniform_real_distribution<> cross_dist(0.0, 1.0);
-		            if (cross_dist(rng) < CROSSOVER_RATE) {
+		            if (std::uniform_real_distribution<>(0.0, 1.0)(rng) < CROSSOVER_RATE) {
 		                Path child = crossover(parent1, parent2, rng);
 		                newPopulation.push_back(child);
 		            } else {
 		                newPopulation.push_back(parent1);
 		            }
 
-		            // 变异
-		            std::uniform_real_distribution<> mutate_dist(0.0, 1.0);
-		            if (mutate_dist(rng) < MUTATION_RATE) {
+		            if (std::uniform_real_distribution<>(0.0, 1.0)(rng) < MUTATION_RATE) {
 		                mutate(newPopulation.back(), rng);
 		            }
 		        }
 
-		        population = newPopulation;
+		        population = std::move(newPopulation);
 		    }
 
 		    // 找到最优路径
@@ -497,8 +486,8 @@ namespace route {
 		    int bestDistance = std::numeric_limits<int>::max();
 
 		    for (const auto& path : population) {
-		        if (is_valid_path(path, m_adjMatrix)) {
-		            int distance = calculate_path_distance(path, m_adjMatrix);
+		        if (int const distance = calculate_path_distance(path, m_adjMatrix);
+                    is_valid_path(path, m_adjMatrix)) {
 		            if (distance < bestDistance) {
 		                bestDistance = distance;
 		                bestPath = path;
