@@ -404,7 +404,7 @@ namespace route {
         }
 
         /**
-		 * @brief 使用遗传算法计算最短路径（改进版）
+		 * @brief 使用遗传算法计算最短路径
 		 * @param start 起点
 		 * @param end 终点
 		 * @return 最短路径和距离
@@ -421,7 +421,7 @@ namespace route {
 		    constexpr int MAX_GENERATIONS = 500;
 		    constexpr double CROSSOVER_RATE = 0.85;
 		    constexpr double MUTATION_RATE = 0.2;
-		    constexpr int ELITE_SIZE = 0;
+		    constexpr int ELITE_SIZE = 5;
 
 		    std::vector<Path> population = initialize_population(start, end, m_vertices, POPULATION_SIZE);
 
@@ -501,7 +501,6 @@ namespace route {
 
 		    return { bestPath, bestDistance };
 		}
-
 
         /**
          * @brief 打印最短路径及其总距离。
