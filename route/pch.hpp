@@ -17,4 +17,8 @@
 #include <stdexcept>
 #include <exception>
 #include <ranges>
+#include <fstream>
+#include <istream>
+#include <sstream>
+
 //#include "termcolor.hpp"

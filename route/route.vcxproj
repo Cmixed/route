@@ -144,6 +144,9 @@
     <ClInclude Include="pch.hpp" />
     <ClInclude Include="termcolor.hpp" />
   </ItemGroup>
+  <ItemGroup>
+    <Text Include="graph.txt" />
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>

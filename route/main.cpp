@@ -4,38 +4,40 @@
 using namespace std;
 using namespace route;
 
-int main() {
-    // 创建图
-    route::WeightedAdjMatrixGraph graph(5);
+int main()
+{
+    WeightedAdjMatrixGraph graph(5);
 
-    // 添加顶点
-    graph.addVertex(route::Object::create("A", 0, {0, 0}));
-    graph.addVertex(route::Object::create("B", 1, {1, 1}));
-    graph.addVertex(route::Object::create("C", 2, {2, 2}));
-    graph.addVertex(route::Object::create("D", 3, {3, 3}));
-    graph.addVertex(route::Object::create("E", 4, {4, 4}));
-
-    // 添加边
-    graph.addEdge(0, 1, 10);
-    graph.addEdge(0, 2, 15);
-    graph.addEdge(0, 3, 20);
-    graph.addEdge(1, 2, 35);
-    graph.addEdge(1, 4, 25);
-    graph.addEdge(2, 3, 30);
-    graph.addEdge(2, 4, 10);
-    graph.addEdge(3, 4, 20);
-
-    // 打印图
-    graph.printGraph();
-
-    // 使用遗传算法计算最短路径
-    auto result = graph.dijkstra(0, 4);
-    if (!result.first.empty()) {
-       graph.printPath(result.first, result.second);
-    } else {
-        std::cout << "No path found.\n";
+    // 从文件读取图数据
+    if (graph.readFromFile("graph.txt"))
+    {
+        std::cout << "图数据加载成功!" << std::endl;
+    }
+    else
+    {
+        std::cerr << "图数据加载失败!" << std::endl;
+        return 1;
     }
 
+    // 打印图结构
+    graph.printGraph();
+
+    // 计算最短路径
+    auto [path, distance] = graph.dijkstra(0, 4);
+
+    // 打印路径
+    graph.printPath(path, distance);
+
+    // 将图数据写入文件
+    if (graph.writeToFile("graph_output.txt"))
+    {
+        std::cout << "图数据保存成功!" << std::endl;
+    }
+    else
+    {
+        std::cerr << "图数据保存失败!" << std::endl;
+        return 1;
+    }
 
     return 0;
 }

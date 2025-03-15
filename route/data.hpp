@@ -88,165 +88,166 @@ namespace route
 		}
 	};
 
-	/**
-	 * @brief 计算路径总距离
-	 * @param path 路径
-	 * @param adj_matrix 邻接矩阵
-	 * @return 路径总距离
-	 */
-	inline int calculate_path_distance(const Path& path, const AdjMatrix& adj_matrix)
-	{
-		int distance = 0;
-		for (size_t i = 0; i < path.size() - 1; ++i) {
-			distance += adj_matrix[path[i]][path[i + 1]];
-		}
-		return distance;
-	}
+	///**
+	// * @brief 计算路径总距离
+	// * @param path 路径
+	// * @param adj_matrix 邻接矩阵
+	// * @return 路径总距离
+	// */
+	//inline int calculate_path_distance(const Path& path, const AdjMatrix& adj_matrix)
+	//{
+	//	int distance = 0;
+	//	for (size_t i = 0; i < path.size() - 1; ++i) {
+	//		distance += adj_matrix[path[i]][path[i + 1]];
+	//	}
+	//	return distance;
+	//}
 
-	/**
-	 * @brief 检查路径是否合法
-	 * @param path 路径
-	 * @param adj_matrix 邻接矩阵
-	 * @return 是否合法
-	 */
-	inline bool is_valid_path(const Path& path, const AdjMatrix& adj_matrix)
-	{
-		for (size_t i = 0; i < path.size() - 1; ++i) {
-			if (adj_matrix[path[i]][path[i + 1]] == -1) {
-				return false;
-			}
-		}
-		return true;
-	}
+	///**
+	// * @brief 检查路径是否合法
+	// * @param path 路径
+	// * @param adj_matrix 邻接矩阵
+	// * @return 是否合法
+	// */
+	//inline bool is_valid_path(const Path& path, const AdjMatrix& adj_matrix)
+	//{
+	//	for (size_t i = 0; i < path.size() - 1; ++i) {
+	//		if (adj_matrix[path[i]][path[i + 1]] == -1) {
+	//			return false;
+	//		}
+	//	}
+	//	return true;
+	//}
 
-	/**
-	 * @brief 初始化种群
-	 * @param start 起点
-	 * @param end 终点
-	 * @param num_vertices 顶点数
-	 * @param population_size 种群大小
-	 * @return 初始化的种群
-	 */
-	inline std::vector<Path> initialize_population(VertexId start, VertexId end, VertexId num_vertices,
-	                                               int population_size)
-	{
-		std::vector<Path> population;
-		std::vector<VertexId> nodes;
-		for (VertexId i = 0; i < num_vertices; ++i) {
-			if (i != start && i != end) {
-				nodes.push_back(i);
-			}
-		}
+	///**
+	// * @brief 初始化种群
+	// * @param start 起点
+	// * @param end 终点
+	// * @param num_vertices 顶点数
+	// * @param population_size 种群大小
+	// * @return 初始化的种群
+	// */
+	//inline std::vector<Path> initialize_population(VertexId start, VertexId end, VertexId num_vertices,
+	//                                               int population_size)
+	//{
+	//	std::vector<Path> population;
+	//	std::vector<VertexId> nodes;
+	//	for (VertexId i = 0; i < num_vertices; ++i) {
+	//		if (i != start && i != end) {
+	//			nodes.push_back(i);
+	//		}
+	//	}
 
-		std::random_device rd;
-		std::mt19937 rng(rd());
-		std::uniform_int_distribution<> dist(0, nodes.size() - 1);
+	//	std::random_device rd;
+	//	std::mt19937 rng(rd());
+	//	std::uniform_int_distribution<> dist(0, nodes.size() - 1);
 
-		for (int i = 0; i < population_size; ++i) {
-			std::shuffle(nodes.begin(), nodes.end(), rng);
-			Path path = {start};
-			path.insert(path.end(), nodes.begin(), nodes.end());
-			path.push_back(end);
-			population.push_back(path);
-		}
+	//	for (int i = 0; i < population_size; ++i) {
+	//		std::shuffle(nodes.begin(), nodes.end(), rng);
+	//		Path path = {start};
+	//		path.insert(path.end(), nodes.begin(), nodes.end());
+	//		path.push_back(end);
+	//		population.push_back(path);
+	//	}
 
-		return population;
-	}
+	//	return population;
+	//}
 
-	/**
-	 * @brief 轮盘赌选择
-	 * @param population 种群
-	 * @param adj_matrix 邻接矩阵
-	 * @param rng 随机数生成器
-	 * @return 选择的路径
-	 */
-	inline Path select(const std::vector<Path>& population, const AdjMatrix& adj_matrix, std::mt19937& rng)
-	{
-		std::vector<double> fitnessScores;
-		double totalFitness = 0.0;
+	///**
+	// * @brief 轮盘赌选择
+	// * @param population 种群
+	// * @param adj_matrix 邻接矩阵
+	// * @param rng 随机数生成器
+	// * @return 选择的路径
+	// */
+	//inline Path select(const std::vector<Path>& population, const AdjMatrix& adj_matrix, std::mt19937& rng)
+	//{
+	//	std::vector<double> fitnessScores;
+	//	double totalFitness = 0.0;
 
-		for (const auto& path : population) {
-			if (!is_valid_path(path, adj_matrix)) {
-				fitnessScores.push_back(0.0);
-			}
-			else {
-				int const distance = calculate_path_distance(path, adj_matrix);
-				fitnessScores.push_back(1.0 / (distance + 1));
-				totalFitness += 1.0 / (distance + 1);
-			}
-		}
+	//	for (const auto& path : population) {
+	//		if (!is_valid_path(path, adj_matrix)) {
+	//			fitnessScores.push_back(0.0);
+	//		}
+	//		else {
+	//			int const distance = calculate_path_distance(path, adj_matrix);
+	//			fitnessScores.push_back(1.0 / (distance + 1));
+	//			totalFitness += 1.0 / (distance + 1);
+	//		}
+	//	}
 
-		double const target = std::uniform_real_distribution<double>(0.0, totalFitness)(rng);
-		double cumulative = 0.0;
-		for (size_t i = 0; i < population.size(); ++i) {
-			cumulative += fitnessScores[i];
-			if (cumulative >= target) {
-				return population[i];
-			}
-		}
+	//	double const target = std::uniform_real_distribution<double>(0.0, totalFitness)(rng);
+	//	double cumulative = 0.0;
+	//	for (size_t i = 0; i < population.size(); ++i) {
+	//		cumulative += fitnessScores[i];
+	//		if (cumulative >= target) {
+	//			return population[i];
+	//		}
+	//	}
 
-		return population.back();
-	}
+	//	return population.back();
+	//}
 
-	/**
-	 * @brief 部分映射交叉（PMX）
-	 * @param parent1 父代1
-	 * @param parent2 父代2
-	 * @param rng 随机数生成器
-	 * @return 交叉后的子代
-	 */
-	inline Path crossover(const Path& parent1, const Path& parent2, std::mt19937& rng)
-	{
-		Path child(parent1.size(), -1);
-		std::uniform_int_distribution<> dist(0, static_cast<int>(parent1.size()) - 1);
+	///**
+	// * @brief 部分映射交叉（PMX）
+	// * @param parent1 父代1
+	// * @param parent2 父代2
+	// * @param rng 随机数生成器
+	// * @return 交叉后的子代
+	// */
+	//inline Path crossover(const Path& parent1, const Path& parent2, std::mt19937& rng)
+	//{
+	//	Path child(parent1.size(), -1);
+	//	std::uniform_int_distribution<> dist(0, static_cast<int>(parent1.size()) - 1);
 
-		// 生成 start 和 end
-		int start = dist(rng);
-		int end = dist(rng);
-		if (start > end) {
-			std::swap(start, end);
-		}
+	//	// 生成 start 和 end
+	//	int start = dist(rng);
+	//	int end = dist(rng);
+	//	if (start > end) {
+	//		std::swap(start, end);
+	//	}
 
-		// 复制父代1的子段
-		for (int i = start; i <= end; ++i) {
-			child[i] = parent1[i];
-		}
+	//	// 复制父代1的子段
+	//	for (int i = start; i <= end; ++i) {
+	//		child[i] = parent1[i];
+	//	}
 
-		// 填充父代2的剩余部分
-		size_t insertPos{0}; // 记录插入位置
-		for (const auto& elem : parent2) {
-			// 检查 elem 是否已经在 child 中
-			if (std::ranges::find(child, elem) == child.end()) {
-				// 找到 child 中第一个值为 -1 的位置
-				while (insertPos < child.size() && child[insertPos] != -1) {
-					++insertPos;
-				}
-				// 如果找到有效位置，插入 elem
-				if (insertPos < child.size()) {
-					child[insertPos] = elem;
-				}
-			}
-		}
+	//	// 填充父代2的剩余部分
+	//	size_t insertPos{0}; // 记录插入位置
+	//	for (const auto& elem : parent2) {
+	//		// 检查 elem 是否已经在 child 中
+	//		if (std::ranges::find(child, elem) == child.end()) {
+	//			// 找到 child 中第一个值为 -1 的位置
+	//			while (insertPos < child.size() && child[insertPos] != -1) {
+	//				++insertPos;
+	//			}
+	//			// 如果找到有效位置，插入 elem
+	//			if (insertPos < child.size()) {
+	//				child[insertPos] = elem;
+	//			}
+	//		}
+	//	}
 
-		return child;
-	}
+	//	return child;
+	//}
 
-	/**
-	 * @brief 变异操作
-	 * @param path 路径
-	 * @param rng 随机数生成器
-	 */
-	inline void mutate(Path& path, std::mt19937& rng)
-	{
-		if (path.size() < 3) return;
+	///**
+	// * @brief 变异操作
+	// * @param path 路径
+	// * @param rng 随机数生成器
+	// */
+	//inline void mutate(Path& path, std::mt19937& rng)
+	//{
+	//	if (path.size() < 3) return;
 
-		std::uniform_int_distribution<> dist(1, static_cast<int>(path.size()) - 2);
-		int i = dist(rng);
-		int j = dist(rng);
-		if (i != j) {
-			std::swap(path[i], path[j]);
-		}
-	}
+	//	std::uniform_int_distribution<> dist(1, static_cast<int>(path.size()) - 2);
+	//	int i = dist(rng);
+	//	int j = dist(rng);
+	//	if (i != j) {
+	//		std::swap(path[i], path[j]);
+	//	}
+	//}
+
 
 	/**
 	 * @brief 类，表示一个带权邻接矩阵图。
@@ -254,8 +255,8 @@ namespace route
 	class WeightedAdjMatrixGraph
 	{
 	private:
-		int m_vertices;
-		int m_edges;
+		IntType m_vertices;
+		IntType m_edges;
 		std::map<int, std::shared_ptr<Object>> m_vertexMap; // 使用 map 存储顶点，键为顶点的 id
 		std::vector<std::vector<int>> m_adjMatrix;
 
@@ -402,7 +403,7 @@ namespace route
 			for (int at = end; at != -1; at = prev[at]) {
 				path.push_back(at);
 			}
-			std::ranges::reverse(path);
+			std::reverse(path.begin(), path.end());
 
 			return {path, dist[end]};
 		}
@@ -536,5 +537,212 @@ namespace route
 			std::cout << std::endl;
 			std::cout << "Total distance: " << distance << std::endl;
 		}
+
+
+		// 新增文件读取函数
+		bool readFromFile(const std::string& filename)
+		{
+			std::ifstream file(filename);
+			if (!file.is_open()) {
+				std::cerr << "无法打开文件: " << filename << std::endl;
+				return false;
+			}
+
+			std::string line;
+			while (std::getline(file, line)) {
+				std::istringstream iss(line);
+				std::vector<std::string> tokens;
+				std::string token;
+				while (iss >> token) {
+					tokens.push_back(token);
+				}
+
+				if (tokens.empty()) {
+					continue;
+				}
+
+				if (tokens[0] == "Vertex") {
+					if (tokens.size() < 5) {
+						std::cerr << "顶点格式错误: " << line << std::endl;
+						continue;
+					}
+
+					std::string name = tokens[1];
+					int id = std::stoi(tokens[2]);
+					int locationA = std::stoi(tokens[3]);
+					int locationB = std::stoi(tokens[4]);
+					Attribute attr = Attribute::Empty;
+					if (tokens.size() >= 6) {
+						attr = static_cast<Attribute>(std::stoi(tokens[5]));
+					}
+
+					auto vertex = Object::create(name, id, {locationA, locationB}, attr);
+					addVertex(vertex);
+				}
+				else if (tokens[0] == "Edge") {
+					if (tokens.size() < 4) {
+						std::cerr << "边格式错误: " << line << std::endl;
+						continue;
+					}
+
+					int src = std::stoi(tokens[1]);
+					int dest = std::stoi(tokens[2]);
+					int weight = std::stoi(tokens[3]);
+					addEdge(src, dest, weight);
+				}
+			}
+
+			file.close();
+			return true;
+		}
+
+		// 新增文件写入函数
+		bool writeToFile(const std::string& filename) const
+		{
+			std::ofstream file(filename);
+			if (!file.is_open()) {
+				std::cerr << "无法打开文件: " << filename << std::endl;
+				return false;
+			}
+
+			// 写入顶点
+			for (const auto& pair : m_vertexMap) {
+				const auto& vertex = pair.second;
+				file << "Vertex " << vertex->m_name << " " << vertex->m_id << " "
+					<< vertex->m_location.first << " " << vertex->m_location.second << " "
+					<< static_cast<int>(vertex->m_attr) << std::endl;
+			}
+
+			// 写入边
+			for (int i = 0; i < m_vertices; ++i) {
+				for (int j = i + 1; j < m_vertices; ++j) {
+					if (m_adjMatrix[i][j] != -1) {
+						file << "Edge " << i << " " << j << " " << m_adjMatrix[i][j] << std::endl;
+					}
+				}
+			}
+
+			file.close();
+			return true;
+		}
+
+	private:
+		static std::vector<std::vector<int>> initialize_population(int start, int end, int vertices, int populationSize)
+		{
+			std::vector<std::vector<int>> population;
+			std::vector<int> nodes;
+			for (int i = 0; i < vertices; ++i) {
+				if (i != start && i != end) {
+					nodes.push_back(i);
+				}
+			}
+
+			std::random_device rd;
+			std::mt19937 rng(rd());
+			std::uniform_int_distribution<> dist(0, nodes.size() - 1);
+
+			for (int i = 0; i < populationSize; ++i) {
+				std::shuffle(nodes.begin(), nodes.end(), rng);
+				std::vector<int> path = {start};
+				path.insert(path.end(), nodes.begin(), nodes.end());
+				path.push_back(end);
+				population.push_back(path);
+			}
+
+			return population;
+		}
+
+		static bool is_valid_path(const std::vector<int>& path, const std::vector<std::vector<int>>& adjMatrix)
+		{
+			for (size_t i = 0; i < path.size() - 1; ++i) {
+				if (adjMatrix[path[i]][path[i + 1]] == -1) {
+					return false;
+				}
+			}
+			return true;
+		}
+
+		static int calculate_path_distance(const std::vector<int>& path, const std::vector<std::vector<int>>& adjMatrix)
+		{
+			int distance = 0;
+			for (size_t i = 0; i < path.size() - 1; ++i) {
+				distance += adjMatrix[path[i]][path[i + 1]];
+			}
+			return distance;
+		}
+
+		static std::vector<int> select(const std::vector<std::vector<int>>& population,
+		                               const std::vector<std::vector<int>>& adjMatrix, std::mt19937& rng)
+		{
+			std::vector<double> fitnessScores;
+			double totalFitness = 0.0;
+
+			for (const auto& path : population) {
+				if (!is_valid_path(path, adjMatrix)) {
+					fitnessScores.push_back(0.0);
+				}
+				else {
+					int const distance = calculate_path_distance(path, adjMatrix);
+					fitnessScores.push_back(1.0 / (distance + 1));
+					totalFitness += 1.0 / (distance + 1);
+				}
+			}
+
+			double const target = std::uniform_real_distribution<double>(0.0, totalFitness)(rng);
+			double cumulative = 0.0;
+			for (size_t i = 0; i < population.size(); ++i) {
+				cumulative += fitnessScores[i];
+				if (cumulative >= target) {
+					return population[i];
+				}
+			}
+
+			return population.back();
+		}
+
+		static std::vector<int> crossover(const std::vector<int>& parent1, const std::vector<int>& parent2,
+		                                  std::mt19937& rng)
+		{
+			std::vector<int> child(parent1.size(), -1);
+			std::uniform_int_distribution<> dist(0, static_cast<int>(parent1.size()) - 1);
+
+			int start = dist(rng);
+			int end = dist(rng);
+			if (start > end) {
+				std::swap(start, end);
+			}
+
+			for (int i = start; i <= end; ++i) {
+				child[i] = parent1[i];
+			}
+
+			size_t insertPos = 0;
+			for (const auto& elem : parent2) {
+				if (std::find(child.begin(), child.end(), elem) == child.end()) {
+					while (insertPos < child.size() && child[insertPos] != -1) {
+						++insertPos;
+					}
+					if (insertPos < child.size()) {
+						child[insertPos] = elem;
+					}
+				}
+			}
+
+			return child;
+		}
+
+		static void mutate(std::vector<int>& path, std::mt19937& rng)
+		{
+			if (path.size() < 3) {
+				return;
+			}
+
+			std::uniform_int_distribution<> dist(1, static_cast<int>(path.size()) - 2);
+			int i = dist(rng);
+			int j = dist(rng);
+			if (i != j) {
+				std::swap(path[i], path[j]);
+			}
+		}
 	};
-}
+};
