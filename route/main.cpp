@@ -9,7 +9,9 @@ int main() {
         // 创建图对象
         route::WeightedAdjMatrixGraph graph(4);
 
-        graph.readFromFile("graph_output.txt");
+        if (graph.readFromFile("graph_output.txt")) {
+            std::print("文件读入成功.\n");
+        }
 
         // 打印图的邻接矩阵
         graph.printGraph();
