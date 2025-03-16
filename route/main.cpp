@@ -24,9 +24,18 @@ int main() {
         int constexpr  endVertex = 3;    // 目标顶点索引（D）
 
         // 使用算法查找最短路径
-        auto const[path, dis] = graph.geneticAlgorithm(startVertex, endVertex);
 
-        graph.printPath(path, dis);
+        {
+	        std::println("遗传算法:");
+	        auto const[path, dis] = graph.geneticAlgorithm(startVertex, endVertex);
+	        graph.printPath(path, dis);
+        }
+        {
+	        std::println("Dijkstra:算法");
+	        auto const[path, dis] = graph.dijkstra(startVertex, endVertex);
+	        graph.printPath(path, dis);
+        }
+
 
 		// 将图数据写入文件
 	    if (graph.writeToFile("graph_output.txt"))

@@ -20,5 +20,6 @@
 #include <fstream>
 #include <istream>
 #include <sstream>
+#include <regex>
 
 //#include "termcolor.hpp"
