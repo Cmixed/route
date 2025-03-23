@@ -25,13 +25,18 @@ int main() {
 
         // 使用算法查找最短路径
 
+		{
+	        std::println("优化算法");
+	        auto const[path, dis] = graph.localSearchOptimization(startVertex, endVertex);
+	        graph.printPath(path, dis);
+        }
         {
 	        std::println("遗传算法:");
 	        auto const[path, dis] = graph.geneticAlgorithm(startVertex, endVertex);
 	        graph.printPath(path, dis);
         }
         {
-	        std::println("Dijkstra:算法");
+	        std::println("Dijkstra");
 	        auto const[path, dis] = graph.dijkstra(startVertex, endVertex);
 	        graph.printPath(path, dis);
         }
