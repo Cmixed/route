@@ -245,6 +245,7 @@ namespace route
 		 */
 		[[nodiscard]] std::pair<std::vector<int>, int> geneticAlgorithm(int const start, int const end) const
 		{
+			// 检查起点和终点是否合法
 			if (start < 0 || start >= m_vertices || end < 0 || end >= m_vertices) {
 				return {{}, -1};
 			}
@@ -252,12 +253,13 @@ namespace route
 			std::random_device rd;
 			std::mt19937 rng(rd());
 
-			constexpr int POPULATION_SIZE = 500;
+			constexpr int POPULATION_SIZE = 100;
 			constexpr int MAX_GENERATIONS = 500;
 			constexpr double CROSSOVER_RATE = 0.85;
 			constexpr double MUTATION_RATE = 0.2;
-			constexpr int ELITE_SIZE = 5;
+			constexpr int ELITE_SIZE = 2;
 
+			// 初始化种群
 			std::vector<Path> population = initialize_population(start, end, m_vertices, POPULATION_SIZE);
 
 			for (int generation = 0; generation < MAX_GENERATIONS; ++generation) {
@@ -278,10 +280,6 @@ namespace route
 					bestDistanceInGeneration = std::min(bestDistanceInGeneration, distances[i]);
 				}
 
-
-				std::print("\rGeneration: {} / {}, Best Distance: {}",
-				           generation + 1, MAX_GENERATIONS, bestDistanceInGeneration);
-
 				// 精英保留
 				std::vector<std::pair<int, const Path*>> elitePaths;
 				for (size_t i = 0; i < population.size(); ++i) {
@@ -290,10 +288,12 @@ namespace route
 					}
 				}
 
-				std::ranges::sort(elitePaths, [](const auto& a, const auto& b) { return a.first < b.first; });
+				if (!elitePaths.empty()) {
+					std::ranges::sort(elitePaths, [](const auto& a, const auto& b) { return a.first < b.first; });
 
-				for (int i = 0; i < ELITE_SIZE && i < static_cast<int>(elitePaths.size()); ++i) {
-					newPopulation.push_back(*elitePaths[i].second);
+					for (int i = 0; i < ELITE_SIZE && i < static_cast<int>(elitePaths.size()); ++i) {
+						newPopulation.push_back(*elitePaths[i].second);
+					}
 				}
 
 				// 选择、交叉和变异
@@ -301,21 +301,27 @@ namespace route
 					Path parent1 = select(population, m_adjMatrix, rng);
 					Path parent2 = select(population, m_adjMatrix, rng);
 
+					Path child;
 					if (std::uniform_real_distribution<>(0.0, 1.0)(rng) < CROSSOVER_RATE) {
-						Path child = crossover(parent1, parent2, rng);
-						newPopulation.push_back(child);
+						child = crossover(parent1, parent2, rng);
 					}
 					else {
-						newPopulation.push_back(parent1);
+						child = parent1;
 					}
 
 					if (std::uniform_real_distribution<>(0.0, 1.0)(rng) < MUTATION_RATE) {
-						mutate(newPopulation.back(), rng);
+						mutate(child, rng);
 					}
+
+					newPopulation.push_back(child);
 				}
 
 				population = std::move(newPopulation);
+
+				std::print("\rGeneration: {} / {}, Best Distance: {}",
+				           generation + 1, MAX_GENERATIONS, bestDistanceInGeneration);
 			}
+
 			std::println();
 
 			// 找到最优路径

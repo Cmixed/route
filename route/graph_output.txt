@@ -1,4 +1,3 @@
-Vertex A 0 0 0 1
 Vertex B 1 1 1 1
 Vertex C 2 2 2 1
 Vertex D 3 3 3 1

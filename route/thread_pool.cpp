@@ -4,8 +4,8 @@ namespace route {
 
 	struct PathEndpoints
 	{
-        std::int_fast16_t startVertex{};
-        std::int_fast16_t endVertex{};
+        int startVertex{};
+        int endVertex{};
 	};
 
 
