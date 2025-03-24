@@ -21,5 +21,17 @@
 #include <istream>
 #include <sstream>
 #include <regex>
+#include <iostream>
+#include <vector>
+#include <queue>
+#include <functional>
+#include <atomic>
+#include <thread>
+#include <mutex>
+#include <condition_variable>
+#include <future>
+#include <type_traits>
+#include <chrono>
+#include <unordered_map>
 
 //#include "termcolor.hpp"
