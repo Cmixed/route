@@ -11,8 +11,8 @@ std::mt19937 gen(rd());
 std::uniform_real_distribution<> dis(0, 1000);
 
 int main() {
-    const int CITY_COUNT = 10;
-    const int EXTRA_EDGES = 20;
+    const int CITY_COUNT = 20;
+    const int EXTRA_EDGES = 100;
     
     // 创建图
     route::WeightedAdjMatrixGraph graph(CITY_COUNT);
@@ -53,7 +53,7 @@ int main() {
     graph.printGraph();
 
     // 执行算法测试
-    auto result = graph.localSearchOptimization(0, CITY_COUNT-1);
+    auto result = graph.geneticAlgorithm(0, CITY_COUNT-1);
     if (!result.first.empty()) {
         graph.printPath(result.first, result.second);
     }

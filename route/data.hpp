@@ -257,10 +257,12 @@ namespace route
 			constexpr int MAX_GENERATIONS = 500;
 			constexpr double CROSSOVER_RATE = 0.85;
 			constexpr double MUTATION_RATE = 0.2;
-			constexpr int ELITE_SIZE = 2;
+			constexpr int ELITE_SIZE = 5;
 
 			// 初始化种群
 			std::vector<Path> population = initialize_population(start, end, m_vertices, POPULATION_SIZE);
+
+			Path bestPath{};
 
 			for (int generation = 0; generation < MAX_GENERATIONS; ++generation) {
 				std::vector<Path> newPopulation;
@@ -277,7 +279,13 @@ namespace route
 					}
 
 					distances[i] = calculate_path_distance(path, m_adjMatrix);
-					bestDistanceInGeneration = std::min(bestDistanceInGeneration, distances[i]);
+					if (distances[i] < bestDistanceInGeneration) {
+						bestDistanceInGeneration = distances[i];
+						Path bestPathInGeneration = path;
+						if (is_valid_path(bestPathInGeneration, m_adjMatrix)) {
+							bestPath = bestPathInGeneration;
+						}
+					}
 				}
 
 				// 精英保留
@@ -325,23 +333,11 @@ namespace route
 			std::println();
 
 			// 找到最优路径
-			Path bestPath;
-			int bestDistance = std::numeric_limits<int>::max();
-
-			for (const auto& path : population) {
-				if (int const distance = calculate_path_distance(path, m_adjMatrix);
-					is_valid_path(path, m_adjMatrix)) {
-					if (distance < bestDistance) {
-						bestDistance = distance;
-						bestPath = path;
-					}
-				}
-			}
-
-			if (bestDistance == std::numeric_limits<int>::max()) {
+			if (bestPath.empty()) {
 				return {{}, -1};
 			}
 
+			int bestDistance = calculate_path_distance(bestPath, m_adjMatrix);
 			return {bestPath, bestDistance};
 		}
 

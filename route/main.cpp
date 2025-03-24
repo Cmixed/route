@@ -5,7 +5,7 @@
 using namespace std;
 using namespace route;
 
-constexpr int CITY_COUNT = 4;
+constexpr int CITY_COUNT = 8;
 
 int main() {
 
@@ -32,14 +32,14 @@ int main() {
 		PathEndpoints p3(0, CITY_COUNT/2);
         // 使用算法查找最短路径
 
-		{
-	        std::println("优化算法");
-	        auto const[path, dis] = graph.localSearchOptimization(startVertex, endVertex);
-	        graph.printPath(path, dis);
-        }
         {
 	        std::println("Dijkstra");
 	        auto const[path, dis] = graph.dijkstra(startVertex, endVertex);
+	        graph.printPath(path, dis);
+        }
+		{
+	        std::println("优化算法");
+	        auto const[path, dis] = graph.localSearchOptimization(startVertex, endVertex);
 	        graph.printPath(path, dis);
         }
         {
