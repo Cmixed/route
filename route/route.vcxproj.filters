@@ -42,5 +42,6 @@
   <ItemGroup>
     <Text Include="graph.txt" />
     <Text Include="graph_output.txt" />
+    <Text Include="graph50.txt" />
   </ItemGroup>
 </Project>

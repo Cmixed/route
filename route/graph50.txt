@@ -1,4 +1,4 @@
-Vertex C0 0 982 408 0
+﻿Vertex C0 0 982 408 0
 Vertex C1 1 533 314 0
 Vertex C2 2 75 620 0
 Vertex C3 3 399 322 0

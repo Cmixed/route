@@ -147,6 +147,7 @@
   </ItemGroup>
   <ItemGroup>
     <Text Include="graph.txt" />
+    <Text Include="graph50.txt" />
     <Text Include="graph_output.txt" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
