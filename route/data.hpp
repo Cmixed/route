@@ -4,6 +4,9 @@
 
 #include "pch.hpp"
 
+constexpr bool is_debug{false};
+
+
 namespace route
 {
 	using IntType = std::int_fast32_t;
@@ -326,11 +329,15 @@ namespace route
 
 				population = std::move(newPopulation);
 
-				std::print("\rGeneration: {} / {}, Best Distance: {}",
-				           generation + 1, MAX_GENERATIONS, bestDistanceInGeneration);
+				if constexpr (is_debug) {
+					std::print("\rGeneration: {} / {}, Best Distance: {}",
+					           generation + 1, MAX_GENERATIONS, bestDistanceInGeneration);
+				}
 			}
 
-			std::println();
+			if constexpr (is_debug) {
+				std::println();
+			}
 
 			// 找到最优路径
 			if (bestPath.empty()) {
@@ -482,6 +489,154 @@ namespace route
 		}
 
 		/**
+	    * @brief 使用遗传算法和局部搜索优化路径
+	    * 
+	    * @param start 起始点
+	    * @param end 结束点
+	    * @param populationSize 种群大小
+	    * @param generations 迭代次数
+	    * @return std::pair<std::vector<int>, int> 优化后的路径和总距离
+	    */
+		[[nodiscard]] std::pair<std::vector<int>, int> geneticLocalSearchOptimization(
+			int start, int end, int populationSize = 50, int generations = 100) const
+		{
+			if (start < 0 || start >= m_vertices || end < 0 || end >= m_vertices) {
+				return {{}, -1};
+			}
+
+			// 初始化种群
+			std::vector<std::vector<int>> population;
+			for (int i = 0; i < populationSize; ++i) {
+				// 贪心初始化
+				std::vector<int> path;
+				path.reserve(m_vertices);
+				path.push_back(start);
+				std::vector<bool> visited(m_vertices, false);
+				visited[start] = true;
+
+				while (path.size() < static_cast<size_t>(m_vertices)) {
+					int lastCity = path.back();
+					int nextCity = -1;
+					int minDistance = std::numeric_limits<int>::max();
+
+					for (int city = 0; city < m_vertices; ++city) {
+						if (!visited[city] && city != lastCity && m_adjMatrix[lastCity][city] != -1) {
+							if (m_adjMatrix[lastCity][city] < minDistance) {
+								minDistance = m_adjMatrix[lastCity][city];
+								nextCity = city;
+							}
+						}
+					}
+
+					if (nextCity == -1) break;
+					path.push_back(nextCity);
+					visited[nextCity] = true;
+				}
+
+				if (!path.empty() && path.back() != end) {
+					path.push_back(end);
+				}
+				population.push_back(path);
+			}
+
+			for (int gen = 0; gen < generations; ++gen) {
+				// 交叉操作生成新种群
+				std::vector<std::vector<int>> newPopulation;
+				while (newPopulation.size() < populationSize) {
+					int parent1 = std::rand() % populationSize;
+					int parent2 = std::rand() % populationSize;
+					while (parent1 == parent2) parent2 = std::rand() % populationSize;
+
+					// 交叉操作
+					std::vector<int> child;
+					child.reserve(population[parent1].size());
+
+					int startIdx = std::rand() % (population[parent1].size() - 1);
+					int endIdx = std::rand() % (population[parent1].size() - startIdx) + startIdx;
+
+					std::unordered_set<int> usedCities;
+					for (int i = startIdx; i <= endIdx; ++i) {
+						child.push_back(population[parent1][i]);
+						usedCities.insert(population[parent1][i]);
+					}
+
+					for (int city : population[parent2]) {
+						if (usedCities.find(city) == usedCities.end() && city != child.front() && city != child.
+							back()) {
+							child.push_back(city);
+							usedCities.insert(city);
+						}
+					}
+
+					newPopulation.push_back(child);
+				}
+
+				// 局部搜索优化
+				for (auto& path : newPopulation) {
+					// 2-opt局部搜索
+					bool improved = true;
+					while (improved) {
+						improved = false;
+						for (size_t i = 1; i < path.size() - 2; ++i) {
+							for (size_t j = i + 1; j < path.size(); ++j) {
+								if (j - i == 1) continue;
+
+								std::vector<int> newPath = path;
+								std::reverse(newPath.begin() + i, newPath.begin() + j);
+
+								int currentDist = 0;
+								for (size_t k = 0; k < path.size() - 1; ++k) {
+									currentDist += m_adjMatrix[path[k]][path[k + 1]];
+								}
+
+								int newDist = 0;
+								for (size_t k = 0; k < newPath.size() - 1; ++k) {
+									newDist += m_adjMatrix[newPath[k]][newPath[k + 1]];
+								}
+
+								if (newDist < currentDist) {
+									path = std::move(newPath);
+									improved = true;
+								}
+							}
+						}
+					}
+				}
+
+				// 合并并选择优胜个体
+				population.insert(population.end(), newPopulation.begin(), newPopulation.end());
+				std::sort(population.begin(), population.end(), [this, start, end](const auto& a, const auto& b)
+				{
+					int distA = 0, distB = 0;
+					for (size_t i = 0; i < a.size() - 1; ++i) distA += m_adjMatrix[a[i]][a[i + 1]];
+					for (size_t i = 0; i < b.size() - 1; ++i) distB += m_adjMatrix[b[i]][b[i + 1]];
+					return distA < distB;
+				});
+				population.resize(populationSize);
+			}
+
+			// 找出最优路径
+			auto bestPathIt = std::min_element(population.begin(), population.end(),
+			                                   [this, start, end](const auto& a, const auto& b)
+			                                   {
+				                                   int distA = 0, distB = 0;
+				                                   for (size_t i = 0; i < a.size() - 1; ++i) distA += m_adjMatrix[a[i]][
+					                                   a[i + 1]];
+				                                   for (size_t i = 0; i < b.size() - 1; ++i) distB += m_adjMatrix[b[i]][
+					                                   b[i + 1]];
+				                                   return distA < distB;
+			                                   });
+			std::vector<int> bestPath = *bestPathIt;
+			int bestDistance = 0;
+			for (size_t i = 0; i < bestPath.size() - 1; ++i) {
+				bestDistance += m_adjMatrix[bestPath[i]][bestPath[i + 1]];
+			}
+
+			return {bestPath, bestDistance};
+		}
+
+
+		/**
 		 * @brief 打印最短路径及其总距离。
 		 * @param path 最短路径。
 		 * @param distance 总距离。
@@ -510,14 +665,14 @@ namespace route
 		 * @param path 最短路径。
 		 * @param distance 总距离。
 		 */
-		void printPath(const std::vector<int>& path, int const distance)
+		void printPath(const std::vector<int>& path, int const distance) const
 		{
 			if (path.empty()) {
-				std::println("No path found.");
+				std::println("未找到路径.");
 				return;
 			}
 
-			std::print("Shortest path: ");
+			std::print("最短路径为: ");
 			for (size_t i = 0; i < path.size(); ++i) {
 				if (auto it = m_vertexMap.find(path[i]);
 					it != m_vertexMap.end()) {
@@ -531,7 +686,7 @@ namespace route
 				}
 			}
 			std::println();
-			std::println("Total distance: {}", distance);
+			std::println("总距离: {}", distance);
 		}
 
 

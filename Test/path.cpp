@@ -12,7 +12,7 @@ std::uniform_real_distribution<> dis(0, 1000);
 
 int main() {
     const int CITY_COUNT = 20;
-    const int EXTRA_EDGES = 100;
+    const int EXTRA_EDGES = 200;
     
     // 创建图
     route::WeightedAdjMatrixGraph graph(CITY_COUNT);

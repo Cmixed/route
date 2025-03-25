@@ -5,7 +5,58 @@
 using namespace std;
 using namespace route;
 
-constexpr int CITY_COUNT = 8;
+constexpr int algorithm_number = 4;
+constexpr int CITY_COUNT = 20;
+
+PathEndpoints p1(0, CITY_COUNT - 1);
+PathEndpoints p2(1, CITY_COUNT - 1);
+PathEndpoints p3(1, CITY_COUNT/2);
+
+
+
+auto sum_path(route::WGraph const& graph, route::PathEndpoints const pep) -> std::vector<std::pair<std::vector<int>, int>>
+{
+	auto const path1 = graph.localSearchOptimization(pep.startVertex, pep.endVertex);
+	auto const path2 = graph.geneticAlgorithm(pep.startVertex, pep.endVertex);
+	auto const path3 = graph.dijkstra(pep.startVertex, pep.endVertex);
+	auto const path4 = graph.geneticLocalSearchOptimization(pep.startVertex, pep.endVertex);
+
+	std::vector<std::pair<std::vector<int>, int>> sum;
+	sum.push_back(path1);
+	sum.push_back(path2);
+	sum.push_back(path3);
+	sum.push_back(path4);
+
+	return sum;
+}
+
+auto print_path_result(route::WGraph const& graph, std::vector<std::pair<std::vector<int>, int>> const& path_sum) -> void
+{
+	static int order{ 0 };
+
+	std::println("----------第 {} 个路径规划----------", order); ++order;
+	for (int i=0; i<algorithm_number; i++) {
+		auto const [path, dis] = path_sum[i];
+		switch (i) {
+		case 0:
+			std::println("\n=====退火局部搜索算法\n");
+			graph.printPath(path, dis);
+			break;
+		case 1:
+			std::println("\n=====遗传算法:\n");
+			graph.printPath(path, dis);
+			break;
+		case 2:
+			std::println("\n=====Dijkstra:\n");
+			graph.printPath(path, dis);
+			break;
+		case 3:
+			std::println("\n遗传局部搜索:\n");
+			graph.printPath(path, dis);
+			break;
+		}
+	}
+}
 
 int main() {
 
@@ -27,26 +78,22 @@ int main() {
         int constexpr  startVertex = 0;  // 起始顶点索引（A）
         int constexpr  endVertex = CITY_COUNT-1;    // 目标顶点索引（D）
 		 
-		PathEndpoints p1(0, CITY_COUNT-1);
-		PathEndpoints p2(1, CITY_COUNT-1);
-		PathEndpoints p3(0, CITY_COUNT/2);
+		
         // 使用算法查找最短路径
 
-        {
-	        std::println("Dijkstra");
-	        auto const[path, dis] = graph.dijkstra(startVertex, endVertex);
-	        graph.printPath(path, dis);
-        }
-		{
-	        std::println("优化算法");
-	        auto const[path, dis] = graph.localSearchOptimization(startVertex, endVertex);
-	        graph.printPath(path, dis);
-        }
-        {
-	        std::println("遗传算法:");
-	        auto const[path, dis] = graph.geneticAlgorithm(startVertex, endVertex);
-	        graph.printPath(path, dis);
-        }
+		ThreadPool tp(3);
+		
+		tp.submit(sum_path, graph, p1);
+
+		auto f_res1 = std::async(std::launch::async, sum_path, graph, p1);
+		auto f_res2 = std::async(std::launch::async, sum_path, graph, p2);
+		auto f_res3 = std::async(std::launch::async, sum_path, graph, p3);
+		//auto const res = sum_path(graph, p1);
+
+
+		print_path_result(graph, f_res1.get());
+		print_path_result(graph, f_res2.get());
+		print_path_result(graph, f_res3.get());
 
 
 		// 将图数据写入文件
