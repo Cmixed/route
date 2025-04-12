@@ -1,4 +1,3 @@
-Vertex C1 1 443 266 0
 Vertex C2 2 32 93 0
 Vertex C3 3 852 373 0
 Vertex C4 4 356 225 0

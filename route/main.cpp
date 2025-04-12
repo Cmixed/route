@@ -1,5 +1,5 @@
 ﻿#include "pch.hpp"
-#include "data.hpp"
+#include "data.cpp"
 #include "thread_pool.cpp"
 
 
@@ -105,10 +105,6 @@ int main() {
     int constexpr  endVertex = CITY_COUNT-1;    // 目标顶点索引（D）
      
     // 使用算法查找最短路径
-
-    ThreadPool tp(3);
-    
-    tp.submit(sum_path, graph, p1);
 
     auto f_res1 = std::async(std::launch::async, sum_path, graph, p1);
     auto f_res2 = std::async(std::launch::async, sum_path, graph, p2);
