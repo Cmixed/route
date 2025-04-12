@@ -27,6 +27,12 @@
     <ClCompile Include="thread_pool.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
+    <ClCompile Include="data.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="menu.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="file_io.hpp">
