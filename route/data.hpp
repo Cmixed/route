@@ -22,6 +22,14 @@ namespace route
 	class BaseObject;
 	using Object = BaseObject<IntType>;
 
+	enum class Algorithm {
+	    SimulatedAnnealing,
+	    GeneticAlgorithm,
+	    Dijkstra,
+	    GeneticLocalSearch
+	};
+
+
 	/**
 	 * 起始点类
 	 */

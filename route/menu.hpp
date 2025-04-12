@@ -11,7 +11,6 @@ namespace route
 	 *
 	 *****************************************************************/
 
-
 	/* 打印函数 */
 	inline void print_path_result(route::WGraph const& graph, int const algorithm_number, 
 				std::vector<PathTimePair> const& path_time_results);
@@ -22,12 +21,23 @@ namespace route
 	inline auto calculate_path_times(route::WGraph const& graph, PathEndpoints const pep)
 		-> std::vector<PathTimePair>;
 
+
+
 	/*****************************************************************
 	 *
 	 *		MENU 函数定义
 	 *
 	 *****************************************************************/
-	inline void print_path_result(route::WGraph const& graph, int const algorithm_number,std::vector<PathTimePair> const& path_time_results)
+
+
+	/**
+	 * @brief 打印路径结果
+	 * 
+	 * @param graph 路径图结构
+	 * @param algorithm_number 算法数量
+	 * @param path_time_results 路径和时间结果集
+	 */
+	inline void print_path_result(route::WGraph const& graph, int const algorithm_number, std::vector<PathTimePair> const& path_time_results)
 	{
 	    static int order{ 0 };
 
@@ -35,32 +45,28 @@ namespace route
 	    for (int i = 0; i < algorithm_number; i++) {
 	        auto const& [path_result, execution_time] = path_time_results[i];
 	        auto const& [path, dis] = path_result;
-	        switch (i) {
-	        case 0:
-	            std::println("\n=====退火局部搜索算法\n");
-	            graph.printPath(path, dis);
-	            std::println("执行时间: {} 纳秒", execution_time.count());
+
+	        std::string algorithm_name;
+	        switch (static_cast<Algorithm>(i)) {
+	        case Algorithm::SimulatedAnnealing:
+	            algorithm_name = "退火局部搜索算法";
 	            break;
-	        case 1:
-	            std::println("\n=====遗传算法:\n");
-	            graph.printPath(path, dis);
-	            std::println("执行时间: {} 纳秒", execution_time.count());
+	        case Algorithm::GeneticAlgorithm:
+	            algorithm_name = "遗传算法";
 	            break;
-	        case 2:
-	            std::println("\n=====Dijkstra:\n");
-	            graph.printPath(path, dis);
-	            std::println("执行时间: {} 纳秒", execution_time.count());
+	        case Algorithm::Dijkstra:
+	            algorithm_name = "Dijkstra";
 	            break;
-	        case 3:
-	            std::println("\n=====遗传局部搜索:\n");
-	            graph.printPath(path, dis);
-	            std::println("执行时间: {} 纳秒", execution_time.count());
+	        case Algorithm::GeneticLocalSearch:
+	            algorithm_name = "遗传局部搜索";
 	            break;
 	        }
+
+	        std::println("\n===== {}: =====", algorithm_name);
+	        graph.printPath(path, dis);
+	        std::println("执行时间: {} 纳秒", execution_time.count());
 	    }
 	}
-
-
 
 	/**
 	 * @brief 计算时间与路径
