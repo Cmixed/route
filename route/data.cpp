@@ -9,25 +9,74 @@ namespace route
 	 *
 	 *****************************************************************/
 
+	/* 基础方法 */
 	/**
-	 * @brief 打印图的结构。
+	 * @brief 添加一个顶点到图中。
+	 * @param vertex 要添加的顶点。
 	 */
-	inline void WGraph::printGraph() const
+	inline void WGraph::addVertex(const std::shared_ptr<Object>& vertex)
 	{
-		std::cout << "带权重的图的邻接矩阵表示：\n";
-		for (int i = 0; i < m_vertices; ++i) {
-			for (int j = 0; j < m_vertices; ++j) {
-				if (m_adjMatrix[i][j] == -1) {
-					std::print("∞ ");
-				}
-				else {
-					std::print("{} ", m_adjMatrix[i][j]);
-				}
-			}
-			std::println();
+		if (vertex != nullptr) {
+			// 使用顶点的 id 作为键存储到 map 中
+			m_vertexMap[vertex->m_id] = vertex;
 		}
 	}
 
+	/**
+	 * @brief 批量添加顶点到图中。
+	 * @param vertices 可变参数模板，用于传递多个顶点。
+	 */
+	template <typename... Args>
+	inline void WGraph::addVertices(Args&&... vertices)
+	{
+		(addVertex(std::forward<Args>(vertices)), ...);
+	}
+
+	/**
+	 * @brief 添加一条带权重的边到图中。
+	 * @param src 起始顶点。
+	 * @param dest 目标顶点。
+	 * @param weight 边的权重。
+	 */
+	inline void WGraph::addEdge(int const src, int const dest, int const weight)
+	{
+		if (src >= 0 && src < m_vertices && dest >= 0 && dest < m_vertices && weight > 0) {
+			m_adjMatrix[src][dest] = weight;
+			m_adjMatrix[dest][src] = weight;
+			m_edges++;
+		}
+	}
+
+	/**
+	 * @brief 获取两个顶点之间的边的权重。
+	 * @param src 起始顶点。
+	 * @param dest 目标顶点。
+	 * @return 边的权重，如果顶点无效则返回-1。
+	 */
+	[[nodiscard]] inline int WGraph::getWeight(int const src, int const dest) const
+	{
+		if (src >= 0 && src < m_vertices && dest >= 0 && dest < m_vertices) {
+			return m_adjMatrix[src][dest];
+		}
+		return -1;
+	}
+
+	/**
+	 * @brief 获取指定索引的顶点信息。
+	 * @param id 顶点的索引。
+	 * @return 顶点信息，如果索引无效则返回nullptr。
+	 */
+	[[nodiscard]] inline auto WGraph::getVertex(int const id) const -> std::shared_ptr<Object>
+	{
+		if (auto const it = m_vertexMap.find(id);
+			it != m_vertexMap.end()) {
+			return it->second;
+		}
+		return nullptr;
+	}
+
+
+	/* 路径算法 */
 	/**
 	 * @brief 使用 Dijkstra 算法计算两个顶点之间的最短路径。
 	 * @param start 起始顶点。
@@ -332,315 +381,308 @@ namespace route
 		return {currentPath, finalDistance};
 	}
 
-		/**
-	    * @brief 使用遗传算法和局部搜索优化路径
-	    * 
-	    * @param start 起始点
-	    * @param end 结束点
-	    * @param populationSize 种群大小
-	    * @param generations 迭代次数
-	    * @return std::pair<std::vector<int>, int> 优化后的路径和总距离
-	    */
-		[[nodiscard]] inline auto WGraph::geneticLocalSearchOptimization(
-			int start, int end, int const populationSize, int const generations) const -> std::pair<std::vector<int>, int>
-		{
-			if (start < 0 || start >= m_vertices || end < 0 || end >= m_vertices) {
-				return {{}, -1};
+	/**
+    * @brief 使用遗传算法和局部搜索优化路径
+    * 
+    * @param start 起始点
+    * @param end 结束点
+    * @param populationSize 种群大小
+    * @param generations 迭代次数
+    * @return std::pair<std::vector<int>, int> 优化后的路径和总距离
+    */
+	[[nodiscard]] inline auto WGraph::geneticLocalSearchOptimization(
+		int start, int end, int const populationSize, int const generations) const -> std::pair<std::vector<int>, int>
+	{
+		if (start < 0 || start >= m_vertices || end < 0 || end >= m_vertices) {
+			return {{}, -1};
+		}
+
+		// 初始化种群
+		std::vector<std::vector<int>> population;
+		for (int i = 0; i < populationSize; ++i) {
+			// 贪心初始化
+			std::vector<int> path;
+			path.reserve(m_vertices);
+			path.push_back(start);
+			std::vector<bool> visited(m_vertices, false);
+			visited[start] = true;
+
+			while (path.size() < static_cast<size_t>(m_vertices)) {
+				int lastCity = path.back();
+				int nextCity = -1;
+				int minDistance = std::numeric_limits<int>::max();
+
+				for (int city = 0; city < m_vertices; ++city) {
+					if (!visited[city] && city != lastCity && m_adjMatrix[lastCity][city] != -1) {
+						if (m_adjMatrix[lastCity][city] < minDistance) {
+							minDistance = m_adjMatrix[lastCity][city];
+							nextCity = city;
+						}
+					}
+				}
+
+				if (nextCity == -1) break;
+				path.push_back(nextCity);
+				visited[nextCity] = true;
 			}
 
-			// 初始化种群
-			std::vector<std::vector<int>> population;
-			for (int i = 0; i < populationSize; ++i) {
-				// 贪心初始化
-				std::vector<int> path;
-				path.reserve(m_vertices);
-				path.push_back(start);
-				std::vector<bool> visited(m_vertices, false);
-				visited[start] = true;
+			if (!path.empty() && path.back() != end) {
+				path.push_back(end);
+			}
+			population.push_back(path);
+		}
 
-				while (path.size() < static_cast<size_t>(m_vertices)) {
-					int lastCity = path.back();
-					int nextCity = -1;
-					int minDistance = std::numeric_limits<int>::max();
+		for (int gen = 0; gen < generations; ++gen) {
+			// 交叉操作生成新种群
+			std::vector<std::vector<int>> newPopulation;
+			while (newPopulation.size() < populationSize) {
+				int parent1 = std::rand() % populationSize;
+				int parent2 = std::rand() % populationSize;
+				while (parent1 == parent2) parent2 = std::rand() % populationSize;
 
-					for (int city = 0; city < m_vertices; ++city) {
-						if (!visited[city] && city != lastCity && m_adjMatrix[lastCity][city] != -1) {
-							if (m_adjMatrix[lastCity][city] < minDistance) {
-								minDistance = m_adjMatrix[lastCity][city];
-								nextCity = city;
+				// 交叉操作
+				std::vector<int> child;
+				child.reserve(population[parent1].size());
+
+				int startIdx = std::rand() % (population[parent1].size() - 1);
+				int endIdx = std::rand() % (population[parent1].size() - startIdx) + startIdx;
+
+				std::unordered_set<int> usedCities;
+				for (int i = startIdx; i <= endIdx; ++i) {
+					child.push_back(population[parent1][i]);
+					usedCities.insert(population[parent1][i]);
+				}
+
+				for (int city : population[parent2]) {
+					if (usedCities.find(city) == usedCities.end() && city != child.front() && city != child.
+						back()) {
+						child.push_back(city);
+						usedCities.insert(city);
+					}
+				}
+
+				newPopulation.push_back(child);
+			}
+
+			// 局部搜索优化
+			for (auto& path : newPopulation) {
+				// 2-opt局部搜索
+				bool improved = true;
+				while (improved) {
+					improved = false;
+					for (size_t i = 1; i < path.size() - 2; ++i) {
+						for (size_t j = i + 1; j < path.size(); ++j) {
+							if (j - i == 1) continue;
+
+							std::vector<int> newPath = path;
+							std::reverse(newPath.begin() + i, newPath.begin() + j);
+
+							int currentDist = 0;
+							for (size_t k = 0; k < path.size() - 1; ++k) {
+								currentDist += m_adjMatrix[path[k]][path[k + 1]];
+							}
+
+							int newDist = 0;
+							for (size_t k = 0; k < newPath.size() - 1; ++k) {
+								newDist += m_adjMatrix[newPath[k]][newPath[k + 1]];
+							}
+
+							if (newDist < currentDist) {
+								path = std::move(newPath);
+								improved = true;
 							}
 						}
 					}
-
-					if (nextCity == -1) break;
-					path.push_back(nextCity);
-					visited[nextCity] = true;
 				}
-
-				if (!path.empty() && path.back() != end) {
-					path.push_back(end);
-				}
-				population.push_back(path);
 			}
 
-			for (int gen = 0; gen < generations; ++gen) {
-				// 交叉操作生成新种群
-				std::vector<std::vector<int>> newPopulation;
-				while (newPopulation.size() < populationSize) {
-					int parent1 = std::rand() % populationSize;
-					int parent2 = std::rand() % populationSize;
-					while (parent1 == parent2) parent2 = std::rand() % populationSize;
+			// 合并并选择优胜个体
+			population.insert(population.end(), newPopulation.begin(), newPopulation.end());
+			std::sort(population.begin(), population.end(), [this, start, end](const auto& a, const auto& b)
+			{
+				int distA = 0, distB = 0;
+				for (size_t i = 0; i < a.size() - 1; ++i) distA += m_adjMatrix[a[i]][a[i + 1]];
+				for (size_t i = 0; i < b.size() - 1; ++i) distB += m_adjMatrix[b[i]][b[i + 1]];
+				return distA < distB;
+			});
+			population.resize(populationSize);
+		}
 
-					// 交叉操作
-					std::vector<int> child;
-					child.reserve(population[parent1].size());
-
-					int startIdx = std::rand() % (population[parent1].size() - 1);
-					int endIdx = std::rand() % (population[parent1].size() - startIdx) + startIdx;
-
-					std::unordered_set<int> usedCities;
-					for (int i = startIdx; i <= endIdx; ++i) {
-						child.push_back(population[parent1][i]);
-						usedCities.insert(population[parent1][i]);
-					}
-
-					for (int city : population[parent2]) {
-						if (usedCities.find(city) == usedCities.end() && city != child.front() && city != child.
-							back()) {
-							child.push_back(city);
-							usedCities.insert(city);
-						}
-					}
-
-					newPopulation.push_back(child);
-				}
-
-				// 局部搜索优化
-				for (auto& path : newPopulation) {
-					// 2-opt局部搜索
-					bool improved = true;
-					while (improved) {
-						improved = false;
-						for (size_t i = 1; i < path.size() - 2; ++i) {
-							for (size_t j = i + 1; j < path.size(); ++j) {
-								if (j - i == 1) continue;
-
-								std::vector<int> newPath = path;
-								std::reverse(newPath.begin() + i, newPath.begin() + j);
-
-								int currentDist = 0;
-								for (size_t k = 0; k < path.size() - 1; ++k) {
-									currentDist += m_adjMatrix[path[k]][path[k + 1]];
-								}
-
-								int newDist = 0;
-								for (size_t k = 0; k < newPath.size() - 1; ++k) {
-									newDist += m_adjMatrix[newPath[k]][newPath[k + 1]];
-								}
-
-								if (newDist < currentDist) {
-									path = std::move(newPath);
-									improved = true;
-								}
-							}
-						}
-					}
-				}
-
-				// 合并并选择优胜个体
-				population.insert(population.end(), newPopulation.begin(), newPopulation.end());
-				std::sort(population.begin(), population.end(), [this, start, end](const auto& a, const auto& b)
-				{
-					int distA = 0, distB = 0;
-					for (size_t i = 0; i < a.size() - 1; ++i) distA += m_adjMatrix[a[i]][a[i + 1]];
-					for (size_t i = 0; i < b.size() - 1; ++i) distB += m_adjMatrix[b[i]][b[i + 1]];
-					return distA < distB;
-				});
-				population.resize(populationSize);
-			}
-
-			// 找出最优路径
-			auto bestPathIt = std::min_element(population.begin(), population.end(),
-			                                   [this, start, end](const auto& a, const auto& b)
-			                                   {
-				                                   int distA = 0, distB = 0;
-				                                   for (size_t i = 0; i < a.size() - 1; ++i) distA += m_adjMatrix[a[i]][
+		// 找出最优路径
+		auto bestPathIt = std::min_element(population.begin(), population.end(),
+		                                   [this, start, end](const auto& a, const auto& b)
+		                                   {
+			                                   int distA = 0, distB = 0;
+			                                   for (size_t i = 0; i < a.size() - 1; ++i)
+				                                   distA += m_adjMatrix[a[i]][
 					                                   a[i + 1]];
-				                                   for (size_t i = 0; i < b.size() - 1; ++i) distB += m_adjMatrix[b[i]][
+			                                   for (size_t i = 0; i < b.size() - 1; ++i)
+				                                   distB += m_adjMatrix[b[i]][
 					                                   b[i + 1]];
-				                                   return distA < distB;
-			                                   });
-			std::vector<int> bestPath = *bestPathIt;
-			int bestDistance = 0;
-			for (size_t i = 0; i < bestPath.size() - 1; ++i) {
-				bestDistance += m_adjMatrix[bestPath[i]][bestPath[i + 1]];
-			}
-
-			return {bestPath, bestDistance};
+			                                   return distA < distB;
+		                                   });
+		std::vector<int> bestPath = *bestPathIt;
+		int bestDistance = 0;
+		for (size_t i = 0; i < bestPath.size() - 1; ++i) {
+			bestDistance += m_adjMatrix[bestPath[i]][bestPath[i + 1]];
 		}
 
-		/**
-		 * @brief 打印最短路径及其总距离。
-		 * @param path 最短路径。
-		 * @param distance 总距离。
-		 */
-		inline void WGraph::printPurePath(const std::vector<int>& path, int const distance)
-		{
-			if (path.empty()) {
-				std::println("No path found.");
-				return;
-			}
+		return {bestPath, bestDistance};
+	}
 
-			std::print("Shortest path: ");
-			for (size_t i = 0; i < path.size(); ++i) {
-				std::cout << path[i];
-				if (i != path.size() - 1) {
-					std::print(" -> ");
-				}
-			}
-			std::println();
-			std::println("Total distance: {}", distance);
-		}
-
-		/**
-		 * @brief 打印最短路径及其总距离。
-		 * @param path 最短路径。
-		 * @param distance 总距离。
-		 */
-		inline void WGraph::printPath(const std::vector<int>& path, int const distance) const
-		{
-			if (path.empty()) {
-				std::println("未找到路径.");
-				return;
-			}
-
-			std::print("最短路径为: ");
-			for (size_t i = 0; i < path.size(); ++i) {
-				if (auto it = m_vertexMap.find(path[i]);
-					it != m_vertexMap.end()) {
-					std::print("{}", it->second->m_name);
+	/* 打印 */
+	/**
+	 * @brief 打印图的结构。
+	 */
+	inline void WGraph::printGraph() const
+	{
+		std::cout << "带权重的图的邻接矩阵表示：\n";
+		for (int i = 0; i < m_vertices; ++i) {
+			for (int j = 0; j < m_vertices; ++j) {
+				if (m_adjMatrix[i][j] == -1) {
+					std::print("∞ ");
 				}
 				else {
-					std::print("{}", path[i]);
-				}
-				if (i != path.size() - 1) {
-					std::print(" -> ");
+					std::print("{} ", m_adjMatrix[i][j]);
 				}
 			}
 			std::println();
-			std::println("总距离: {}", distance);
+		}
+	}
+
+	/**
+	 * @brief 打印最短路径及其总距离。
+	 * @param path 最短路径。
+	 * @param distance 总距离。
+	 */
+	inline void WGraph::printPath(const std::vector<int>& path, int const distance) const
+	{
+		if (path.empty()) {
+			std::println("未找到路径.");
+			return;
 		}
 
-		/**
-		 * @brief 从文件中读取图数据
-		 * 
-		 * 该函数尝试打开指定的文件，并解析其中的内容以构建图的顶点和边。
-		 * 文件中的每一行代表一个顶点或一条边，格式如下：
-		 * - 顶点：Vertex <名称> <ID> <位置X> <位置Y> [<属性>]
-		 * - 边：Edge <源顶点ID> <目标顶点ID> <权重>
-		 * 
-		 * @param filename 文件路径
-		 * @return true 如果文件成功打开并解析
-		 * @return false 如果文件无法打开或解析过程中出现错误
-		 */
-		[[nodiscard]] inline bool WGraph::readFromFile(const std::string& filename)
-		{
-			std::ifstream file(filename);
-			if (!file.is_open()) {
-				std::cerr << "无法打开文件: " << filename << "\n";
-				return false;
+		std::print("最短路径为: ");
+		for (size_t i = 0; i < path.size(); ++i) {
+			if (auto it = m_vertexMap.find(path[i]);
+				it != m_vertexMap.end()) {
+				std::print("{}", it->second->m_name);
+			}
+			else {
+				std::print("{}", path[i]);
+			}
+			if (i != path.size() - 1) {
+				std::print(" -> ");
+			}
+		}
+		std::println();
+		std::println("总距离: {}", distance);
+	}
+
+	/* 文件 IO */
+	/**
+	 * @brief 从文件中读取图数据
+	 * 
+	 * 该函数尝试打开指定的文件，并解析其中的内容以构建图的顶点和边。
+	 * 文件中的每一行代表一个顶点或一条边，格式如下：
+	 * - 顶点：Vertex <名称> <ID> <位置X> <位置Y> [<属性>]
+	 * - 边：Edge <源顶点ID> <目标顶点ID> <权重>
+	 * 
+	 * @param filename 文件路径
+	 * @return true 如果文件成功打开并解析
+	 * @return false 如果文件无法打开或解析过程中出现错误
+	 */
+	[[nodiscard]] inline bool WGraph::readFromFile(const std::string& filename)
+	{
+		std::ifstream file(filename);
+		if (!file.is_open()) {
+			std::cerr << "无法打开文件: " << filename << "\n";
+			return false;
+		}
+
+		std::string line;
+		while (std::getline(file, line)) {
+			std::istringstream iss(line);
+			std::vector<std::string> tokens;
+			std::string token;
+			while (iss >> token) {
+				tokens.push_back(token);
 			}
 
-			std::string line;
-			while (std::getline(file, line)) {
-				std::istringstream iss(line);
-				std::vector<std::string> tokens;
-				std::string token;
-				while (iss >> token) {
-					tokens.push_back(token);
-				}
+			if (tokens.empty()) {
+				continue;
+			}
 
-				if (tokens.empty()) {
+			if (tokens[0] == "Vertex") {
+				if (tokens.size() < 5) {
+					std::cerr << "顶点格式错误: " << line << "\n";
 					continue;
 				}
 
-				if (tokens[0] == "Vertex") {
-					if (tokens.size() < 5) {
-						std::cerr << "顶点格式错误: " << line << "\n";
-						continue;
-					}
-
-					std::string const& name = tokens[1];
-					IntType id = std::stoi(tokens[2]);
-					int locationA = std::stoi(tokens[3]);
-					int locationB = std::stoi(tokens[4]);
-					auto attr = Attribute::Empty;
-					if (tokens.size() >= 6) {
-						int attrValue = std::stoi(tokens[5]);
-						attr = static_cast<Attribute>(attrValue);
-					}
-
-					auto vertex = Object::create(name, id, {locationA, locationB}, attr);
-					addVertex(vertex);
+				std::string const& name = tokens[1];
+				IntType id = std::stoi(tokens[2]);
+				int locationA = std::stoi(tokens[3]);
+				int locationB = std::stoi(tokens[4]);
+				auto attr = Attribute::Empty;
+				if (tokens.size() >= 6) {
+					int attrValue = std::stoi(tokens[5]);
+					attr = static_cast<Attribute>(attrValue);
 				}
-				else if (tokens[0] == "Edge") {
-					if (tokens.size() < 4) {
-						std::cerr << "边格式错误: " << line << "\n";
-						continue;
-					}
 
-					int src = std::stoi(tokens[1]);
-					int dest = std::stoi(tokens[2]);
-					int weight = std::stoi(tokens[3]);
-					addEdge(src, dest, weight);
-				}
+				auto vertex = Object::create(name, id, {locationA, locationB}, attr);
+				addVertex(vertex);
 			}
+			else if (tokens[0] == "Edge") {
+				if (tokens.size() < 4) {
+					std::cerr << "边格式错误: " << line << "\n";
+					continue;
+				}
 
-			file.close();
-			return true;
+				int src = std::stoi(tokens[1]);
+				int dest = std::stoi(tokens[2]);
+				int weight = std::stoi(tokens[3]);
+				addEdge(src, dest, weight);
+			}
 		}
 
-		/**
-		 * @brief 将图数据写入文件
-		 * 
-		 * 该函数将当前图的所有顶点和边信息写入指定的文件。
-		 * 文件格式与 readFromFile 函数读取的格式相同，便于后续读取和解析。
-		 * 
-		 * @param filename 文件路径
-		 * @return true 如果文件成功打开并写入
-		 * @return false 如果文件无法打开或写入过程中出现错误
-		 */
-		[[nodiscard]] inline bool WGraph::writeToFile(const std::string& filename) const
-		{
-			std::ofstream file(filename);
-			if (!file.is_open()) {
-				std::cerr << "无法打开文件: " << filename << "\n";
-				return false;
-			}
+		file.close();
+		return true;
+	}
 
-			// 写入顶点
-			for (const auto& vertex : m_vertexMap | std::views::values) {
-				file << std::format("Vertex {} {} {} {} {}\n",
-				                    vertex->m_name, vertex->m_id, vertex->m_location.first, vertex->m_location.second,
-				                    static_cast<int>(vertex->m_attr));
-			}
-			// 写入边
-			for (int i = 0; i < m_vertices; ++i) {
-				for (int j = i + 1; j < m_vertices; ++j) {
-					if (m_adjMatrix[i][j] != -1) {
-						file << std::format("Edge {} {} {}\n", i, j, m_adjMatrix[i][j]);
-					}
+	/**
+	 * @brief 将图数据写入文件
+	 * 
+	 * 该函数将当前图的所有顶点和边信息写入指定的文件。
+	 * 文件格式与 readFromFile 函数读取的格式相同，便于后续读取和解析。
+	 * 
+	 * @param filename 文件路径
+	 * @return true 如果文件成功打开并写入
+	 * @return false 如果文件无法打开或写入过程中出现错误
+	 */
+	[[nodiscard]] inline bool WGraph::writeToFile(const std::string& filename) const
+	{
+		std::ofstream file(filename);
+		if (!file.is_open()) {
+			std::cerr << "无法打开文件: " << filename << "\n";
+			return false;
+		}
+
+		// 写入顶点
+		for (const auto& vertex : m_vertexMap | std::views::values) {
+			file << std::format("Vertex {} {} {} {} {}\n",
+			                    vertex->m_name, vertex->m_id, vertex->m_location.first, vertex->m_location.second,
+			                    static_cast<int>(vertex->m_attr));
+		}
+		// 写入边
+		for (int i = 0; i < m_vertices; ++i) {
+			for (int j = i + 1; j < m_vertices; ++j) {
+				if (m_adjMatrix[i][j] != -1) {
+					file << std::format("Edge {} {} {}\n", i, j, m_adjMatrix[i][j]);
 				}
 			}
+		}
 
-			file.close();
-			return true;
-		}		
-
-
-		// 工具函数
-		
-
-
-
+		file.close();
+		return true;
+	}
 }

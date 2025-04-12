@@ -5,6 +5,16 @@
 
 namespace route
 {
+	/*****************************************************************
+	 *
+	 *		Tool 函数声明
+	 *
+	 *****************************************************************/
+
+	/* 打印函数 */
+	inline void print_pure_path(const std::vector<int>& path, int const distance);
+
+	/* 遗传算法配套函数 */
 	inline bool is_valid_path(const std::vector<int>& path, const std::vector<std::vector<int>>& adj_matrix);
 	inline auto initialize_population(int const start, int const end, int const vertices,
 	                                  int const population_size) -> std::vector<std::vector<int>>;
@@ -16,6 +26,37 @@ namespace route
 		std::mt19937& rng) -> std::vector<int>;
 	inline void mutate(std::vector<int>& path, std::mt19937& rng);
 
+	/*****************************************************************
+	 *
+	 *		Tool 函数实现
+	 *
+	 *****************************************************************/
+
+	/* 打印函数 */
+	/**
+	 * @brief 打印最短路径及其总距离。
+	 * @param path 最短路径。
+	 * @param distance 总距离。
+	 */
+	inline void print_pure_path(const std::vector<int>& path, int const distance)
+	{
+		if (path.empty()) {
+			std::println("No path found.");
+			return;
+		}
+
+		std::print("Shortest path: ");
+		for (size_t i = 0; i < path.size(); ++i) {
+			std::cout << path[i];
+			if (i != path.size() - 1) {
+				std::print(" -> ");
+			}
+		}
+		std::println();
+		std::println("Total distance: {}", distance);
+	}
+
+	/* 遗传算法配套函数 */
 	/**
 	 * @brief 检查路径是否有效
 	 * 
@@ -180,7 +221,6 @@ namespace route
 		return population.back();
 	}
 
-
 	/**
 	 * @brief 执行交叉操作生成子代路径
 	 * 
@@ -263,4 +303,5 @@ namespace route
 		// 交换两个位置上的节点
 		std::swap(path[i], path[j]);
 	}
+
 }
