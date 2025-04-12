@@ -76,7 +76,7 @@ auto print_path_result(route::WGraph const& graph, vector<PathTimePair> const& p
             std::println("执行时间: {} 纳秒", execution_time.count());
             break;
         case 3:
-            std::println("\n遗传局部搜索:\n");
+            std::println("\n=====遗传局部搜索:\n");
             graph.printPath(path, dis);
             std::println("执行时间: {} 纳秒", execution_time.count());
             break;
