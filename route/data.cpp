@@ -1,5 +1,6 @@
-﻿#include "data.hpp"
+﻿// data 的具体实现
 
+#include "data.hpp"
 
 namespace route
 {
@@ -391,7 +392,7 @@ namespace route
     * @return std::pair<std::vector<int>, int> 优化后的路径和总距离
     */
 	[[nodiscard]] inline auto WGraph::geneticLocalSearchOptimization(
-		int start, int end, int const populationSize, int const generations) const -> std::pair<std::vector<int>, int>
+		int start, int end, int const population_size, int const generations) const -> std::pair<std::vector<int>, int>
 	{
 		if (start < 0 || start >= m_vertices || end < 0 || end >= m_vertices) {
 			return {{}, -1};
@@ -399,7 +400,7 @@ namespace route
 
 		// 初始化种群
 		std::vector<std::vector<int>> population;
-		for (int i = 0; i < populationSize; ++i) {
+		for (int i = 0; i < population_size; ++i) {
 			// 贪心初始化
 			std::vector<int> path;
 			path.reserve(m_vertices);
@@ -435,10 +436,10 @@ namespace route
 		for (int gen = 0; gen < generations; ++gen) {
 			// 交叉操作生成新种群
 			std::vector<std::vector<int>> newPopulation;
-			while (newPopulation.size() < populationSize) {
-				int parent1 = std::rand() % populationSize;
-				int parent2 = std::rand() % populationSize;
-				while (parent1 == parent2) parent2 = std::rand() % populationSize;
+			while (newPopulation.size() < population_size) {
+				int parent1 = std::rand() % population_size;
+				int parent2 = std::rand() % population_size;
+				while (parent1 == parent2) parent2 = std::rand() % population_size;
 
 				// 交叉操作
 				std::vector<int> child;
@@ -505,7 +506,7 @@ namespace route
 				for (size_t i = 0; i < b.size() - 1; ++i) distB += m_adjMatrix[b[i]][b[i + 1]];
 				return distA < distB;
 			});
-			population.resize(populationSize);
+			population.resize(population_size);
 		}
 
 		// 找出最优路径

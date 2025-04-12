@@ -9,10 +9,7 @@
 
 namespace route {
 
-    struct PathEndpoints {
-        int startVertex{}; ///< 起始顶点
-        int endVertex{};   ///< 结束顶点
-    };
+    
 
     //class ThreadPool {
     //public:

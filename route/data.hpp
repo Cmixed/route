@@ -1,4 +1,4 @@
-﻿// Purpose: Define the data module for the route project.
+﻿// Purpose: 数据结构
 // Author:  Cmixed
 #pragma once
 
@@ -21,6 +21,22 @@ namespace route
 	template <typename T>
 	class BaseObject;
 	using Object = BaseObject<IntType>;
+
+	/**
+	 * 起始点类
+	 */
+	struct PathEndpoints {
+	    int startVertex{}; ///< 起始顶点
+	    int endVertex{};   ///< 结束顶点
+    };
+
+	/**
+	 *	路径与时间类
+	 */
+	struct PathTimePair {
+	    std::pair<std::vector<int>, int> path_result;
+	    std::chrono::nanoseconds execution_time;
+	};
 
 	/**
 	 * @brief 枚举类，表示物体的属性。
@@ -46,7 +62,7 @@ namespace route
 		std::pair<T, T> m_location{}; ///< location 物体的位置。
 		Attribute m_attr{Attribute::Empty}; ///< attr 物体的属性。
 
-		/// 构造函数列表
+		/* 构造函数列表 */
 		explicit(true) BaseObject(std::string name, T id, std::pair<T, T> location, Attribute const attr)
 			: m_name(std::move(name)), m_id(id), m_location(std::move(location)), m_attr(attr)
 		{
@@ -73,17 +89,16 @@ namespace route
 		}
 	};
 
-
 	/**
 	 * @brief 类，表示一个带权邻接矩阵图。
 	 */
 	class WeightedAdjMatrixGraph
 	{
 	private:
-		IntType m_vertices;
-		IntType m_edges;
-		std::map<IntType, std::shared_ptr<Object>> m_vertexMap; // 使用 map 存储顶点，键为顶点的 id
-		std::vector<std::vector<IntType>> m_adjMatrix;
+		IntType m_vertices;	///> 顶点
+		IntType m_edges;	///> 边
+		std::map<IntType, std::shared_ptr<Object>> m_vertexMap; ///> 使用 map 存储顶点，键为顶点的 id
+		std::vector<std::vector<IntType>> m_adjMatrix; ///> 
 
 	public:
 		/**
@@ -110,14 +125,13 @@ namespace route
 		const -> std::pair<std::vector<int>, int>;
 		[[nodiscard]] auto localSearchOptimization(int const start, int const end)
 		const -> std::pair<std::vector<int>, int>;
-		[[nodiscard]] auto geneticLocalSearchOptimization(int start, int end, int const populationSize = 50,
+		[[nodiscard]] auto geneticLocalSearchOptimization(int start, int end, int const population_size = 50,
 		                                                  int const generations = 100)
 		const -> std::pair<std::vector<int>, int>;
 
 		/* 打印 */
 		void printGraph() const;
 		void printPath(const std::vector<int>& path, int const distance) const;
-		
 
 		/* 文件 IO */
 		[[nodiscard]] bool readFromFile(const std::string& filename);

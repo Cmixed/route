@@ -138,7 +138,7 @@
     <ClCompile Include="data.cpp" />
     <ClCompile Include="data.hpp" />
     <ClCompile Include="main.cpp" />
-    <ClCompile Include="menu.cpp" />
+    <ClCompile Include="menu.hpp" />
     <ClCompile Include="pch.cpp" />
     <ClCompile Include="thread_pool.cpp" />
   </ItemGroup>
