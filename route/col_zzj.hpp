@@ -74,7 +74,7 @@ namespace zzj
 		explicit Color(ColorName const color_name, std::string_view const sv);
 		~Color();
 		// member functions
-		void switchOutFrontColor(ColorName color_name) const;
+		void switchOutFrontColor(ColorName const color_name) const;
 		void display() const;
 	};
 
@@ -157,30 +157,43 @@ namespace zzj
 		Color tempColor{m_colorName};
 	}
 
-	inline void Color::switchOutFrontColor(ColorName color_name) const
+	inline void Color::switchOutFrontColor(ColorName const color_name) const
 	{
 		using enum ColorName;
 
+		std::string color{};
+
 		switch (color_name) {
-		case DEFAULT: std::cout << "\033[0m";
+		case DEFAULT:
+			color = "\033[0m";
 			break;
-		case RED: std::cout << "\033[31m";
+		case RED:
+			color = "\033[31m";
 			break;
-		case GREEN: std::cout << "\033[32m";
+		case GREEN:
+			color = "\033[32m";
 			break;
-		case YELLOW: std::cout << "\033[33m";
+		case YELLOW:
+			color = "\033[33m";
 			break;
-		case BLUE: std::cout << "\033[34m";
+		case BLUE:
+			color = "\033[34m";
 			break;
-		case MAGENTA: std::cout << "\033[35m";
+		case MAGENTA:
+			color = "\033[35m";
 			break;
-		case CYAN: std::cout << "\033[36m";
+		case CYAN:
+			color = "\033[36m";
 			break;
-		case WHITE: std::cout << "\033[37m";
+		case WHITE:
+			color = "\033[37m";
 			break;
-		default: std::cout << "{[Error]ColorName is not valid!}";
+		default:
+			color = "{[Error]ColorName is not valid!}";
 			break;
 		}
+
+		std::println("{}", color);
 	}
 }
 
@@ -193,6 +206,7 @@ namespace zzj
 		{
 			return Log{std::string(str, len)};
 		}
+
 		inline Color operator""_col(char const* str, size_t const len)
 		{
 			return Color{color_ctrl.default_color, std::string(str, len)};
