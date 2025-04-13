@@ -2,8 +2,8 @@
 #include "data.cpp"
 #include "menu.hpp"
 #include "col_zzj.hpp"
+#include "file_io.hpp"
 #include "thread_pool.cpp"
-
 
 using namespace route;
 using namespace std::literals;
@@ -16,8 +16,9 @@ int main() {
 
     // 创建图对象
     route::WeightedAdjMatrixGraph graph(city_num);
+    
 
-    if (graph.readFromFile("graph_output.txt")) {
+    if (read_from_file(graph, "graph.txt")) {
         std::println("*****文件读入成功.*****\n");
     } else {
         std::cerr << "文件读入失败!" << "\n";
@@ -37,6 +38,7 @@ int main() {
     std::vector<std::future<std::vector<PathTimePair>>> f_v_v;
     f_v_v.reserve(p_v.size() * (algo_num + 1));
 
+
 	for (const auto& endpoints : p_v) {
 		// 启动异步任务
 		f_v_v.emplace_back(std::async(std::launch::async,
@@ -54,7 +56,7 @@ int main() {
     }
 
     // 将图数据写入文件
-    if (graph.writeToFile("graph_output.txt"))
+    if (write_to_file(graph, "graph_output.txt" ))
     {
         std::println("*****图数据保存成功!*****");
     }
@@ -65,12 +67,14 @@ int main() {
     }
 
 
-    std::println("额外测试");
+    std::println("额外算法测试");
 	route::PathEndPoints endpoints{1,3};
 	auto const path_results = route::calculate_path_times(graph, endpoints);
 
     print_path_result(graph, algo_num, path_results);
 
+
+    std::println("颜色库");
     auto x{ "111"_log };
     auto y{ "222"_col };
 
@@ -81,7 +85,6 @@ int main() {
     }
 
     std::println("444");
-
 
     return 0;
 }

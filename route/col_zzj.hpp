@@ -189,7 +189,7 @@ namespace zzj
 			color = "\033[37m";
 			break;
 		default:
-			color = "{[Error]ColorName is not valid!}";
+			color = "\033[0m{[Error]ColorName is not valid!}";
 			break;
 		}
 

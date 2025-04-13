@@ -1,10 +1,155 @@
-﻿
-Vertex A 0 0 0 1
-Vertex B 1 1 1 1
-Vertex C 2 2 2 1
-Vertex D 3 3 3 1
-Edge 0 1 5
-Edge 0 2 3
-Edge 1 2 2
-Edge 1 3 1
-Edge 2 3 4
+﻿# 支持 “#” 号 行注释
+
+# [VERTEX] LISTS
+[Vertex] C0 0 82 73 0
+[Vertex] C1 1 852 373 0
+[Vertex] C2 2 3 44 0
+[Vertex] C3 3 852 373 0
+[Vertex] C4 4 356 225 0
+[Vertex] C5 5 248 583 0
+[Vertex] C6 6 51 803 0
+[Vertex] C7 7 810 45 0
+[Vertex] C8 8 701 438 0
+[Vertex] C9 9 119 352 0
+[Vertex] C10 10 677 96 0
+[Vertex] C11 11 212 786 0
+[Vertex] C12 12 955 40 0
+[Vertex] C13 13 329 431 0
+[Vertex] C14 14 475 6 0
+[Vertex] C15 15 529 326 0
+[Vertex] C16 16 731 31 0
+[Vertex] C17 17 858 363 0
+[Vertex] C18 18 658 702 0
+[Vertex] C19 19 688 630 0
+
+# [EDGE] LISTS
+[Edge] 0 1 169
+[Edge] 0 3 514
+[Edge] 0 4 174
+[Edge] 0 5 204
+[Edge] 0 6 495
+[Edge] 0 8 365
+[Edge] 0 9 224
+[Edge] 0 10 454
+[Edge] 0 11 406
+[Edge] 0 14 416
+[Edge] 0 15 204
+[Edge] 0 16 538
+[Edge] 1 2 445
+[Edge] 1 4 95
+[Edge] 1 7 427
+[Edge] 1 8 310
+[Edge] 1 10 288
+[Edge] 1 12 559
+[Edge] 1 14 261
+[Edge] 1 15 105
+[Edge] 1 16 371
+[Edge] 1 18 486
+[Edge] 1 19 438
+[Edge] 2 3 866
+[Edge] 2 5 535
+[Edge] 2 6 710
+[Edge] 2 7 779
+[Edge] 2 10 644
+[Edge] 2 11 715
+[Edge] 2 13 450
+[Edge] 2 14 451
+[Edge] 2 16 702
+[Edge] 2 18 873
+[Edge] 3 4 517
+[Edge] 3 6 909
+[Edge] 3 7 330
+[Edge] 3 8 164
+[Edge] 3 9 733
+[Edge] 3 10 327
+[Edge] 3 13 526
+[Edge] 3 14 525
+[Edge] 3 16 362
+[Edge] 3 18 382
+[Edge] 4 5 373
+[Edge] 4 7 488
+[Edge] 4 8 405
+[Edge] 4 10 345
+[Edge] 4 11 578
+[Edge] 4 14 249
+[Edge] 4 15 200
+[Edge] 4 16 422
+[Edge] 4 18 564
+[Edge] 4 19 522
+[Edge] 5 6 295
+[Edge] 5 8 475
+[Edge] 5 10 648
+[Edge] 5 11 206
+[Edge] 5 13 171
+[Edge] 5 14 619
+[Edge] 5 15 381
+[Edge] 5 17 648
+[Edge] 5 18 427
+[Edge] 6 7 1072
+[Edge] 6 8 745
+[Edge] 6 9 456
+[Edge] 6 10 944
+[Edge] 6 11 162
+[Edge] 6 12 1183
+[Edge] 6 13 464
+[Edge] 6 14 903
+[Edge] 6 17 919
+[Edge] 6 18 615
+[Edge] 6 19 659
+[Edge] 7 8 407
+[Edge] 7 9 756
+[Edge] 7 10 142
+[Edge] 7 13 616
+[Edge] 7 15 396
+[Edge] 7 16 79
+[Edge] 7 17 321
+[Edge] 7 19 597
+[Edge] 8 9 588
+[Edge] 8 11 599
+[Edge] 8 12 472
+[Edge] 8 16 408
+[Edge] 8 17 173
+[Edge] 8 18 268
+[Edge] 9 10 613
+[Edge] 9 12 892
+[Edge] 9 13 224
+[Edge] 9 14 496
+[Edge] 9 15 411
+[Edge] 9 16 691
+[Edge] 9 18 643
+[Edge] 10 11 831
+[Edge] 10 13 483
+[Edge] 10 14 220
+[Edge] 10 15 272
+[Edge] 10 16 85
+[Edge] 10 19 533
+[Edge] 11 12 1052
+[Edge] 11 13 372
+[Edge] 11 16 916
+[Edge] 11 18 453
+[Edge] 11 19 500
+[Edge] 12 13 738
+[Edge] 12 15 512
+[Edge] 12 16 223
+[Edge] 12 17 337
+[Edge] 12 18 726
+[Edge] 12 19 647
+[Edge] 13 14 449
+[Edge] 13 15 226
+[Edge] 13 16 568
+[Edge] 13 17 533
+[Edge] 13 18 426
+[Edge] 13 19 410
+[Edge] 14 15 324
+[Edge] 14 16 257
+[Edge] 14 17 523
+[Edge] 14 18 719
+[Edge] 14 19 658
+[Edge] 15 16 357
+[Edge] 15 17 330
+[Edge] 16 17 355
+[Edge] 16 18 675
+[Edge] 16 19 600
+[Edge] 17 18 393
+[Edge] 17 19 316
+[Edge] 18 19 78

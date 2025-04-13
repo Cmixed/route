@@ -113,14 +113,14 @@ namespace route
 		IntType m_vertices;	///> 顶点
 		IntType m_edges;	///> 边
 		std::map<IntType, std::shared_ptr<Object>> m_vertexMap; ///> 使用 map 存储顶点，键为顶点的 id
-		std::vector<std::vector<IntType>> m_adjMatrix; ///> 
+		std::vector<std::vector<IntType>> m_adjMatrix; ///> 边权重
 
 	public:
 		/**
 		 * @brief 构造一个新的 WeightedAdjMatrixGraph 对象。
 		 * @param v 图中的顶点数。
 		 */
-		explicit WeightedAdjMatrixGraph(int const v) : m_vertices(v), m_edges(0)
+		explicit(true) WeightedAdjMatrixGraph(int const v) : m_vertices(v), m_edges(0)
 		{
 			m_adjMatrix.resize(v, std::vector<int>(v, -1));
 		}
@@ -148,8 +148,9 @@ namespace route
 		void printGraph() const;
 		void printPath(const std::vector<int>& path, int const distance) const;
 
-		/* 文件 IO */
-		[[nodiscard]] bool readFromFile(const std::string& filename);
-		[[nodiscard]] bool writeToFile(const std::string& filename) const;
+		/* 友元文件 IO 函数 */
+		friend [[nodiscard]] bool read_from_file(WGraph& graph, const std::string& filename);
+		friend [[nodiscard]] bool write_to_file(WGraph& graph, const std::string& filename);
+
 	};
 };
