@@ -16,9 +16,8 @@ namespace route
 				std::vector<PathTimePair> const& path_time_results);
 
 	/* 使用路径计算函数 */
-	inline auto sum_path(route::WGraph const& graph, PathEndpoints const pep) -> std::vector<PathTimePair>;
-	template<typename... Args>
-	inline auto calculate_path_times(route::WGraph const& graph, PathEndpoints const pep)
+	inline auto sum_path(route::WGraph const& graph, PathEndPoints const pep) -> std::vector<PathTimePair>;
+	inline auto calculate_path_times(route::WGraph const& graph, PathEndPoints const pep)
 		-> std::vector<PathTimePair>;
 
 
@@ -74,7 +73,7 @@ namespace route
 	 * @param pep 
 	 * @return 
 	 */
-	inline auto sum_path(route::WGraph const& graph, PathEndpoints const pep) -> std::vector<PathTimePair>
+	inline auto sum_path(route::WGraph const& graph, PathEndPoints const pep) -> std::vector<PathTimePair>
 	{
 	    std::vector<PathTimePair> results;
 
@@ -96,20 +95,18 @@ namespace route
 	}
 
 	/**
-	 * @brief 计算不同路径算法的时间与结果
+	 * @brief 计算不同路径算法的时间与结果（多线程版本，优化内存分配）
 	 * 
-	 * 该函数对多种路径查找算法进行性能测试，返回包含路径和执行时间的结果集
+	 * 该函数对多种路径查找算法进行性能测试，返回包含路径和执行时间的结果集。
+	 * 使用多线程并行执行每个算法的性能测试，提高性能，并预分配内存以避免多次重新分配。
 	 * 
 	 * @param graph 路径图结构
 	 * @param pep 路径端点信息
 	 * @return 包含路径和执行时间的结构体集合
 	 */
-	template<typename... Args>
-	inline auto calculate_path_times(route::WGraph const& graph, PathEndpoints const pep) 
+	inline auto calculate_path_times(route::WGraph const& graph, PathEndPoints const pep) 
 	    -> std::vector<PathTimePair>
 	{
-	    std::vector<PathTimePair> results;
-
 	    // 使用 std::function 统一算法的调用方式
 	    using AlgorithmFunc = std::function<std::pair<std::vector<int>, int>(route::WGraph const&, int, int)>;
 
@@ -127,15 +124,29 @@ namespace route
 	        auto path_result = algorithm(graph, pep.startVertex, pep.endVertex);
 	        const auto end_time = std::chrono::high_resolution_clock::now();
 
-	        results.emplace_back(PathTimePair{
+	        return PathTimePair{
 	            std::move(path_result),
 	            std::chrono::duration_cast<std::chrono::nanoseconds>(end_time - start_time)
-	        });
+	        };
 	    };
 
-	    // 遍历算法映射并执行测量
+	    // 预分配 futures 和 results 的容量，避免多次内存重新分配
+	    std::vector<std::future<PathTimePair>> futures;
+	    futures.reserve(algorithm_map.size());
+
+	    std::vector<PathTimePair> results;
+	    results.reserve(algorithm_map.size());
+
+	    // 使用多线程并行执行每个算法的性能测量
 	    for (const auto& [name, algorithm] : algorithm_map) {
-	        measure_performance(name, algorithm);
+	        futures.emplace_back(std::async(std::launch::async, [name, algorithm, &graph, &pep, &measure_performance]() {
+	            return measure_performance(name, algorithm);
+	        }));
+	    }
+
+	    // 收集所有线程的结果
+	    for (auto& future : futures) {
+	        results.emplace_back(future.get());
 	    }
 
 	    return results;

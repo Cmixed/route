@@ -11,9 +11,9 @@ using namespace std::chrono;
 constexpr int algorithm_number = 4;
 constexpr int CITY_COUNT = 20;
 
-PathEndpoints p1(0, CITY_COUNT - 1);
-PathEndpoints p2(1, CITY_COUNT - 1);
-PathEndpoints p3(1, CITY_COUNT/2);
+PathEndPoints p1(0, CITY_COUNT - 1);
+PathEndPoints p2(1, CITY_COUNT - 1);
+PathEndPoints p3(1, CITY_COUNT/2);
 
 int main() {
 
@@ -56,23 +56,13 @@ int main() {
         return 1;
     }
 
-	route::PathEndpoints endpoints;
+	route::PathEndPoints endpoints;
 	endpoints.startVertex = p1.startVertex;
 	endpoints.endVertex = p1.endVertex;
 
 	auto path_results = route::calculate_path_times(graph, endpoints);
 
     print_path_result(graph, algorithm_number, path_results);
-
-	//for (const auto& result : path_results) {
-	//    std::cout << "Path: ";
-	//    for (auto vertex : result.path_result.first) {
-	//        std::cout << vertex << " ";
-	//    }
-	//    std::cout << "\nDistance: " << result.path_result.second 
-	//              << " | Execution time: " << result.execution_time.count() << " ns\n";
-	//}
-
 
     return 0;
 }

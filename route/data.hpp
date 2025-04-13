@@ -22,7 +22,7 @@ namespace route
 	class BaseObject;
 	using Object = BaseObject<IntType>;
 
-	enum class Algorithm {
+	enum class Algorithm : std::uint_fast8_t {
 	    SimulatedAnnealing,
 	    GeneticAlgorithm,
 	    Dijkstra,
@@ -33,7 +33,7 @@ namespace route
 	/**
 	 * 起始点类
 	 */
-	struct PathEndpoints {
+	struct PathEndPoints {
 	    int startVertex{}; ///< 起始顶点
 	    int endVertex{};   ///< 结束顶点
     };
@@ -49,7 +49,7 @@ namespace route
 	/**
 	 * @brief 枚举类，表示物体的属性。
 	 */
-	enum class Attribute : std::uint8_t
+	enum class Attribute : std::uint_fast8_t
 	{
 		Empty = 0, ///< 无特定属性。
 		Place, ///< 表示一个位置。
@@ -72,7 +72,7 @@ namespace route
 
 		/* 构造函数列表 */
 		explicit(true) BaseObject(std::string name, T id, std::pair<T, T> location, Attribute const attr)
-			: m_name(std::move(name)), m_id(id), m_location(std::move(location)), m_attr(attr)
+			: m_name(std::move(name)), m_id(id), m_location(std::move(location)), m_attr(attr)    
 		{
 		}
 
