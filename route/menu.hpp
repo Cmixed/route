@@ -3,6 +3,8 @@
 #include "pch.hpp"
 #include "data.hpp"
 
+constexpr bool is_linux{ false };
+
 namespace route
 {
 	/*****************************************************************
@@ -19,6 +21,9 @@ namespace route
 	inline auto sum_path(route::WGraph const& graph, PathEndPoints const pep) -> std::vector<PathTimePair>;
 	inline auto calculate_path_times(route::WGraph const& graph, PathEndPoints const pep)
 		-> std::vector<PathTimePair>;
+
+	/* 界面函数 */
+	inline bool init_menu() { return{}; };
 
 	/*****************************************************************
 	 *

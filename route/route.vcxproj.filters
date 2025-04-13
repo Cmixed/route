@@ -33,15 +33,15 @@
     <ClCompile Include="menu.hpp">
       <Filter>头文件</Filter>
     </ClCompile>
+    <ClCompile Include="color.hpp">
+      <Filter>头文件</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="file_io.hpp">
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="pch.hpp">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="termcolor.hpp">
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="tool.hpp">

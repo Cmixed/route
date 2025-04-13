@@ -135,6 +135,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="color.hpp" />
     <ClCompile Include="data.cpp" />
     <ClCompile Include="data.hpp" />
     <ClCompile Include="main.cpp" />
@@ -145,7 +146,6 @@
   <ItemGroup>
     <ClInclude Include="file_io.hpp" />
     <ClInclude Include="pch.hpp" />
-    <ClInclude Include="termcolor.hpp" />
     <ClInclude Include="tool.hpp" />
   </ItemGroup>
   <ItemGroup>

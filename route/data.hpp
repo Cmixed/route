@@ -31,7 +31,7 @@ namespace route
 
 	/* 全局变量 */
 	/// 算法总数
-	 constexpr int algorithm_number = count_enum_values<Algorithm, 
+	 constexpr int algo_num = count_enum_values<Algorithm, 
 	            Algorithm::SimulatedAnnealing,
 	            Algorithm::GeneticAlgorithm,
 	            Algorithm::Dijkstra,
