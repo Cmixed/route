@@ -12,8 +12,8 @@ namespace route
 	 *****************************************************************/
 
 	/* 两个友元函数 */
-	[[nodiscard]] inline bool read_from_file(WGraph& graph, const std::string& filename);
-	[[nodiscard]] inline bool write_to_file(WGraph& graph, const std::string& filename);
+	// inline [[nodiscard]] bool read_from_file(WGraph& graph, const std::string& filename);
+	// inline [[nodiscard]] bool write_to_file(WGraph& graph, const std::string& filename);
 
 	/*****************************************************************
 	 *

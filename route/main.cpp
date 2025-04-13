@@ -80,10 +80,14 @@ int main() {
 
     std::ignore = Color(ColorName::GREEN, "1111");
     {
-	    std::ignore = Color(ColorName::RED);
+	    std::ignore = Color(ColorName::RED, "RED");
 	    std::println("333");
     }
 
+    {
+        auto x = Color(ColorName::RED);
+        std::println("333");
+    }
     std::println("444");
 
     return 0;
