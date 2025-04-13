@@ -20,8 +20,6 @@ namespace route
 	inline auto calculate_path_times(route::WGraph const& graph, PathEndPoints const pep)
 		-> std::vector<PathTimePair>;
 
-
-
 	/*****************************************************************
 	 *
 	 *		MENU 函数定义
@@ -38,10 +36,10 @@ namespace route
 	 */
 	inline void print_path_result(route::WGraph const& graph, int const algorithm_number, std::vector<PathTimePair> const& path_time_results)
 	{
-	    static int order{ 0 };
+	    static std::uint_fast32_t order{ 1 };
 
 	    std::println("\n----------第 {} 个路径规划----------\n", order); ++order;
-	    for (int i = 0; i < algorithm_number; i++) {
+	    for (int i = 0; i < algorithm_number; ++i) {
 	        auto const& [path_result, execution_time] = path_time_results[i];
 	        auto const& [path, dis] = path_result;
 

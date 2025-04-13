@@ -8,7 +8,7 @@ using namespace std;
 using namespace route;
 using namespace std::chrono;
 
-constexpr int algorithm_number = 4;
+
 constexpr int CITY_COUNT = 20;
 
 PathEndPoints p1(0, CITY_COUNT - 1);

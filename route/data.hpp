@@ -23,12 +23,19 @@ namespace route
 	using Object = BaseObject<IntType>;
 
 	enum class Algorithm : std::uint_fast8_t {
-	    SimulatedAnnealing,
+	    SimulatedAnnealing = 0,
 	    GeneticAlgorithm,
 	    Dijkstra,
-	    GeneticLocalSearch
+	    GeneticLocalSearch,
 	};
 
+	/* 全局变量 */
+	/// 算法总数
+	 constexpr int algorithm_number = count_enum_values<Algorithm, 
+	            Algorithm::SimulatedAnnealing,
+	            Algorithm::GeneticAlgorithm,
+	            Algorithm::Dijkstra,
+	            Algorithm::GeneticLocalSearch>();
 
 	/**
 	 * 起始点类

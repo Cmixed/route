@@ -14,6 +14,10 @@ namespace route
 	/* 打印函数 */
 	inline void print_pure_path(const std::vector<int>& path, int const distance);
 
+	/* 工具函数 */
+	template <typename Enum, Enum... Values>
+	inline constexpr int count_enum_values();
+
 	/* 遗传算法配套函数 */
 	inline bool is_valid_path(const std::vector<int>& path, const std::vector<std::vector<int>>& adj_matrix);
 	inline auto initialize_population(int const start, int const end, int const vertices,
@@ -25,6 +29,8 @@ namespace route
 	inline auto crossover(const std::vector<int>& parent1, const std::vector<int>& parent2,
 		std::mt19937& rng) -> std::vector<int>;
 	inline void mutate(std::vector<int>& path, std::mt19937& rng);
+
+
 
 	/*****************************************************************
 	 *
@@ -52,9 +58,27 @@ namespace route
 				std::print(" -> ");
 			}
 		}
-		std::println();
-		std::println("Total distance: {}", distance);
+		std::println("\nTotal distance: {}", distance);
 	}
+
+	/* 工具函数 */
+
+	/// 模板元编程：计算枚举项的数量
+	template <typename Enum, Enum... Values>
+	struct EnumCounter {
+	    static constexpr int value = sizeof...(Values);
+	};
+
+	/**
+	 * @brief 获取枚举类的大小
+	 * @tparam Enum 
+	 * @return 
+	 */
+	template <typename Enum, Enum... Values>
+	inline constexpr int count_enum_values() {
+	    return EnumCounter<Enum, Values...>::value;
+	}
+
 
 	/* 遗传算法配套函数 */
 	/**
