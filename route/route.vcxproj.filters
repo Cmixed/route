@@ -33,7 +33,7 @@
     <ClCompile Include="menu.hpp">
       <Filter>头文件</Filter>
     </ClCompile>
-    <ClCompile Include="color.hpp">
+    <ClCompile Include="col_zzj.hpp">
       <Filter>头文件</Filter>
     </ClCompile>
   </ItemGroup>

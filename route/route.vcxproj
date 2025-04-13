@@ -135,7 +135,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="color.hpp" />
+    <ClCompile Include="col_zzj.hpp" />
     <ClCompile Include="data.cpp" />
     <ClCompile Include="data.hpp" />
     <ClCompile Include="main.cpp" />

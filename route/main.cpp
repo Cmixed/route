@@ -1,13 +1,14 @@
 ﻿#include "pch.hpp"
 #include "data.cpp"
 #include "menu.hpp"
+#include "col_zzj.hpp"
 #include "thread_pool.cpp"
 
 
-using namespace std;
 using namespace route;
-using namespace std::chrono;
-
+using namespace std::literals;
+using namespace zzj;
+using namespace zzj::literals;
 
 constexpr int city_num = 20;
 
@@ -63,6 +64,8 @@ int main() {
 	auto path_results = route::calculate_path_times(graph, endpoints);
 
     print_path_result(graph, algo_num, path_results);
+
+    std::ignore = Color(ColorName::GREEN, "1111");
 
     return 0;
 }

@@ -1,23 +1,18 @@
 ﻿#pragma once
 
 #include <iostream>
+#include <print>
 #include <format>
 #include <string>
 #include <string_view>
 #include <source_location>
 #include <filesystem>
 
-
 namespace zzj
 {
 	/***************************************************************************************** */
 	// for control
 	/***************************************************************************************** */
-
-	struct ColorCtrlSettings
-	{
-		bool is_ToDefault{true};
-	} inline color_ctrl;
 
 	enum class ColorName : std::uint_fast8_t
 	{
@@ -30,6 +25,12 @@ namespace zzj
 		CYAN,
 		WHITE
 	};
+
+	struct ColorCtrlSettings
+	{
+		bool is_ToDefault{true};
+		ColorName default_color{ColorName::YELLOW};
+	} inline color_ctrl;
 
 	// main LogCtrl
 	struct LogCtrlSettings
@@ -70,6 +71,7 @@ namespace zzj
 		// class functions
 		Color() = default;
 		explicit Color(ColorName const color_name);
+		explicit Color(ColorName const color_name, std::string_view const sv);
 		~Color();
 		// member functions
 		void switchOutFrontColor(ColorName color_name) const;
@@ -119,7 +121,7 @@ namespace zzj
 			if (log_ctrl.LogTerminalCtrl.is_logColumnNumber) {
 				m_outMessage += std::format("[Col:{}]", m_location.column());
 			}
-			std::cout << std::format("{}\n", m_outMessage);
+			std::println("{}", m_outMessage);
 		}
 	}
 
@@ -136,10 +138,17 @@ namespace zzj
 		switchOutFrontColor(color_name);
 	}
 
+	inline Color::Color(ColorName const color_name, std::string_view const sv)
+		: m_colorName{color_name}
+	{
+		switchOutFrontColor(color_name);
+		std::println("{}", sv);
+	}
+
 	inline Color::~Color()
 	{
 		if (color_ctrl.is_ToDefault) {
-			switchOutFrontColor(ColorName::DEFAULT);
+			switchOutFrontColor(color_ctrl.default_color);
 		}
 	}
 
@@ -180,9 +189,13 @@ namespace zzj
 {
 	inline namespace literals
 	{
-		inline zzj::Log operator""_log(char const* str, size_t const len)
+		inline Log operator""_log(char const* str, size_t const len)
 		{
-			return zzj::Log{std::string(str, len)};
+			return Log{std::string(str, len)};
+		}
+		inline Color operator""_col(char const* str, size_t const len)
+		{
+			return Color{color_ctrl.default_color, std::string(str, len)};
 		}
 	}
 }
