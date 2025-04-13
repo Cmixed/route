@@ -78,12 +78,12 @@ namespace route
 	    std::vector<PathTimePair> results;
 
 	    // 定义一个 lambda 表达式，用于测量算法执行时间并存储结果
-	    auto measure_time = [&](auto&& algorithm, auto&& ...args) {
-	        auto start = std::chrono::high_resolution_clock::now();
-	        auto path = algorithm(std::forward<decltype(args)>(args)...);
-	        auto end = std::chrono::high_resolution_clock::now();
-	        results.push_back({path, std::chrono::duration_cast<std::chrono::nanoseconds>(end - start)});
-	    };
+		auto measure_time = [&]<typename Algorithm, typename... Args>(Algorithm&& algorithm, Args&&... args) {
+		    auto const start = std::chrono::high_resolution_clock::now();
+		    auto path = std::forward<Algorithm>(algorithm)(std::forward<Args>(args)...);
+		    auto const end = std::chrono::high_resolution_clock::now();
+		    results.push_back({path, std::chrono::duration_cast<std::chrono::nanoseconds>(end - start)});
+		};
 
 	    // 使用 lambda 表达式测量不同算法的执行时间
 	    measure_time([&](auto start, auto end) { return graph.localSearchOptimization(start, end); }, pep.startVertex, pep.endVertex);
