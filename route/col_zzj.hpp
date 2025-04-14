@@ -1,5 +1,8 @@
 ﻿#pragma once
 
+#ifndef COL_ZZJ_HPP
+#define COL_ZZJ_HPP
+
 #include <iostream>
 #include <print>
 #include <format>
@@ -215,3 +218,5 @@ namespace zzj
 		}
 	}
 }
+
+#endif

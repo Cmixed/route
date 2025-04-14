@@ -1,5 +1,9 @@
 ﻿#pragma once
 
+#ifndef MENU_HPP
+#define MENU_HPP
+
+
 #include "pch.hpp"
 #include "data.hpp"
 
@@ -29,7 +33,6 @@ namespace route
 	class Menu
 	{
 	};
-
 
 
 	/*****************************************************************
@@ -163,3 +166,5 @@ namespace route
 	}
 
 }
+
+#endif

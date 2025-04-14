@@ -1,5 +1,8 @@
 ﻿#pragma once
 
+#ifndef PCH_HPP
+#define PCH_HPP
+
 #include <iostream>
 #include <memory>
 #include <string>
@@ -32,4 +35,4 @@
 #include <coroutine>
 #include <future>
 
-//#include "termcolor.hpp"
+#endif

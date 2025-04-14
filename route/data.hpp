@@ -2,9 +2,13 @@
 // Author:  Cmixed
 #pragma once
 
+#ifndef DATA_HPP
+#define DATA_HPP
+
 #include "pch.hpp"
 
 #include "tool.hpp"
+#include "file_io.hpp"
 
 constexpr bool is_debug{false};
 
@@ -149,8 +153,10 @@ namespace route
 		void printPath(const std::vector<int>& path, int const distance) const;
 
 		/* 友元文件 IO 函数 */
-		[[nodiscard]] friend bool read_from_file(WGraph& graph, const std::string& filename);
-		[[nodiscard]] friend bool write_to_file(WGraph& graph, const std::string& filename);
+		inline friend bool read_from_file(WGraph& graph, const std::string& filename);
+		inline friend bool write_to_file(WGraph& graph, const std::string& filename);
 
 	};
 };
+
+#endif
