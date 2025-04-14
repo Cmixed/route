@@ -36,6 +36,9 @@
     <ClCompile Include="col_zzj.hpp">
       <Filter>头文件</Filter>
     </ClCompile>
+    <ClCompile Include="file_io.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="file_io.hpp">

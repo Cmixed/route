@@ -138,6 +138,7 @@
     <ClCompile Include="col_zzj.hpp" />
     <ClCompile Include="data.cpp" />
     <ClCompile Include="data.hpp" />
+    <ClCompile Include="file_io.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="menu.hpp" />
     <ClCompile Include="pch.cpp" />
