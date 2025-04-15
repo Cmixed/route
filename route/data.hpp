@@ -153,8 +153,8 @@ namespace route
 		void printPath(const std::vector<int>& path, int const distance) const;
 
 		/* 友元文件 IO 函数 */
-		inline friend bool read_from_file(WGraph& graph, const std::string& filename);
-		inline friend bool write_to_file(WGraph& graph, const std::string& filename);
+		friend inline bool read_from_file(WGraph& graph, const std::string& filename);
+		friend inline bool write_to_file(WGraph& graph, const std::string& filename);
 
 	};
 };

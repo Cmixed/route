@@ -16,8 +16,8 @@ namespace route
 	class WeightedAdjMatrixGraph;
 
 	/* 两个友元函数 */
-	inline bool read_from_file(WeightedAdjMatrixGraph& graph, const std::string& filename);
-	inline bool write_to_file(WeightedAdjMatrixGraph& graph, const std::string& filename);
+	bool read_from_file(WeightedAdjMatrixGraph& graph, const std::string& filename);
+	bool write_to_file(WeightedAdjMatrixGraph& graph, const std::string& filename);
 
 }
 
