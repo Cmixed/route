@@ -17,6 +17,8 @@ namespace route
 	/* 工具函数 */
 	template <typename Enum, Enum... Values>
 	inline constexpr int count_enum_values();
+	inline auto input_test()
+		-> std::vector<int>;
 
 	/* 遗传算法配套函数 */
 	inline bool is_valid_path(const std::vector<int>& path, const std::vector<std::vector<int>>& adj_matrix);
@@ -79,6 +81,24 @@ namespace route
 	    return EnumCounter<Enum, Values...>::value;
 	}
 
+	/**
+	 *	@brief 输入测试
+	 */
+	inline auto input_test()
+		-> std::vector<int>
+	{
+		std::vector<int> vv;
+
+		for (auto val : std::ranges::istream_view<int>(std::cin)
+			| std::views::take_while([](const auto& v) {return v < 5; })
+			| std::views::transform([](const auto& v) {return v * 2; })) {
+			std::println("> {}", val);
+			vv.push_back(val);
+		}
+		std::println("end input");
+
+		return vv;
+	}
 
 	/* 遗传算法配套函数 */
 	/**

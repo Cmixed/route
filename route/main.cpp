@@ -67,12 +67,20 @@ int main() {
     }
 
 
+    auto menu = Menu();
+
+    menu.statusBar();
+    menu.fresh();
+    
+
     std::println("额外算法测试");
 	route::PathEndPoints endpoints{1,3};
 	auto const path_results = route::calculate_path_times(graph, endpoints);
 
     print_path_result(graph, algo_num, path_results);
 
+
+    menu.statusBarFr();
 
     std::println("颜色库");
     auto x{ "111"_log };
@@ -89,6 +97,10 @@ int main() {
         std::println("333");
     }
     std::println("444");
+
+
+    Color::changeColor(ColorName::GREEN);
+    input_test();
 
     return 0;
 }

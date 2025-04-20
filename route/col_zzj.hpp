@@ -15,9 +15,16 @@ namespace zzj
 {
 	/*****************************************************************
 	 *
-	 *		Tool 函数声明
+	 *		col_zzj 声明
 	 *
 	 *****************************************************************/
+
+	struct SystemInfo
+	{
+		bool is_windows{ true };
+		bool is_linux{ false };
+		bool is_mac{ false };
+	} constexpr system_info;
 
 	enum class ColorName : std::uint_fast8_t
 	{
@@ -64,9 +71,11 @@ namespace zzj
 	} inline log_ctrl;
 
 
-	/***************************************************************************************** */
-	// for class
-	/***************************************************************************************** */
+	/*****************************************************************
+	 *
+	 *		Tool 类声明
+	 *
+	 *****************************************************************/
 	class Color
 	{
 	private:
@@ -75,12 +84,18 @@ namespace zzj
 	public:
 		// class functions
 		Color() = default;
+		Color(Color const&) = default;
+		Color& operator=(Color const&) = default;
 		explicit Color(ColorName const color_name);
 		explicit Color(ColorName const color_name, std::string_view const sv);
 		~Color();
+
+		Color(Color&&) = delete;
+		Color& operator=(Color&&) = delete;
 		// member functions
-		void switchOutFrontColor(ColorName const color_name) const;
+		static void switchOutFrontColor(ColorName const color_name);
 		void display() const;
+		static void changeColor(ColorName const color_name);
 	};
 
 	class Log
@@ -95,15 +110,22 @@ namespace zzj
 	public:
 		Log(std::string_view message, ColorName display_color,
 		    std::source_location const& location);
+		Log& operator=(const Log&) = default;
+		Log(Log const&) = default;
+
+		Log(Log&&) = delete;
+		Log& operator=(Log&&) = delete;
 		~Log() = default;
 		// member functions
 		void display();
 	};
 
 
-	/***************************************************************************************** */
-	// for coding
-	/***************************************************************************************** */
+	/*****************************************************************
+	 *
+	 *		Tool 函数
+	 *
+	 *****************************************************************/
 
 	inline Log::Log(std::string_view const message, ColorName const display_color = ColorName::YELLOW,
 	                std::source_location const& location = std::source_location::current())
@@ -133,7 +155,7 @@ namespace zzj
 	inline void Log::display()
 	{
 		m_color.display();
-		std::cout << std::format("{}\n", m_outMessage);
+		std::print("{}\n", m_outMessage);
 	}
 
 
@@ -162,7 +184,12 @@ namespace zzj
 		Color tempColor{m_colorName};
 	}
 
-	inline void Color::switchOutFrontColor(ColorName const color_name) const
+	inline void Color::changeColor(ColorName const color_name)
+	{
+		switchOutFrontColor(color_name);
+	}
+
+	inline void Color::switchOutFrontColor(ColorName const color_name)
 	{
 		using enum ColorName;
 
