@@ -1,5 +1,5 @@
 ﻿#include "pch.hpp"
-#include "data.hpp"
+#include "data.cpp"
 #include <random>
 
 using namespace std;
@@ -62,7 +62,7 @@ int main() {
     }
 
     // 将图数据写入文件
-    if (graph.writeToFile("graph_output.txt"))
+    if (write_to_file(graph,"graph_output.txt"))
     {
         std::println("图数据保存成功!");
     }

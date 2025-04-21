@@ -6,6 +6,7 @@
 
 #include "pch.hpp"
 #include "data.hpp"
+#include "file_io.hpp"
 #include "col_zzj.hpp"
 #include <cstdlib>
 
@@ -20,6 +21,9 @@ namespace route
 	 *
 	 *****************************************************************/
 
+	/* 全局变量 */
+	constexpr int option_num{ 10 };
+
 	/* 打印函数 */
 	inline void print_path_result(route::WGraph const& graph, int const algorithm_number,
 	                              std::vector<PathTimePair> const& path_time_results);
@@ -29,8 +33,11 @@ namespace route
 	inline auto calculate_path_times(route::WGraph const& graph, PathEndPoints const pep)
 		-> std::vector<PathTimePair>;
 
-	/* 界面函数 */
-	inline bool init_menu() { return {}; };
+	inline std::array<std::string, option_num> menu_option{
+		"进行计算",
+		"11"
+	};
+
 
 	/* 界面类 */
 	class Menu
@@ -38,16 +45,26 @@ namespace route
 	private:
 		using TimePoint = std::chrono::high_resolution_clock::time_point;
 
-		std::string m_name{"路径规划系统："};
+		std::string m_systemName{"路径规划系统"};
+		std::string m_userName{ "user" };
+		int m_optionId{1};
 		int m_option{1};
 
-		bool is_fresh{false};
+		bool is_fresh{ false };
+		bool is_readFile{ false };
+		bool is_writeFile{ false };
 
 		TimePoint m_startTime{std::chrono::high_resolution_clock::now()};
-		TimePoint m_nowTime{m_startTime};
+		TimePoint m_latestTime{m_startTime};
 
 	public:
 		Menu() = default;
+		explicit(false) Menu(std::string_view const un)
+			: m_userName{ un } {
+		}
+		explicit(false) Menu(std::string_view const sn, std::string_view const un)
+			: m_systemName{ sn }, m_userName{ un } {
+		}
 		Menu(Menu&&) = default;
 		~Menu() = default;
 		Menu(Menu const&) = default;
@@ -56,8 +73,12 @@ namespace route
 
 		void statusBar();
 		void statusBarFr();
-		static void fresh();
+		void fresh();
 		void options();
+		auto readFile(WGraph& graph, std::string const& file_name)
+		-> std::optional<int>;
+		auto writeFile(WGraph& graph, std::string const& file_name)
+		-> std::optional<int>;
 	};
 
 
@@ -69,15 +90,40 @@ namespace route
 
 	inline void Menu::statusBar()
 	{
-		auto col = Color(ColorName::BLUE);
 
-		std::println("{}", m_name);
+		auto nowTime = std::chrono::system_clock::now();
+		auto const latestTime = std::chrono::high_resolution_clock::now();
+		auto dur = latestTime - m_latestTime;
+		m_latestTime = latestTime;
+
+		auto col1 = Color(ColorName::CYAN);
+		std::print("[{1:}][{0:}]", m_userName, m_systemName);
+		auto col2 = Color(ColorName::GREEN);
+		std::println("[{:%Y-%m-%d %H:%M}][{}{:%S}s]", nowTime, "Times：", dur);
+		auto col3 = Color(ColorName::MAGENTA);
+		if (is_readFile) {
+			std::print("[文件读取成功]");
+		} else {
+			std::print("[未读取文件]");
+		}
+		if (is_writeFile) {
+			std::print("[文件写入成功]");
+		} else {
+			std::print("[未写入文件]");
+		}
+		auto col4 = Color(ColorName::RED);
+		std::println("[Bar End]");
+
+		is_fresh = false;
 	}
 
 	inline void Menu::statusBarFr()
 	{
-		this->statusBar();
-		Menu::fresh();
+		if (!is_fresh) {
+			Menu::fresh();
+			this->statusBar();
+		}
+		is_fresh = false;
 	}
 
 	inline void Menu::fresh()
@@ -92,7 +138,51 @@ namespace route
 			else {
 				std::system("clear");
 			}
+			is_fresh = { true };
 		}
+	}
+
+	inline auto Menu::readFile(WGraph& graph, std::string const& file_name)
+	-> std::optional<int>
+	{
+		is_readFile = false;
+		if (read_from_file(graph, file_name)) {
+			is_readFile = true;
+			return { 1 };
+		} else {
+			std::cerr << "文件读入失败!" << "\n";
+			return { 0 };
+		}
+	}
+	inline auto Menu::writeFile(WGraph& graph, std::string const& file_name)
+	-> std::optional<int>
+	{
+		is_writeFile = false;
+	    if (write_to_file(graph, file_name))
+	    {
+			is_writeFile = true;
+			return { 1 };
+	    }
+	    else
+	    {
+	        std::cerr << "图数据保存失败!" << "\n";
+			return { 0 };
+	    }
+	}
+
+
+
+	inline void options()
+	{
+		std::vector<int> vv;
+
+		for (auto val : std::ranges::istream_view<int>(std::cin)
+			| std::views::take_while([](const auto& v) {return v < 5; })
+			| std::views::transform([](const auto& v) {return v * 2; })) {
+			std::println("> {}", val);
+			vv.push_back(val);
+		}
+		std::println("end input");
 	}
 
 	/**

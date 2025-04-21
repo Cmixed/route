@@ -86,12 +86,12 @@ namespace zzj
 		Color() = default;
 		Color(Color const&) = default;
 		Color& operator=(Color const&) = default;
+		Color& operator=(Color&&) = default;
 		explicit Color(ColorName const color_name);
 		explicit Color(ColorName const color_name, std::string_view const sv);
 		~Color();
 
 		Color(Color&&) = delete;
-		Color& operator=(Color&&) = delete;
 		// member functions
 		static void switchOutFrontColor(ColorName const color_name);
 		void display() const;
@@ -181,7 +181,7 @@ namespace zzj
 
 	inline void Color::display() const
 	{
-		Color tempColor{m_colorName};
+		switchOutFrontColor(m_colorName);
 	}
 
 	inline void Color::changeColor(ColorName const color_name)

@@ -14,16 +14,11 @@ constexpr int city_num = 20;
 
 int main() {
 
-    // 创建图对象
-    route::WeightedAdjMatrixGraph graph(city_num);
-    
+    // 创建对象
+    auto graph = WGraph(city_num);
+    auto menu = Menu("User");
 
-    if (read_from_file(graph, "graph.txt")) {
-        std::println("*****文件读入成功.*****\n");
-    } else {
-        std::cerr << "文件读入失败!" << "\n";
-        return 1;
-    }
+    menu.readFile(graph, "graph.txt");
 
     // 打印图的邻接矩阵
     graph.printGraph();
@@ -55,22 +50,15 @@ int main() {
         }
     }
 
-    // 将图数据写入文件
-    if (write_to_file(graph, "graph_output.txt" ))
-    {
-        std::println("*****图数据保存成功!*****");
+    if (menu.writeFile(graph, "graph_output.txt")) {
+        std::println("ok");
     }
-    else
-    {
-        std::cerr << "图数据保存失败!" << "\n";
-        return 1;
-    }
+    
 
+    std::cin.get(); std::cin.get();
 
-    auto menu = Menu();
-
-    menu.statusBar();
     menu.fresh();
+    menu.statusBar();
     
 
     std::println("额外算法测试");
@@ -99,8 +87,11 @@ int main() {
     std::println("444");
 
 
+
+
     Color::changeColor(ColorName::GREEN);
     input_test();
+
 
     return 0;
 }
