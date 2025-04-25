@@ -94,8 +94,9 @@ namespace zzj
 		Color(Color&&) = delete;
 		// member functions
 		static void switchOutFrontColor(ColorName const color_name);
-		void display() const;
-		static void changeColor(ColorName const color_name);
+		void redisplay() const;
+		static void displayColor(ColorName const cn);
+		void changeColor(ColorName const color_name);
 	};
 
 	class Log
@@ -154,7 +155,7 @@ namespace zzj
 
 	inline void Log::display()
 	{
-		m_color.display();
+		m_color.redisplay();
 		std::print("{}\n", m_outMessage);
 	}
 
@@ -179,14 +180,20 @@ namespace zzj
 		}
 	}
 
-	inline void Color::display() const
+	inline void Color::redisplay() const
 	{
 		switchOutFrontColor(m_colorName);
 	}
 
 	inline void Color::changeColor(ColorName const color_name)
 	{
+		m_colorName = color_name;
 		switchOutFrontColor(color_name);
+	}
+
+	inline void Color::displayColor(ColorName const cn)
+	{
+		switchOutFrontColor(cn);
 	}
 
 	inline void Color::switchOutFrontColor(ColorName const color_name)

@@ -2,6 +2,8 @@
 
 #include "data.hpp"
 
+#include "col_zzj.hpp"
+
 namespace route
 {
 	/*****************************************************************
@@ -532,24 +534,39 @@ namespace route
 	}
 
 	/* 打印 */
-	/**
-	 * @brief 打印图的结构。
-	 */
-	inline void WGraph::printGraph() const
-	{
-		std::cout << "带权重的图的邻接矩阵表示：\n";
-		for (int i = 0; i < m_vertices; ++i) {
-			for (int j = 0; j < m_vertices; ++j) {
-				if (m_adjMatrix[i][j] == -1) {
-					std::print("∞ ");
-				}
-				else {
-					std::print("{} ", m_adjMatrix[i][j]);
-				}
+    /**
+     * @brief 打印图的结构，带有行号和列号。
+     */
+    inline void WGraph::printGraph() const
+    {
+        std::println("带权重的图的邻接矩阵表示：");
+        // 打印列号
+        {
+			auto col = zzj::Color(zzj::ColorName::GREEN);
+	        std::print(R"(L\C  )");
+	        for (int j = 1; j < m_vertices+1; ++j) {
+	            std::print("{: <5} ", j);
+	        }
+        }
+        std::println();
+        // 打印矩阵
+        for (int i = 1; i < m_vertices; ++i) {
+            // 打印行号
+			{
+				auto col = zzj::Color(zzj::ColorName::CYAN);
+				std::print("{: <4} ", i);
 			}
-			std::println();
-		}
-	}
+            for (int j = 0; j < m_vertices; ++j) {
+                if (m_adjMatrix[i][j] == -1) {
+                    std::print("{: <5} ", "∞");
+                }
+                else {
+                    std::print("{: <5} ", m_adjMatrix[i][j]);
+                }
+            }
+            std::println();
+        }
+    }
 
 	/**
 	 * @brief 打印最短路径及其总距离。

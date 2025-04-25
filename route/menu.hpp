@@ -12,6 +12,7 @@
 
 using namespace zzj;
 using namespace zzj::literals;
+using namespace std::literals;
 
 namespace route
 {
@@ -25,18 +26,32 @@ namespace route
 	constexpr int option_num{ 10 };
 
 	/* 打印函数 */
-	inline void print_path_result(route::WGraph const& graph, int const algorithm_number,
+	void print_path_result(route::WGraph const& graph, int const algorithm_number,
 	                              std::vector<PathTimePair> const& path_time_results);
 
 	/* 使用路径计算函数 */
-	inline auto sum_path(route::WGraph const& graph, PathEndPoints const pep) -> std::vector<PathTimePair>;
-	inline auto calculate_path_times(route::WGraph const& graph, PathEndPoints const pep)
+	auto sum_path(route::WGraph const& graph, PathEndPoints const pep) -> std::vector<PathTimePair>;
+	auto calculate_path_times(route::WGraph const& graph, PathEndPoints const pep)
 		-> std::vector<PathTimePair>;
 
 	inline std::array<std::string, option_num> menu_option{
 		"进行计算",
 		"11"
 	};
+
+	auto paths_task(WGraph const& g, std::vector<PathEndPoints> const& pep)
+		-> std::optional<std::vector<std::vector<PathTimePair>>>;
+
+
+	enum class MessageType : std::int_fast8_t
+	{
+		NORMAL,
+		MESSAGE,
+		WARNING,
+		ERROR
+	};
+
+	using MsgTy = MessageType;
 
 
 	/* 界面类 */
@@ -45,12 +60,14 @@ namespace route
 	private:
 		using TimePoint = std::chrono::high_resolution_clock::time_point;
 
-		std::string m_systemName{"路径规划系统"};
+		std::string m_systemName{ "路径规划系统" };
 		std::string m_userName{ "user" };
-		int m_optionId{1};
-		int m_option{1};
+		int m_optionId{ 1 };
+		int m_option{ 1 };
 
+		bool is_ready{ false };
 		bool is_fresh{ false };
+		bool is_wait{ false };
 		bool is_readFile{ false };
 		bool is_writeFile{ false };
 
@@ -71,14 +88,19 @@ namespace route
 		Menu& operator=(Menu const&) = default;
 		Menu& operator=(Menu&&) = default;
 
+		void printMsg(MsgTy const ty, std::string_view msg);
+
 		void statusBar();
 		void statusBarFr();
 		void fresh();
+		void waitEnter();
 		void options();
 		auto readFile(WGraph& graph, std::string const& file_name)
 		-> std::optional<int>;
 		auto writeFile(WGraph& graph, std::string const& file_name)
 		-> std::optional<int>;
+
+		void ready();
 	};
 
 
@@ -88,18 +110,32 @@ namespace route
 	 *
 	 *****************************************************************/
 
+	inline void Menu::printMsg(MsgTy const ty, std::string_view msg)
+	{
+		auto col = Color(ColorName::DEFAULT);
+		switch (ty) {
+		case MsgTy::MESSAGE:
+			col.changeColor(ColorName::CYAN);
+			break;
+		default:
+			col.changeColor(ColorName::DEFAULT);
+		}
+	}
+
+
 	inline void Menu::statusBar()
 	{
-
-		auto nowTime = std::chrono::system_clock::now();
 		auto const latestTime = std::chrono::high_resolution_clock::now();
-		auto dur = latestTime - m_latestTime;
+		auto const dur = latestTime - m_latestTime;
+
 		m_latestTime = latestTime;
 
 		auto col1 = Color(ColorName::CYAN);
 		std::print("[{1:}][{0:}]", m_userName, m_systemName);
 		auto col2 = Color(ColorName::GREEN);
-		std::println("[{:%Y-%m-%d %H:%M}][{}{:%S}s]", nowTime, "Times：", dur);
+		std::println("[{:%Y-%m-%d %H:%M}][{}{}s]", 
+			std::chrono::system_clock::now(), 
+			"Times：", std::chrono::duration_cast<std::chrono::seconds>(dur).count());
 		auto col3 = Color(ColorName::MAGENTA);
 		if (is_readFile) {
 			std::print("[文件读取成功]");
@@ -112,7 +148,7 @@ namespace route
 			std::print("[未写入文件]");
 		}
 		auto col4 = Color(ColorName::RED);
-		std::println("[Bar End]");
+		std::println("[End]");
 
 		is_fresh = false;
 	}
@@ -142,6 +178,23 @@ namespace route
 		}
 	}
 
+	inline void Menu::waitEnter()
+	{
+		auto markedWords{ "按下回车键以继续"s };
+
+		is_wait = true;
+		{
+			auto col = Color{ ColorName::YELLOW };
+			std::print("\n{}", markedWords);
+			std::cin.clear();
+			if (std::cin.rdbuf()->in_avail() > 0) {
+				std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+			}
+			std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+		}
+		is_wait = false;
+	}
+
 	inline auto Menu::readFile(WGraph& graph, std::string const& file_name)
 	-> std::optional<int>
 	{
@@ -154,6 +207,7 @@ namespace route
 			return { 0 };
 		}
 	}
+
 	inline auto Menu::writeFile(WGraph& graph, std::string const& file_name)
 	-> std::optional<int>
 	{
@@ -171,7 +225,6 @@ namespace route
 	}
 
 
-
 	inline void options()
 	{
 		std::vector<int> vv;
@@ -183,6 +236,13 @@ namespace route
 			vv.push_back(val);
 		}
 		std::println("end input");
+	}
+
+	inline void Menu::ready()
+	{
+		is_ready = true;
+		auto col = Color(ColorName::GREEN);
+		std::println("\n系统就绪！");
 	}
 
 	/**
@@ -317,6 +377,44 @@ namespace route
 		}
 
 		return results;
+	}
+
+
+	/**
+	 * @brief 异步计算多个路径的通行时间。
+	 *
+	 * @param g 有向加权图。
+	 * @param pep 路径端点列表。
+	 * @return std::optional<std::vector<std::vector<PathTimePair>>> 包含路径通行时间的二维向量，
+	 *         如果异步任务正常完成则返回有效值，否则返回空。
+	 */
+	inline auto paths_task(WGraph const& g, std::vector<PathEndPoints> const& pep)
+	    -> std::optional<std::vector<std::vector<PathTimePair>>>
+	{
+	    std::vector<std::future<std::vector<PathTimePair>>> f_pt;
+	    f_pt.reserve(pep.size() * (algo_num + 1));
+
+	    for (const auto& endpoints : pep) {
+	        // 启动异步任务，计算每对端点的路径通行时间
+	        f_pt.emplace_back(std::async(std::launch::async,
+	        [g, endpoints]() { return route::calculate_path_times(g, endpoints); }));
+	    }
+
+	    std::vector<std::vector<PathTimePair>> path_results;
+
+	    // 等待所有异步任务完成并收集结果
+	    for (auto& future : f_pt) {
+	        try {
+	            path_results.push_back(future.get());
+	        } catch (const std::exception& e) {
+	            // 如果某个异步任务抛出异常，记录错误并返回空值
+	            std::println(std::cerr, "异步任务出错:{}", e.what());
+	            return {};
+	        }
+	    }
+
+	    // 返回所有路径的通行时间结果
+	    return path_results;
 	}
 }
 

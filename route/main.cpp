@@ -12,11 +12,19 @@ using namespace zzj::literals;
 
 constexpr int city_num = 20;
 
+
+
 int main() {
 
     // 创建对象
+    color_ctrl.default_color = ColorName::WHITE;
+
     auto graph = WGraph(city_num);
     auto menu = Menu("User");
+
+    menu.statusBarFr();
+    menu.ready();
+    menu.waitEnter();
 
     menu.readFile(graph, "graph.txt");
 
@@ -30,35 +38,20 @@ int main() {
 		PathEndPoints{1, city_num / 2}
     };
 
-    std::vector<std::future<std::vector<PathTimePair>>> f_v_v;
-    f_v_v.reserve(p_v.size() * (algo_num + 1));
-
-
-	for (const auto& endpoints : p_v) {
-		// 启动异步任务
-		f_v_v.emplace_back(std::async(std::launch::async,
-		[graph, endpoints]() { return route::calculate_path_times(graph, endpoints); }));
-	}
-
-	// 等待所有异步任务完成并打印结果
-    for (auto& future : f_v_v) {
-        try {
-            auto path_results = future.get(); // 获取异步任务的结果
-            print_path_result(graph, algo_num, path_results);
-        } catch (const std::exception& e) {
-            std::cerr << "异步任务出错: " << e.what() << "\n";
+    if (auto res = paths_task(graph, p_v);
+        res.has_value()) {
+        for (const auto& pre_res : res.value()) {
+			print_path_result(graph, algo_num, pre_res);
         }
+    } else {
+        std::println(std::cerr, "error!");
     }
 
-    if (menu.writeFile(graph, "graph_output.txt")) {
-        std::println("ok");
-    }
-    
+    menu.writeFile(graph, "graph.txt");
 
-    std::cin.get(); std::cin.get();
 
-    menu.fresh();
-    menu.statusBar();
+    menu.waitEnter();
+    menu.statusBarFr();
     
 
     std::println("额外算法测试");
@@ -68,7 +61,6 @@ int main() {
     print_path_result(graph, algo_num, path_results);
 
 
-    menu.statusBarFr();
 
     std::println("颜色库");
     auto x{ "111"_log };
@@ -89,7 +81,7 @@ int main() {
 
 
 
-    Color::changeColor(ColorName::GREEN);
+    Color::displayColor(ColorName::GREEN);
     input_test();
 
 
@@ -108,3 +100,24 @@ int main() {
 //print_path_result(graph, algo_num, f_res1.get());
 //print_path_result(graph, algo_num, f_res2.get());
 //print_path_result(graph, algo_num, f_res3.get());
+
+
+//   std::vector<std::future<std::vector<PathTimePair>>> f_v_v;
+//   f_v_v.reserve(p_v.size() * (algo_num + 1));
+
+
+//for (const auto& endpoints : p_v) {
+//	// 启动异步任务
+//	f_v_v.emplace_back(std::async(std::launch::async,
+//	[graph, endpoints]() { return route::calculate_path_times(graph, endpoints); }));
+//}
+
+//// 等待所有异步任务完成并打印结果
+//   for (auto& future : f_v_v) {
+//       try {
+//           auto path_results = future.get(); // 获取异步任务的结果
+//           print_path_result(graph, algo_num, path_results);
+//       } catch (const std::exception& e) {
+//           std::println(std::cerr, "异步任务出错:{}", e.what());
+//       }
+//   }
