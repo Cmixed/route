@@ -24,11 +24,12 @@ int main() {
 
     menu.statusBarFr();
     menu.ready();
-    menu.waitEnter();
 
+    menu.printMsg(MsgTy::MESSAGE, "继续以读入文件");
+    menu.waitEnter();
     menu.readFile(graph, "graph.txt");
 
-    // 打印图的邻接矩阵
+    menu.printMsg(MsgTy::MESSAGE, "打印图的邻接矩阵");
     graph.printGraph();
     std::println();
 

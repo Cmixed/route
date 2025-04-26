@@ -46,6 +46,7 @@ namespace route
 	enum class MessageType : std::int_fast8_t
 	{
 		NORMAL,
+		NOTE,
 		MESSAGE,
 		WARNING,
 		ERROR
@@ -60,27 +61,33 @@ namespace route
 	private:
 		using TimePoint = std::chrono::high_resolution_clock::time_point;
 
+		struct StatFlag
+		{
+			bool is_ready{ false };
+			bool is_fresh{ false };
+			bool is_wait{ false };
+			bool is_readFile{ false };
+			bool is_writeFile{ false };
+			bool is_prnMsg{ false };
+		} statFlag;
+
 		std::string m_systemName{ "路径规划系统" };
 		std::string m_userName{ "user" };
+
 		int m_optionId{ 1 };
 		int m_option{ 1 };
 
-		bool is_ready{ false };
-		bool is_fresh{ false };
-		bool is_wait{ false };
-		bool is_readFile{ false };
-		bool is_writeFile{ false };
 
 		TimePoint m_startTime{std::chrono::high_resolution_clock::now()};
 		TimePoint m_latestTime{m_startTime};
 
 	public:
 		Menu() = default;
-		explicit(false) Menu(std::string_view const un)
-			: m_userName{ un } {
+		explicit(false) Menu(std::string_view const usr_name)
+			: m_userName{ usr_name } {
 		}
-		explicit(false) Menu(std::string_view const sn, std::string_view const un)
-			: m_systemName{ sn }, m_userName{ un } {
+		explicit(false) Menu(std::string_view const sys_name , std::string_view const usr_name)
+			: m_systemName{ sys_name }, m_userName{ usr_name } {
 		}
 		Menu(Menu&&) = default;
 		~Menu() = default;
@@ -112,14 +119,37 @@ namespace route
 
 	inline void Menu::printMsg(MsgTy const ty, std::string_view msg)
 	{
+		statFlag.is_prnMsg = true;
+
+		std::string tyMsg;
 		auto col = Color(ColorName::DEFAULT);
 		switch (ty) {
 		case MsgTy::MESSAGE:
 			col.change(ColorName::CYAN);
+			tyMsg = "MSG";
+			break;
+		case MsgTy::NOTE:
+			col.change(ColorName::YELLOW);
+			tyMsg = "NOTE";
+			break;
+		case MsgTy::WARNING:
+			col.change(ColorName::YELLOW);
+			tyMsg = "WARNING";
+			break;
+		case MsgTy::ERROR:
+			col.change(ColorName::RED);
+			tyMsg = "ERROR";
+			break;
+		case MsgTy::NORMAL:
+			col.change(ColorName::GREEN);
+			tyMsg = "NORMAL";
 			break;
 		default:
+			tyMsg = "NULL";
 			col.change(ColorName::DEFAULT);
 		}
+		col.print();
+		std::println("[{}][{}]:「{}」", "系统", tyMsg, msg);
 	}
 
 
@@ -130,36 +160,37 @@ namespace route
 
 		m_latestTime = latestTime;
 
-		auto col1 = Color(ColorName::CYAN);
+		auto col = Color(ColorName::CYAN);
+
 		std::print("[{1:}][{0:}]", m_userName, m_systemName);
-		auto col2 = Color(ColorName::GREEN);
+		col.changePrn(ColorName::GREEN);
 		std::println("[{:%Y-%m-%d %H:%M}][{}{}s]", 
 			std::chrono::system_clock::now(), 
 			"Times：", std::chrono::duration_cast<std::chrono::seconds>(dur).count());
-		auto col3 = Color(ColorName::MAGENTA);
-		if (is_readFile) {
+		col.changePrn(ColorName::MAGENTA);
+		if (statFlag.is_readFile) {
 			std::print("[文件读取成功]");
 		} else {
 			std::print("[未读取文件]");
 		}
-		if (is_writeFile) {
+		if (statFlag.is_writeFile) {
 			std::print("[文件写入成功]");
 		} else {
 			std::print("[未写入文件]");
 		}
-		auto col4 = Color(ColorName::RED);
+		col.changePrn(ColorName::RED);
 		std::println("[End]");
 
-		is_fresh = false;
+		statFlag.is_fresh = false;
 	}
 
 	inline void Menu::statusBarFr()
 	{
-		if (!is_fresh) {
+		if (!statFlag.is_fresh) {
 			Menu::fresh();
 			this->statusBar();
 		}
-		is_fresh = false;
+		statFlag.is_fresh = false;
 	}
 
 	inline void Menu::fresh()
@@ -174,33 +205,33 @@ namespace route
 			else {
 				std::system("clear");
 			}
-			is_fresh = { true };
+			statFlag.is_fresh = { true };
 		}
 	}
 
 	inline void Menu::waitEnter()
 	{
-		auto markedWords{ "按下回车键以继续"s };
+		auto const markedWords{ "按下回车键以继续"s };
 
-		is_wait = true;
+		statFlag.is_wait = true;
 		{
 			auto col = Color{ ColorName::YELLOW };
-			std::print("\n{}", markedWords);
+			this->printMsg(MessageType::NOTE, markedWords);
 			std::cin.clear();
 			if (std::cin.rdbuf()->in_avail() > 0) {
 				std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
 			}
 			std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
 		}
-		is_wait = false;
+		statFlag.is_wait = false;
 	}
 
 	inline auto Menu::readFile(WGraph& graph, std::string const& file_name)
 	-> std::optional<int>
 	{
-		is_readFile = false;
+		statFlag.is_readFile = false;
 		if (read_from_file(graph, file_name)) {
-			is_readFile = true;
+			statFlag.is_readFile = true;
 			return { 1 };
 		} else {
 			std::cerr << "文件读入失败!" << "\n";
@@ -211,10 +242,10 @@ namespace route
 	inline auto Menu::writeFile(WGraph& graph, std::string const& file_name)
 	-> std::optional<int>
 	{
-		is_writeFile = false;
+		statFlag.is_writeFile = false;
 	    if (write_to_file(graph, file_name))
 	    {
-			is_writeFile = true;
+			statFlag.is_writeFile = true;
 			return { 1 };
 	    }
 	    else
@@ -240,9 +271,8 @@ namespace route
 
 	inline void Menu::ready()
 	{
-		is_ready = true;
-		auto col = Color(ColorName::GREEN);
-		std::println("\n系统就绪！");
+		statFlag.is_ready = true;
+		this->printMsg(MessageType::MESSAGE, "系统就绪！");
 	}
 
 	/**
