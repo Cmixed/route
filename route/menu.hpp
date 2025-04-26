@@ -45,9 +45,10 @@ namespace route
 
 	enum class MessageType : std::int_fast8_t
 	{
-		NORMAL,
-		NOTE,
+		NORMAL = 0,
 		MESSAGE,
+		SUCCESS,
+		NOTE,
 		WARNING,
 		ERROR
 	};
@@ -128,6 +129,10 @@ namespace route
 			col.change(ColorName::CYAN);
 			tyMsg = "MSG";
 			break;
+		case MessageType::SUCCESS:
+			col.change(ColorName::GREEN);
+			tyMsg = "SUCCESS";
+			break;
 		case MsgTy::NOTE:
 			col.change(ColorName::YELLOW);
 			tyMsg = "NOTE";
@@ -149,7 +154,7 @@ namespace route
 			col.change(ColorName::DEFAULT);
 		}
 		col.print();
-		std::println("[{}][{}]:「{}」", "系统", tyMsg, msg);
+		std::println("[{}][{}]:「{}」", ">", tyMsg, msg);
 	}
 
 
@@ -179,7 +184,7 @@ namespace route
 			std::print("[未写入文件]");
 		}
 		col.changePrn(ColorName::RED);
-		std::println("[End]");
+		std::println("[End]\n");
 
 		statFlag.is_fresh = false;
 	}
@@ -232,10 +237,10 @@ namespace route
 		statFlag.is_readFile = false;
 		if (read_from_file(graph, file_name)) {
 			statFlag.is_readFile = true;
-			return { 1 };
+			return 1;
 		} else {
 			std::cerr << "文件读入失败!" << "\n";
-			return { 0 };
+			return{};
 		}
 	}
 

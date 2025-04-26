@@ -27,7 +27,13 @@ int main() {
 
     menu.printMsg(MsgTy::MESSAGE, "继续以读入文件");
     menu.waitEnter();
-    menu.readFile(graph, "graph.txt");
+
+    if (auto res = menu.readFile(graph, "graph.txt");
+        res.has_value()) {
+        menu.printMsg(MessageType::SUCCESS, "文件读入成功。");
+    } else {
+        menu.printMsg(MessageType::ERROR, "文件读入失败！");
+    }
 
     menu.printMsg(MsgTy::MESSAGE, "打印图的邻接矩阵");
     graph.printGraph();
