@@ -81,7 +81,7 @@ int main() {
 
 
 
-    Color::displayColor(ColorName::GREEN);
+    Color::displayFrColor(ColorName::GREEN);
     input_test();
 
 

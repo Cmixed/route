@@ -115,10 +115,10 @@ namespace route
 		auto col = Color(ColorName::DEFAULT);
 		switch (ty) {
 		case MsgTy::MESSAGE:
-			col.changeColor(ColorName::CYAN);
+			col.change(ColorName::CYAN);
 			break;
 		default:
-			col.changeColor(ColorName::DEFAULT);
+			col.change(ColorName::DEFAULT);
 		}
 	}
 

@@ -38,6 +38,8 @@ namespace zzj
 		WHITE
 	};
 
+	using CName = ColorName;
+
 	struct ColorCtrlSettings
 	{
 		bool is_ToDefault{true};
@@ -80,23 +82,27 @@ namespace zzj
 	{
 	private:
 		ColorName m_colorName;
-
+		std::string m_colorFrCode;
 	public:
 		// class functions
-		Color() = default;
+		Color() = delete;
 		Color(Color const&) = default;
 		Color& operator=(Color const&) = default;
 		Color& operator=(Color&&) = default;
-		explicit Color(ColorName const color_name);
-		explicit Color(ColorName const color_name, std::string_view const sv);
+		explicit Color(CName const cname);
+		explicit Color(CName const cname, std::string_view const msg);
 		~Color();
 
 		Color(Color&&) = delete;
+
 		// member functions
-		static void switchOutFrontColor(ColorName const color_name);
-		void redisplay() const;
-		static void displayColor(ColorName const cn);
-		void changeColor(ColorName const color_name);
+
+		static auto conv2RelFrColor(CName const cname) -> std::string;
+		static void displayFrColor(CName const cname);
+		void print() const;
+		void prnRelFrColor() const;
+		void change(CName const cname);
+		void changePrn(CName const cname);
 	};
 
 	class Log
@@ -155,54 +161,65 @@ namespace zzj
 
 	inline void Log::display()
 	{
-		m_color.redisplay();
+		m_color.print();
 		std::print("{}\n", m_outMessage);
 	}
 
 
-	inline Color::Color(ColorName const color_name)
-		: m_colorName{color_name}
+	inline Color::Color(CName const cname)
+		: m_colorName{cname}, m_colorFrCode{conv2RelFrColor(cname)}
 	{
-		switchOutFrontColor(color_name);
+		print();
 	}
 
-	inline Color::Color(ColorName const color_name, std::string_view const sv)
-		: m_colorName{color_name}
+	inline Color::Color(CName const cname, std::string_view const msg)
+		: Color(cname)
 	{
-		switchOutFrontColor(color_name);
-		std::println("{}", sv);
+		std::println("{}", msg);
 	}
 
 	inline Color::~Color()
 	{
 		if (color_ctrl.is_ToDefault) {
-			switchOutFrontColor(color_ctrl.default_color);
+			Color::displayFrColor(color_ctrl.default_color);
 		}
 	}
 
-	inline void Color::redisplay() const
+	inline void Color::prnRelFrColor() const
 	{
-		switchOutFrontColor(m_colorName);
+		std::print("{}", m_colorFrCode);
 	}
 
-	inline void Color::changeColor(ColorName const color_name)
+	inline void Color::print() const
 	{
-		m_colorName = color_name;
-		switchOutFrontColor(color_name);
+		this->prnRelFrColor();
 	}
 
-	inline void Color::displayColor(ColorName const cn)
+	inline void Color::change(CName const cname)
 	{
-		switchOutFrontColor(cn);
+		m_colorName = cname;
+		m_colorFrCode = conv2RelFrColor(cname);
 	}
 
-	inline void Color::switchOutFrontColor(ColorName const color_name)
+	inline void Color::changePrn(CName const cname)
+	{
+		this->change(cname);
+		this->print();
+	}
+
+	inline void Color::displayFrColor(CName const cname)
+	{
+		std::print("{}", conv2RelFrColor(cname));
+	}
+
+	inline auto Color::conv2RelFrColor(CName const cname)
+		-> std::string
 	{
 		using enum ColorName;
 
-		std::string color{};
+		std::string color;
 
-		switch (color_name) {
+		switch (cname) {
 		case DEFAULT:
 			color = "\033[0m";
 			break;
@@ -232,7 +249,7 @@ namespace zzj
 			break;
 		}
 
-		std::print("{}", color);
+		return color;
 	}
 }
 
