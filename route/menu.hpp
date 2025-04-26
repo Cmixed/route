@@ -231,6 +231,7 @@ namespace route
 		statFlag.is_wait = false;
 	}
 
+
 	inline auto Menu::readFile(WGraph& graph, std::string const& file_name)
 	-> std::optional<int>
 	{
@@ -259,7 +260,6 @@ namespace route
 			return { 0 };
 	    }
 	}
-
 
 	inline void options()
 	{

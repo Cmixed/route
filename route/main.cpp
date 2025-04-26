@@ -12,11 +12,8 @@ using namespace zzj::literals;
 
 constexpr int city_num = 20;
 
-
-
-int main() {
-
-    // 创建对象
+int main()
+{
     color_ctrl.default_color = ColorName::WHITE;
 
     auto graph = WGraph(city_num);
@@ -28,6 +25,7 @@ int main() {
     menu.printMsg(MsgTy::MESSAGE, "继续以读入文件");
     menu.waitEnter();
 
+
     if (auto res = menu.readFile(graph, "graph.txt");
         res.has_value()) {
         menu.printMsg(MessageType::SUCCESS, "文件读入成功。");
@@ -35,61 +33,71 @@ int main() {
         menu.printMsg(MessageType::ERROR, "文件读入失败！");
     }
 
-    menu.printMsg(MsgTy::MESSAGE, "打印图的邻接矩阵");
-    graph.printGraph();
-    std::println();
-
-    std::vector const p_v{
-		PathEndPoints{0, city_num - 1},
-		PathEndPoints{1, city_num - 1},
-		PathEndPoints{1, city_num / 2}
-    };
-
-    if (auto res = paths_task(graph, p_v);
-        res.has_value()) {
-        for (const auto& pre_res : res.value()) {
-			print_path_result(graph, algo_num, pre_res);
-        }
-    } else {
-        std::println(std::cerr, "error!");
+    {
+	    menu.printMsg(MsgTy::MESSAGE, "打印图的邻接矩阵");
+	    graph.printGraph();
+	    std::println();
     }
 
-    menu.writeFile(graph, "graph.txt");
+    {
+	    std::vector<PathEndPoints> const p_v{
+			{ .startVertex = 0, .endVertex = city_num - 1},
+			{ .startVertex = 1, .endVertex = city_num - 1},
+			{ .startVertex = 1, .endVertex = city_num / 2}
+	    };
 
+	    if (auto res = paths_task(graph, p_v);
+	        res.has_value()) {
+	        for (const auto& pre_res : res.value()) {
+				print_path_result(graph, algo_num, pre_res);
+	        }
+	    } else {
+	        menu.printMsg(MessageType::ERROR, "打印图时失败！");
+	    }
+    }
 
+    {
+	    if (auto res = menu.writeFile(graph, "graph.txt");
+	        res.has_value()) {
+	        menu.printMsg(MessageType::SUCCESS, "文件写入成功。");
+	    } else {
+	        menu.printMsg(MessageType::ERROR, "文件写入失败！");
+	    }
+	    
+    }
     menu.waitEnter();
-    menu.statusBarFr();
     
-
-    std::println("额外算法测试");
-	route::PathEndPoints endpoints{1,3};
-	auto const path_results = route::calculate_path_times(graph, endpoints);
-
-    print_path_result(graph, algo_num, path_results);
-
-
-
-    std::println("颜色库");
-    auto x{ "111"_log };
-    auto y{ "222"_col };
-
-    std::ignore = Color(ColorName::GREEN, "1111");
     {
-	    std::ignore = Color(ColorName::RED, "RED");
-	    std::println("333");
+	    menu.statusBarFr();
+	    menu.printMsg(MessageType::MESSAGE, "额外算法测试");
+	    route::PathEndPoints endpoints{ .startVertex = 1, .endVertex = 3 };
+		auto const path_results = route::calculate_path_times(graph, endpoints);
+	    print_path_result(graph, algo_num, path_results);
+		menu.waitEnter();
     }
 
+
     {
-        auto x = Color(ColorName::RED);
-        std::println("333");
+		menu.statusBarFr();
+        menu.printMsg(MessageType::MESSAGE, "颜色库");
+	    auto x{ "111"_log };
+	    auto y{ "222"_col };
+	    std::ignore = Color(ColorName::GREEN, "1111");
+	    {
+		    std::ignore = Color(ColorName::RED, "RED");
+		    std::println("333");
+	    }
+
+	    {
+	        auto x = Color(ColorName::RED);
+	        std::println("333");
+	    }
+	    std::println("444");
+		Color::displayFrColor(ColorName::GREEN);
+		input_test();
     }
-    std::println("444");
 
 
-
-
-    Color::displayFrColor(ColorName::GREEN);
-    input_test();
 
 
     return 0;
