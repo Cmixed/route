@@ -231,7 +231,7 @@ namespace route
 		}
 
 		if constexpr (is_debug) {
-			std::println();
+			std::print("\n");
 		}
 
 		// 找到最优路径
@@ -548,7 +548,7 @@ namespace route
 	            std::print("{: <5} ", j);
 	        }
         }
-        std::println();
+        std::print("\n");
         // 打印矩阵
         for (int i = 1; i < m_vertices; ++i) {
             // 打印行号
@@ -564,7 +564,7 @@ namespace route
                     std::print("{: <5} ", m_adjMatrix[i][j]);
                 }
             }
-            std::println();
+            std::print("\n");
         }
     }
 
@@ -593,7 +593,7 @@ namespace route
 				std::print(" -> ");
 			}
 		}
-		std::println();
+		std::print("\n");
 		std::println("总距离: {}", distance);
 	}
 

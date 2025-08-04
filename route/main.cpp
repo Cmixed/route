@@ -36,7 +36,7 @@ int main()
     {
 	    menu.printMsg(MsgTy::MESSAGE, "打印图的邻接矩阵");
 	    graph.printGraph();
-	    std::println();
+		std::print("\n");
     }
 
     {
