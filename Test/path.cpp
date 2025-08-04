@@ -1,5 +1,6 @@
 ﻿#include "pch.hpp"
 #include "data.cpp"
+#include "file_io.cpp"
 #include <random>
 
 using namespace std;

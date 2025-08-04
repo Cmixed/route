@@ -1,483 +1,502 @@
-Vertex C0 0 982 408 0
-Vertex C1 1 533 314 0
-Vertex C2 2 75 620 0
-Vertex C3 3 399 322 0
-Vertex C4 4 169 864 0
-Vertex C5 5 245 447 0
-Vertex C6 6 317 388 0
-Vertex C7 7 697 55 0
-Vertex C8 8 486 436 0
-Vertex C9 9 276 614 0
-Vertex C10 10 910 846 0
-Vertex C11 11 415 927 0
-Vertex C12 12 226 861 0
-Vertex C13 13 755 165 0
-Vertex C14 14 560 56 0
-Vertex C15 15 566 868 0
-Vertex C16 16 812 952 0
-Vertex C17 17 665 791 0
-Vertex C18 18 673 258 0
-Vertex C19 19 212 415 0
-Vertex C20 20 217 67 0
-Vertex C21 21 75 411 0
-Vertex C22 22 416 578 0
-Vertex C23 23 141 27 0
-Vertex C24 24 458 794 0
-Vertex C25 25 191 295 0
-Vertex C26 26 726 273 0
-Vertex C27 27 166 781 0
-Vertex C28 28 872 291 0
-Vertex C29 29 979 569 0
-Vertex C30 30 284 729 0
-Vertex C31 31 333 37 0
-Vertex C32 32 866 786 0
-Vertex C33 33 407 368 0
-Vertex C34 34 510 414 0
-Vertex C35 35 899 929 0
-Vertex C36 36 719 984 0
-Vertex C37 37 181 591 0
-Vertex C38 38 325 324 0
-Vertex C39 39 413 216 0
-Vertex C40 40 15 675 0
-Vertex C41 41 8 36 0
-Vertex C42 42 752 171 0
-Vertex C43 43 413 75 0
-Vertex C44 44 352 352 0
-Vertex C45 45 812 83 0
-Vertex C46 46 381 385 0
-Vertex C47 47 971 383 0
-Vertex C48 48 581 769 0
-Vertex C49 49 456 960 0
-Edge 0 1 459
-Edge 0 6 665
-Edge 0 8 497
-Edge 0 10 443
-Edge 0 14 550
-Edge 0 21 907
-Edge 0 23 924
-Edge 0 25 799
-Edge 0 29 161
-Edge 0 33 576
-Edge 0 37 821
-Edge 0 38 663
-Edge 0 46 602
-Edge 0 47 27
-Edge 0 48 539
-Edge 1 2 550
-Edge 1 3 134
-Edge 1 4 659
-Edge 1 6 228
-Edge 1 9 394
-Edge 1 12 626
-Edge 1 13 267
-Edge 1 16 696
-Edge 1 17 494
-Edge 1 19 336
-Edge 1 22 288
-Edge 1 23 486
-Edge 1 28 340
-Edge 1 32 577
-Edge 1 36 695
-Edge 1 40 630
-Edge 1 45 361
-Edge 1 48 457
-Edge 2 3 440
-Edge 2 6 335
-Edge 2 8 450
-Edge 2 12 284
-Edge 2 16 808
-Edge 2 18 699
-Edge 2 35 880
-Edge 2 38 387
-Edge 2 39 526
-Edge 2 40 81
-Edge 2 41 587
-Edge 2 42 812
-Edge 3 4 589
-Edge 3 9 317
-Edge 3 11 605
-Edge 3 14 310
-Edge 3 17 539
-Edge 3 18 281
-Edge 3 20 312
-Edge 3 21 335
-Edge 3 26 331
-Edge 3 36 735
-Edge 3 37 346
-Edge 3 38 74
-Edge 3 39 106
-Edge 3 42 383
-Edge 3 43 247
-Edge 3 47 575
-Edge 4 5 423
-Edge 4 11 253
-Edge 4 16 649
-Edge 4 21 462
-Edge 4 24 297
-Edge 4 28 906
-Edge 4 32 701
-Edge 4 39 692
-Edge 5 6 93
-Edge 5 11 508
-Edge 5 19 46
-Edge 5 20 381
-Edge 5 22 214
-Edge 5 31 419
-Edge 5 40 323
-Edge 5 41 475
-Edge 5 45 673
-Edge 5 49 553
-Edge 6 7 505
-Edge 6 10 749
-Edge 6 14 411
-Edge 6 15 541
-Edge 6 17 531
-Edge 6 18 379
-Edge 6 23 401
-Edge 6 24 430
-Edge 6 25 156
-Edge 6 26 425
-Edge 6 28 563
-Edge 6 38 64
-Edge 6 41 468
-Edge 6 47 653
-Edge 7 8 435
-Edge 7 13 123
-Edge 7 14 137
-Edge 7 21 716
-Edge 7 22 593
-Edge 7 23 557
-Edge 7 25 559
-Edge 7 27 899
-Edge 7 32 749
-Edge 7 33 426
-Edge 7 35 896
-Edge 7 38 459
-Edge 7 39 326
-Edge 7 42 128
-Edge 7 45 118
-Edge 7 46 457
-Edge 7 48 722
-Edge 7 49 935
-Edge 8 9 275
-Edge 8 11 496
-Edge 8 12 498
-Edge 8 13 381
-Edge 8 17 397
-Edge 8 18 258
-Edge 8 21 411
-Edge 8 22 158
-Edge 8 24 359
-Edge 8 25 326
-Edge 8 26 290
-Edge 8 28 412
-Edge 8 29 511
-Edge 8 33 103
-Edge 8 34 32
-Edge 8 36 595
-Edge 8 38 196
-Edge 8 41 622
-Edge 8 42 375
-Edge 8 48 346
-Edge 8 49 524
-Edge 9 10 674
-Edge 9 16 633
-Edge 9 17 426
-Edge 9 18 533
-Edge 9 26 564
-Edge 9 30 114
-Edge 9 35 697
-Edge 9 38 294
-Edge 9 39 421
-Edge 9 42 650
-Edge 9 44 272
-Edge 10 11 501
-Edge 10 14 864
-Edge 10 22 561
-Edge 10 25 905
-Edge 10 26 601
-Edge 10 27 746
-Edge 10 32 74
-Edge 10 37 771
-Edge 10 38 784
-Edge 10 39 802
-Edge 10 41 1212
-Edge 10 45 768
-Edge 10 49 468
-Edge 11 12 200
-Edge 11 14 882
-Edge 11 19 549
-Edge 11 21 617
-Edge 11 24 139
-Edge 11 25 670
-Edge 11 28 782
-Edge 11 30 237
-Edge 11 31 893
-Edge 11 33 559
-Edge 11 34 521
-Edge 11 38 609
-Edge 11 39 711
-Edge 11 40 472
-Edge 11 48 229
-Edge 12 13 873
-Edge 12 16 593
-Edge 12 19 445
-Edge 12 20 793
-Edge 12 22 340
-Edge 12 23 838
-Edge 12 24 241
-Edge 12 26 771
-Edge 12 29 807
-Edge 12 34 529
-Edge 12 36 507
-Edge 12 38 545
-Edge 12 40 280
-Edge 12 43 807
-Edge 12 44 523
-Edge 12 45 973
-Edge 12 47 884
-Edge 12 48 366
-Edge 13 14 223
-Edge 13 15 728
-Edge 13 20 546
-Edge 13 21 722
-Edge 13 23 629
-Edge 13 26 112
-Edge 13 29 462
-Edge 13 33 402
-Edge 13 34 349
-Edge 13 38 458
-Edge 13 41 757
-Edge 13 43 353
-Edge 13 46 434
-Edge 14 15 812
-Edge 14 20 342
-Edge 14 22 541
-Edge 14 28 391
-Edge 14 30 727
-Edge 14 32 791
-Edge 14 38 356
-Edge 14 39 217
-Edge 14 40 824
-Edge 14 42 224
-Edge 14 43 147
-Edge 14 49 909
-Edge 15 16 260
-Edge 15 17 125
-Edge 15 18 620
-Edge 15 19 574
-Edge 15 20 873
-Edge 15 21 670
-Edge 15 29 510
-Edge 15 30 314
-Edge 15 32 311
-Edge 15 33 525
-Edge 15 34 457
-Edge 15 37 473
-Edge 15 39 670
-Edge 16 17 218
-Edge 16 24 387
-Edge 16 25 904
-Edge 16 27 668
-Edge 16 28 662
-Edge 16 35 89
-Edge 16 39 837
-Edge 16 43 963
-Edge 16 48 295
-Edge 17 18 533
-Edge 17 20 850
-Edge 17 24 206
-Edge 17 27 498
-Edge 17 30 385
-Edge 17 32 201
-Edge 17 33 495
-Edge 17 35 272
-Edge 17 36 200
-Edge 17 39 627
-Edge 17 47 509
-Edge 17 49 268
-Edge 18 19 487
-Edge 18 20 494
-Edge 18 23 580
-Edge 18 24 578
-Edge 18 26 55
-Edge 18 27 729
-Edge 18 32 562
-Edge 18 36 727
-Edge 18 41 701
-Edge 18 43 318
-Edge 19 20 348
-Edge 19 21 137
-Edge 19 22 260
-Edge 19 23 395
-Edge 19 24 451
-Edge 19 26 533
-Edge 19 30 321
-Edge 19 34 297
-Edge 19 35 857
-Edge 19 38 145
-Edge 19 39 283
-Edge 19 43 395
-Edge 19 44 153
-Edge 20 21 372
-Edge 20 26 549
-Edge 20 29 912
-Edge 20 30 665
-Edge 20 35 1098
-Edge 20 42 544
-Edge 20 44 315
-Edge 20 45 594
-Edge 20 48 790
-Edge 21 22 379
-Edge 21 23 390
-Edge 21 29 917
-Edge 21 34 434
-Edge 21 37 208
-Edge 21 39 390
-Edge 21 41 381
-Edge 21 42 718
-Edge 21 46 306
-Edge 22 23 616
-Edge 22 30 200
-Edge 22 31 547
-Edge 22 32 495
-Edge 22 36 506
-Edge 22 37 235
-Edge 22 42 527
-Edge 22 44 234
-Edge 23 24 830
-Edge 23 26 635
-Edge 23 39 331
-Edge 23 41 132
-Edge 23 43 276
-Edge 23 44 388
-Edge 23 46 431
-Edge 23 49 984
-Edge 24 25 566
-Edge 24 27 292
-Edge 24 39 580
-Edge 24 46 416
-Edge 25 26 535
-Edge 25 27 487
-Edge 25 29 834
-Edge 25 35 950
-Edge 25 39 235
-Edge 25 41 316
-Edge 25 44 170
-Edge 25 46 209
-Edge 26 27 756
-Edge 26 29 389
-Edge 26 31 459
-Edge 26 32 531
-Edge 26 44 382
-Edge 26 48 516
-Edge 26 49 737
-Edge 27 28 859
-Edge 27 36 588
-Edge 27 40 184
-Edge 27 45 950
-Edge 28 29 297
-Edge 28 31 596
-Edge 28 33 471
-Edge 28 37 752
-Edge 28 42 169
-Edge 28 43 507
-Edge 28 48 559
-Edge 28 49 787
-Edge 29 30 713
-Edge 29 32 244
-Edge 29 37 798
-Edge 29 39 667
-Edge 29 41 1107
-Edge 29 44 663
-Edge 29 45 513
-Edge 29 46 626
-Edge 30 31 693
-Edge 30 32 584
-Edge 30 33 381
-Edge 30 34 387
-Edge 30 35 647
-Edge 30 38 406
-Edge 30 39 529
-Edge 30 45 833
-Edge 30 47 769
-Edge 31 32 919
-Edge 31 35 1056
-Edge 31 39 195
-Edge 31 43 88
-Edge 31 46 351
-Edge 31 47 725
-Edge 31 48 772
-Edge 31 49 930
-Edge 32 33 620
-Edge 32 34 514
-Edge 32 37 711
-Edge 32 39 728
-Edge 32 40 857
-Edge 32 41 1139
-Edge 32 42 625
-Edge 32 43 843
-Edge 32 45 704
-Edge 32 46 629
-Edge 32 47 415
-Edge 32 49 445
-Edge 33 34 112
-Edge 33 38 93
-Edge 33 39 152
-Edge 33 46 31
-Edge 33 47 563
-Edge 34 35 645
-Edge 34 37 373
-Edge 34 38 206
-Edge 34 41 628
-Edge 34 42 342
-Edge 34 45 447
-Edge 34 48 361
-Edge 35 36 188
-Edge 35 39 863
-Edge 35 42 771
-Edge 35 45 849
-Edge 35 48 356
-Edge 35 49 444
-Edge 36 37 665
-Edge 36 40 767
-Edge 36 44 729
-Edge 37 38 303
-Edge 37 39 440
-Edge 37 42 708
-Edge 37 43 565
-Edge 37 45 809
-Edge 37 47 816
-Edge 37 48 437
-Edge 38 39 139
-Edge 38 41 427
-Edge 38 43 264
-Edge 38 44 39
-Edge 38 45 543
-Edge 38 46 83
-Edge 38 49 649
-Edge 39 40 607
-Edge 39 45 420
-Edge 39 46 172
-Edge 40 41 639
-Edge 40 42 892
-Edge 40 44 466
-Edge 40 45 992
-Edge 40 48 573
-Edge 40 49 524
-Edge 41 42 756
-Edge 41 45 805
-Edge 41 49 1026
-Edge 42 43 352
-Edge 42 46 428
-Edge 43 44 284
-Edge 43 46 312
-Edge 43 47 637
-Edge 44 45 532
-Edge 45 46 526
-Edge 45 48 722
-Edge 45 49 945
-Edge 46 47 590
-Edge 46 49 579
-Edge 47 48 548
-Edge 48 49 228
+# 支持 “#” 号 行注释
+
+# [VERTEX] LISTS
+[Vertex] C0 0 260 470 0
+[Vertex] C1 1 564 416 0
+[Vertex] C2 2 605 459 0
+[Vertex] C3 3 638 322 0
+[Vertex] C4 4 934 279 0
+[Vertex] C5 5 722 976 0
+[Vertex] C6 6 901 168 0
+[Vertex] C7 7 951 694 0
+[Vertex] C8 8 193 212 0
+[Vertex] C9 9 862 578 0
+[Vertex] C10 10 255 61 0
+[Vertex] C11 11 394 73 0
+[Vertex] C12 12 896 73 0
+[Vertex] C13 13 535 571 0
+[Vertex] C14 14 426 776 0
+[Vertex] C15 15 620 111 0
+[Vertex] C16 16 574 281 0
+[Vertex] C17 17 108 289 0
+[Vertex] C18 18 972 218 0
+[Vertex] C19 19 246 430 0
+[Vertex] C20 20 290 160 0
+[Vertex] C21 21 530 30 0
+[Vertex] C22 22 598 652 0
+[Vertex] C23 23 674 167 0
+[Vertex] C24 24 940 136 0
+[Vertex] C25 25 615 774 0
+[Vertex] C26 26 562 359 0
+[Vertex] C27 27 178 147 0
+[Vertex] C28 28 715 2 0
+[Vertex] C29 29 811 678 0
+[Vertex] C30 30 213 825 0
+[Vertex] C31 31 569 278 0
+[Vertex] C32 32 391 161 0
+[Vertex] C33 33 573 695 0
+[Vertex] C34 34 921 147 0
+[Vertex] C35 35 298 343 0
+[Vertex] C36 36 212 855 0
+[Vertex] C37 37 993 220 0
+[Vertex] C38 38 877 993 0
+[Vertex] C39 39 527 156 0
+[Vertex] C40 40 894 511 0
+[Vertex] C41 41 971 14 0
+[Vertex] C42 42 199 469 0
+[Vertex] C43 43 604 398 0
+[Vertex] C44 44 51 284 0
+[Vertex] C45 45 910 762 0
+[Vertex] C46 46 968 417 0
+[Vertex] C47 47 810 867 0
+[Vertex] C48 48 39 909 0
+[Vertex] C49 49 438 428 0
+
+# [EDGE] LISTS
+[Edge] 0 1 308
+[Edge] 0 10 409
+[Edge] 0 11 418
+[Edge] 0 13 292
+[Edge] 0 17 236
+[Edge] 0 25 466
+[Edge] 0 34 735
+[Edge] 0 39 412
+[Edge] 0 40 635
+[Edge] 0 41 844
+[Edge] 0 46 709
+[Edge] 0 49 183
+[Edge] 1 2 59
+[Edge] 1 4 395
+[Edge] 1 10 470
+[Edge] 1 11 382
+[Edge] 1 15 309
+[Edge] 1 22 238
+[Edge] 1 28 440
+[Edge] 1 30 538
+[Edge] 1 32 307
+[Edge] 1 35 275
+[Edge] 1 40 343
+[Edge] 1 44 529
+[Edge] 1 46 404
+[Edge] 1 47 513
+[Edge] 1 48 720
+[Edge] 2 3 141
+[Edge] 2 5 529
+[Edge] 2 12 484
+[Edge] 2 13 131
+[Edge] 2 14 363
+[Edge] 2 15 348
+[Edge] 2 19 360
+[Edge] 2 20 434
+[Edge] 2 22 192
+[Edge] 2 29 300
+[Edge] 2 30 535
+[Edge] 2 31 185
+[Edge] 2 32 366
+[Edge] 2 33 237
+[Edge] 2 34 444
+[Edge] 2 35 328
+[Edge] 2 38 599
+[Edge] 2 41 576
+[Edge] 2 42 405
+[Edge] 2 45 430
+[Edge] 2 46 365
+[Edge] 2 49 169
+[Edge] 3 4 298
+[Edge] 3 5 658
+[Edge] 3 9 339
+[Edge] 3 10 464
+[Edge] 3 12 358
+[Edge] 3 15 212
+[Edge] 3 27 492
+[Edge] 3 28 329
+[Edge] 3 30 658
+[Edge] 3 33 378
+[Edge] 3 34 332
+[Edge] 3 35 341
+[Edge] 3 36 682
+[Edge] 3 39 200
+[Edge] 3 44 588
+[Edge] 3 45 517
+[Edge] 3 47 570
+[Edge] 4 5 728
+[Edge] 4 6 115
+[Edge] 4 10 713
+[Edge] 4 14 711
+[Edge] 4 15 355
+[Edge] 4 16 359
+[Edge] 4 18 71
+[Edge] 4 21 474
+[Edge] 4 25 589
+[Edge] 4 26 380
+[Edge] 4 27 767
+[Edge] 4 28 352
+[Edge] 4 30 904
+[Edge] 4 31 365
+[Edge] 4 32 555
+[Edge] 4 35 639
+[Edge] 4 37 83
+[Edge] 4 38 716
+[Edge] 4 39 425
+[Edge] 4 41 267
+[Edge] 4 47 601
+[Edge] 4 48 1095
+[Edge] 4 49 517
+[Edge] 5 6 827
+[Edge] 5 8 928
+[Edge] 5 10 1027
+[Edge] 5 17 921
+[Edge] 5 28 973
+[Edge] 5 30 530
+[Edge] 5 31 714
+[Edge] 5 33 317
+[Edge] 5 34 852
+[Edge] 5 37 802
+[Edge] 5 40 495
+[Edge] 5 41 993
+[Edge] 5 43 589
+[Edge] 5 47 139
+[Edge] 5 48 686
+[Edge] 5 49 616
+[Edge] 6 7 528
+[Edge] 6 8 709
+[Edge] 6 10 655
+[Edge] 6 13 544
+[Edge] 6 21 396
+[Edge] 6 22 570
+[Edge] 6 23 226
+[Edge] 6 28 248
+[Edge] 6 30 951
+[Edge] 6 31 349
+[Edge] 6 35 628
+[Edge] 6 37 106
+[Edge] 6 38 825
+[Edge] 6 39 374
+[Edge] 6 40 342
+[Edge] 6 42 764
+[Edge] 6 47 704
+[Edge] 7 8 898
+[Edge] 7 11 833
+[Edge] 7 15 670
+[Edge] 7 19 752
+[Edge] 7 20 850
+[Edge] 7 25 345
+[Edge] 7 26 513
+[Edge] 7 29 141
+[Edge] 7 30 749
+[Edge] 7 33 377
+[Edge] 7 35 741
+[Edge] 7 39 685
+[Edge] 7 41 680
+[Edge] 7 43 455
+[Edge] 7 49 577
+[Edge] 8 9 762
+[Edge] 8 10 163
+[Edge] 8 11 244
+[Edge] 8 16 387
+[Edge] 8 17 115
+[Edge] 8 18 779
+[Edge] 8 20 110
+[Edge] 8 22 597
+[Edge] 8 25 702
+[Edge] 8 27 67
+[Edge] 8 29 773
+[Edge] 8 41 802
+[Edge] 8 47 899
+[Edge] 8 48 714
+[Edge] 8 49 326
+[Edge] 9 10 797
+[Edge] 9 14 479
+[Edge] 9 15 525
+[Edge] 9 21 640
+[Edge] 9 22 274
+[Edge] 9 24 447
+[Edge] 9 32 629
+[Edge] 9 38 415
+[Edge] 9 39 539
+[Edge] 9 41 574
+[Edge] 9 46 191
+[Edge] 9 49 449
+[Edge] 10 11 139
+[Edge] 10 12 641
+[Edge] 10 14 735
+[Edge] 10 17 272
+[Edge] 10 19 370
+[Edge] 10 20 104
+[Edge] 10 22 683
+[Edge] 10 26 428
+[Edge] 10 28 464
+[Edge] 10 35 285
+[Edge] 10 39 288
+[Edge] 10 43 485
+[Edge] 10 45 960
+[Edge] 11 12 502
+[Edge] 11 18 596
+[Edge] 11 19 386
+[Edge] 11 23 295
+[Edge] 11 26 331
+[Edge] 11 29 734
+[Edge] 11 30 772
+[Edge] 11 31 268
+[Edge] 11 32 87
+[Edge] 11 33 646
+[Edge] 11 35 286
+[Edge] 11 37 617
+[Edge] 11 39 156
+[Edge] 11 40 664
+[Edge] 11 42 441
+[Edge] 11 43 386
+[Edge] 11 44 402
+[Edge] 11 46 669
+[Edge] 11 48 908
+[Edge] 12 13 615
+[Edge] 12 15 278
+[Edge] 12 16 383
+[Edge] 12 17 817
+[Edge] 12 19 742
+[Edge] 12 24 77
+[Edge] 12 31 386
+[Edge] 12 33 700
+[Edge] 12 35 656
+[Edge] 12 38 920
+[Edge] 12 39 378
+[Edge] 12 40 437
+[Edge] 12 46 352
+[Edge] 13 14 232
+[Edge] 13 21 540
+[Edge] 13 22 102
+[Edge] 13 24 594
+[Edge] 13 26 213
+[Edge] 13 28 596
+[Edge] 13 30 409
+[Edge] 13 32 434
+[Edge] 13 33 129
+[Edge] 13 34 573
+[Edge] 13 36 430
+[Edge] 13 39 415
+[Edge] 13 41 707
+[Edge] 13 42 350
+[Edge] 13 49 172
+[Edge] 14 15 693
+[Edge] 14 19 390
+[Edge] 14 23 658
+[Edge] 14 28 826
+[Edge] 14 29 397
+[Edge] 14 30 218
+[Edge] 14 31 518
+[Edge] 14 34 800
+[Edge] 14 40 538
+[Edge] 14 41 937
+[Edge] 14 42 381
+[Edge] 14 48 409
+[Edge] 14 49 348
+[Edge] 15 16 176
+[Edge] 15 17 542
+[Edge] 15 19 492
+[Edge] 15 24 321
+[Edge] 15 25 662
+[Edge] 15 27 443
+[Edge] 15 30 821
+[Edge] 15 34 302
+[Edge] 15 39 103
+[Edge] 15 42 552
+[Edge] 15 43 287
+[Edge] 15 47 779
+[Edge] 15 48 987
+[Edge] 16 17 466
+[Edge] 16 20 309
+[Edge] 16 23 152
+[Edge] 16 28 312
+[Edge] 16 30 652
+[Edge] 16 32 219
+[Edge] 16 36 678
+[Edge] 16 38 773
+[Edge] 16 39 134
+[Edge] 16 43 120
+[Edge] 16 46 416
+[Edge] 16 47 631
+[Edge] 16 48 825
+[Edge] 17 18 867
+[Edge] 17 19 197
+[Edge] 17 21 495
+[Edge] 17 28 672
+[Edge] 17 36 575
+[Edge] 17 45 931
+[Edge] 17 46 869
+[Edge] 17 47 908
+[Edge] 17 48 623
+[Edge] 18 19 757
+[Edge] 18 21 481
+[Edge] 18 28 335
+[Edge] 18 34 88
+[Edge] 18 37 21
+[Edge] 18 38 780
+[Edge] 18 49 573
+[Edge] 19 20 274
+[Edge] 19 24 754
+[Edge] 19 26 324
+[Edge] 19 29 616
+[Edge] 19 30 395
+[Edge] 19 31 357
+[Edge] 19 33 421
+[Edge] 19 35 101
+[Edge] 19 36 425
+[Edge] 19 41 836
+[Edge] 19 43 360
+[Edge] 19 44 243
+[Edge] 20 21 272
+[Edge] 20 33 605
+[Edge] 20 35 183
+[Edge] 20 36 699
+[Edge] 20 37 706
+[Edge] 20 43 394
+[Edge] 20 48 790
+[Edge] 21 22 625
+[Edge] 21 27 370
+[Edge] 21 28 187
+[Edge] 21 30 855
+[Edge] 21 32 190
+[Edge] 21 35 389
+[Edge] 21 40 603
+[Edge] 21 43 375
+[Edge] 21 46 584
+[Edge] 21 47 882
+[Edge] 21 49 408
+[Edge] 22 23 491
+[Edge] 22 24 618
+[Edge] 22 29 214
+[Edge] 22 30 421
+[Edge] 22 34 599
+[Edge] 22 43 253
+[Edge] 22 46 438
+[Edge] 22 47 301
+[Edge] 22 48 615
+[Edge] 22 49 274
+[Edge] 23 24 267
+[Edge] 23 27 496
+[Edge] 23 32 283
+[Edge] 23 35 415
+[Edge] 23 39 147
+[Edge] 23 41 333
+[Edge] 23 44 634
+[Edge] 24 25 715
+[Edge] 24 29 557
+[Edge] 24 33 668
+[Edge] 24 34 21
+[Edge] 24 39 414
+[Edge] 24 41 126
+[Edge] 24 43 425
+[Edge] 24 45 626
+[Edge] 24 48 1187
+[Edge] 25 26 418
+[Edge] 25 27 764
+[Edge] 25 28 778
+[Edge] 25 30 404
+[Edge] 25 31 498
+[Edge] 25 32 652
+[Edge] 25 33 89
+[Edge] 25 40 383
+[Edge] 25 49 388
+[Edge] 26 27 438
+[Edge] 26 32 261
+[Edge] 26 34 416
+[Edge] 26 36 607
+[Edge] 26 37 452
+[Edge] 26 38 708
+[Edge] 26 42 379
+[Edge] 26 47 565
+[Edge] 26 49 141
+[Edge] 27 28 556
+[Edge] 27 36 708
+[Edge] 27 44 186
+[Edge] 28 29 682
+[Edge] 28 31 312
+[Edge] 28 35 539
+[Edge] 28 36 990
+[Edge] 28 38 1003
+[Edge] 28 43 410
+[Edge] 28 44 721
+[Edge] 29 30 615
+[Edge] 29 32 665
+[Edge] 29 38 321
+[Edge] 29 43 347
+[Edge] 29 47 188
+[Edge] 29 48 805
+[Edge] 29 49 448
+[Edge] 30 31 652
+[Edge] 30 32 687
+[Edge] 30 40 749
+[Edge] 30 45 700
+[Edge] 30 48 193
+[Edge] 31 32 212
+[Edge] 31 33 417
+[Edge] 31 35 278
+[Edge] 31 36 678
+[Edge] 31 39 128
+[Edge] 31 41 481
+[Edge] 31 44 517
+[Edge] 31 45 593
+[Edge] 31 46 423
+[Edge] 31 48 824
+[Edge] 32 33 564
+[Edge] 32 35 204
+[Edge] 32 40 612
+[Edge] 32 45 794
+[Edge] 32 46 631
+[Edge] 32 48 827
+[Edge] 33 34 649
+[Edge] 33 35 446
+[Edge] 33 37 633
+[Edge] 33 39 541
+[Edge] 33 49 298
+[Edge] 34 35 653
+[Edge] 34 40 364
+[Edge] 34 44 880
+[Edge] 34 47 728
+[Edge] 35 36 518
+[Edge] 35 37 706
+[Edge] 35 46 674
+[Edge] 35 48 622
+[Edge] 36 37 1006
+[Edge] 36 39 766
+[Edge] 36 44 593
+[Edge] 36 47 598
+[Edge] 36 49 483
+[Edge] 37 38 781
+[Edge] 37 40 306
+[Edge] 37 46 198
+[Edge] 37 48 1177
+[Edge] 38 39 907
+[Edge] 38 42 856
+[Edge] 38 44 1088
+[Edge] 38 45 233
+[Edge] 38 47 142
+[Edge] 39 40 510
+[Edge] 39 42 453
+[Edge] 39 48 897
+[Edge] 40 41 502
+[Edge] 40 48 943
+[Edge] 40 49 463
+[Edge] 41 42 896
+[Edge] 41 43 531
+[Edge] 41 46 403
+[Edge] 41 47 868
+[Edge] 41 48 1292
+[Edge] 42 43 411
+[Edge] 42 49 243
+[Edge] 43 44 565
+[Edge] 43 46 364
+[Edge] 43 47 511
+[Edge] 43 48 762
+[Edge] 44 45 983
+[Edge] 44 47 957
+[Edge] 44 49 413
+[Edge] 45 46 349
+[Edge] 45 48 883
+[Edge] 45 49 578
+[Edge] 46 47 476
+[Edge] 46 48 1051
+[Edge] 46 49 529
+[Edge] 47 48 771
+[Edge] 47 49 574
+[Edge] 48 49 625
