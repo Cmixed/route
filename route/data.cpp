@@ -140,8 +140,9 @@ namespace route
 	 * @param end 终点
 	 * @return 最短路径和距离
 	 */
-	[[nodiscard]] inline auto WGraph::geneticAlgorithm(int const start,
-	                                                   int const end) const -> std::pair<std::vector<int>, int>
+	[[nodiscard]] inline auto 
+		WGraph::geneticAlgorithm(int const start, int const end) const 
+		-> std::pair<std::vector<int>, int>
 	{
 		// 检查起点和终点是否合法
 		if (start < 0 || start >= m_vertices || end < 0 || end >= m_vertices) {
